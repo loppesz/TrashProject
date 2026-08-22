@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if(t === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Consulte o calendário de coleta seletiva em Muriaé-MG. Veja os dias e horários de coleta por bairro – ColetaFácil.">
+  <title>Consultar Coleta – ColetaFácil</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#16a34a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ColetaFácil">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="coleta.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="materiais.html">Materiais</a></li>
+        <li><a href="pontos.html">Pontos</a></li>
+        <li><a href="coleta.html" class="active">Coleta</a></li>
+        <li><a href="ocorrencias.html">Ocorrências</a></li>
+        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">Início</a>
+      <a href="materiais.html">Materiais</a>
+      <a href="pontos.html">Pontos</a>
+      <a href="coleta.html">Coleta</a>
+      <a href="ocorrencias.html">Ocorrências</a>
+    </div>
+  </nav>
+
+  <!-- HERO COLETA -->
+  <section class="coleta-hero">
+    <div class="container">
+      <div class="coleta-hero-inner">
+        <div class="coleta-hero-text">
+          <nav class="breadcrumb-nav" style="margin-bottom:10px">
+            <a href="index.html" style="color:#4ade80">Início</a> <span style="color:#475569">/</span>
+            <span style="color:#94a3b8">Consultar Coleta</span>
+          </nav>
+          <h1>🗓️ Quando passa a coleta<br>na <span style="color:#4ade80">sua rua?</span></h1>
+          <p>Informe seu endereço e veja os dias, horários, materiais aceitos e um calendário completo da coleta seletiva na sua região.</p>
+        </div>
+
+        <!-- FORMULÁRIO PRINCIPAL -->
+        <div class="coleta-form-card">
+          <h3>Consultar minha coleta</h3>
+          <form onsubmit="consultarColeta(event)">
+            <div class="form-group">
+              <label>Endereço completo</label>
+              <div class="input-with-icon">
+                <span>📍</span>
+                <input type="text" id="enderecoInput" placeholder="Ex: Rua das Flores, 123 – Centro" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Bairro (opcional)</label>
+              <select id="bairroSelect">
+                <option value="">Selecione o bairro...</option>
+                <option value="centro">Centro</option>
+                <option value="padre-eustaquio">Padre Eustáquio</option>
+                <option value="santa-terezinha">Santa Terezinha</option>
+                <option value="nossa-senhora-fatima">Nossa Senhora de Fátima</option>
+                <option value="laranjeiras">Laranjeiras</option>
+                <option value="granjas-betania">Granjas Betânia</option>
+                <option value="dom-silveiro">Dom Silvério</option>
+                <option value="maua">Mauá</option>
+                <option value="outros">Outro (consultar SAAE)</option>
+              </select>
+            </div>
+            <button type="submit" class="btn-consultar" id="btnConsultar">
+              <span id="btnText">🔍 Consultar coleta</span>
+              <span id="btnLoad" style="display:none">⏳ Buscando...</span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADO DA CONSULTA -->
+  <div id="resultadoSection" style="display:none;">
+    <div class="container">
+
+      <!-- HEADER DO RESULTADO -->
+      <div class="resultado-header-rich">
+        <div class="rhr-left">
+          <div class="rhr-icon">🏘️</div>
+          <div>
+            <h2 id="resultadoBairroTitulo">Bairro Centro</h2>
+            <p id="resultadoEndereco">Rua das Flores, 123 – Centro</p>
+          </div>
+        </div>
+        <div class="rhr-proxima">
+          <span class="proxima-label">Próxima coleta</span>
+          <span class="proxima-dia" id="proximaDia">Sexta-feira</span>
+          <span class="proxima-data" id="proximaData">22/08/2026</span>
+        </div>
+        <div class="rhr-countdown" id="countdown">
+          <span class="cd-label">Faltam</span>
+          <span class="cd-value" id="cdValue">2</span>
+          <span class="cd-unit">dias</span>
+        </div>
+        <button class="share-coleta-btn" onclick="compartilharColeta()" title="Compartilhar">🔗 Compartilhar</button>
+      </div>
+
+      <!-- ALERTA PRÓXIMA COLETA -->
+      <div class="alerta-proxima" id="alertaProxima">
+        ⚠️ <strong>Lembre-se:</strong> Coloque os materiais na calçada até as <strong>06h30</strong> na manhã do dia da coleta.
+        <button class="btn-notificar" onclick="ativarNotificacao()">🔔 Me lembrar</button>
+      </div>
+
+      <!-- GRID DE INFORMAÇÕES RICAS -->
+      <div class="resultado-rich-grid">
+
+        <!-- COLUNA 1: DIAS E HORÁRIOS -->
+        <div class="resultado-card-rich">
+          <h3>📅 Dias e Horários</h3>
+          <div class="dias-semana-visual" id="diasSemana"></div>
+          <div class="horario-rich">
+            <div class="hr-item">
+              <span class="hr-icon">🕐</span>
+              <div>
+                <strong>Horário</strong>
+                <p id="horarioInfo">07h às 12h</p>
+              </div>
+            </div>
+            <div class="hr-item">
+              <span class="hr-icon">🚛</span>
+              <div>
+                <strong>Equipe responsável</strong>
+                <p>Cooperativa ReciclaVida</p>
+              </div>
+            </div>
+            <div class="hr-item">
+              <span class="hr-icon">📞</span>
+              <div>
+                <strong>Contato da equipe</strong>
+                <p>(32) 3333-7700</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- COLUNA 2: MATERIAIS -->
+        <div class="resultado-card-rich">
+          <h3>♻️ O que é recolhido</h3>
+          <div class="materiais-recolhidos" id="materiaisRecolhidos">
+            <div class="mr-item aceito"><div class="mr-cor azul"></div><span>📄 Papel e Papelão</span></div>
+            <div class="mr-item aceito"><div class="mr-cor vermelho"></div><span>🧴 Plástico</span></div>
+            <div class="mr-item aceito"><div class="mr-cor amarelo"></div><span>🥫 Metal/Latas</span></div>
+            <div class="mr-item aceito"><div class="mr-cor verde"></div><span>🍶 Vidro</span></div>
+          </div>
+          <div class="nao-recolhidos">
+            <h4>❌ Não recolhidos nesta coleta</h4>
+            <div class="nr-chips">
+              <span>🍎 Orgânico</span>
+              <span>🔋 Pilhas</span>
+              <span>💊 Medicamentos</span>
+              <span>💉 Perfurocortantes</span>
+            </div>
+            <a href="pontos.html" class="link-pontos">Ver pontos para esses materiais →</a>
+          </div>
+        </div>
+
+        <!-- COLUNA 3: DICAS PREPARO -->
+        <div class="resultado-card-rich">
+          <h3>💡 Como preparar</h3>
+          <div class="dicas-preparo">
+            <div class="dica-item">
+              <span class="dica-num">1</span>
+              <p>Lave as embalagens plásticas e de vidro antes de descartar</p>
+            </div>
+            <div class="dica-item">
+              <span class="dica-num">2</span>
+              <p>Amasse garrafas PET e latas para economizar espaço</p>
+            </div>
+            <div class="dica-item">
+              <span class="dica-num">3</span>
+              <p>Separe os materiais em sacos diferentes por tipo</p>
+            </div>
+            <div class="dica-item">
+              <span class="dica-num">4</span>
+              <p>Deixe tudo na calçada em frente à sua casa até 06h30</p>
+            </div>
+            <div class="dica-item danger">
+              <span class="dica-num red">!</span>
+              <p>Vidros quebrados: embrulhe em jornal e escreva "CUIDADO VIDRO"</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- CALENDÁRIO MENSAL -->
+      <div class="calendario-section">
+        <div class="calendario-header">
+          <h3>📆 Calendário da Coleta – <span id="calMesAno"></span></h3>
+          <div style="display:flex;gap:8px;align-items:center;">
+            <button onclick="window.print()" class="btn-print" title="Imprimir calendário">🖨️ Imprimir</button>
+            <div class="cal-nav">
+              <button onclick="navegarMes(-1)">←</button>
+              <button onclick="navegarMes(1)">→</button>
+            </div>
+          </div>
+        </div>
+        <div class="calendario-wrap" id="calendarioWrap"></div>
+        <div class="calendario-legenda">
+          <span class="leg-item"><span class="leg-dot coleta-dia"></span>Dia de coleta</span>
+          <span class="leg-item"><span class="leg-dot hoje-dot"></span>Hoje</span>
+          <span class="leg-item"><span class="leg-dot proximo-dot"></span>Próxima coleta</span>
+        </div>
+      </div>
+
+      <!-- MAPA DA REGIÃO -->
+      <div class="mapa-resultado-section">
+        <div class="mapa-resultado-header">
+          <h3>🗺️ Sua região no mapa</h3>
+          <a id="linkMapaEndereco" href="#" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+        </div>
+        <div id="mapaResultado" class="mapa-resultado-embed">
+          <!-- preenchido por JS -->
+        </div>
+        <div class="mapa-resultado-info">
+          <div class="mri-item">
+            <span>📍</span>
+            <div>
+              <strong>Ponto de descarte mais próximo</strong>
+              <p>Ecoponto Centro – Rua das Flores, 123 (0,3km)</p>
+            </div>
+            <a href="pontos.html#ponto1" class="mri-link">Ver →</a>
+          </div>
+          <div class="mri-item">
+            <span>🏥</span>
+            <div>
+              <strong>Para materiais especiais</strong>
+              <p>UBS Central – Rua da Saúde, 10 (0,8km)</p>
+            </div>
+            <a href="pontos.html#ponto4" class="mri-link">Ver →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTIFICAÇÃO MODAL -->
+      <div id="modalNotif" class="modal" style="display:none;">
+        <div class="modal-content">
+          <div class="modal-icon">🔔</div>
+          <h3>Lembrete configurado!</h3>
+          <p>Você receberá um alerta <strong>na véspera</strong> de cada coleta no seu bairro.</p>
+          <p style="font-size:0.8rem;color:#94a3b8;">(Funcionalidade simulada – em breve disponível no app)</p>
+          <button class="btn-primary" onclick="document.getElementById('modalNotif').style.display='none'">Entendido!</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TABELA GERAL DE HORÁRIOS -->
+  <section class="tabela-geral-section">
+    <div class="container">
+      <div class="tg-header">
+        <h2>📋 Horários por Bairro</h2>
+        <input type="text" id="buscaBairro" placeholder="Filtrar por bairro..." oninput="filtrarBairros()" class="tg-busca">
+      </div>
+      <div class="tabela-geral-wrap">
+        <table class="tabela-geral" id="tabelaGeral">
+          <thead>
+            <tr>
+              <th>Bairro / Região</th>
+              <th>Dias da Coleta</th>
+              <th>Horário</th>
+              <th>Materiais</th>
+              <th>Equipe</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr data-bairro="centro">
+              <td><strong>Centro</strong></td>
+              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sex</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico, Metal, Vidro</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Centro')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="padre eustaquio">
+              <td><strong>Padre Eustáquio</strong></td>
+              <td><span class="dia-badge">Seg</span><span class="dia-badge">Qui</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico, Metal</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Padre Eustáquio')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="santa terezinha">
+              <td><strong>Santa Terezinha</strong></td>
+              <td><span class="dia-badge">Qua</span><span class="dia-badge">Sáb</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico, Vidro</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Santa Terezinha')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="nossa senhora fatima">
+              <td><strong>N. S. de Fátima</strong></td>
+              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sex</span></td>
+              <td>13h – 18h</td>
+              <td>Papel, Plástico, Metal, Vidro</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Nossa Senhora de Fátima')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="laranjeiras">
+              <td><strong>Laranjeiras</strong></td>
+              <td><span class="dia-badge">Seg</span><span class="dia-badge">Qui</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Laranjeiras')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="granjas betania">
+              <td><strong>Granjas Betânia</strong></td>
+              <td><span class="dia-badge">Qua</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico, Metal</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Granjas Betânia')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="dom silveiro">
+              <td><strong>Dom Silvério</strong></td>
+              <td><span class="dia-badge">Qui</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Dom Silvério')">Ver detalhes</button></td>
+            </tr>
+            <tr data-bairro="maua">
+              <td><strong>Mauá</strong></td>
+              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sáb</span></td>
+              <td>06h – 11h</td>
+              <td>Papel, Plástico, Metal, Vidro</td>
+              <td>SAAE Muriaé</td>
+              <td><button class="btn-ver-coleta" onclick="simularConsulta('Mauá')">Ver detalhes</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
+        <p>Informação clara sobre coleta seletiva para toda a comunidade.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="coleta.html">Consultar Coleta</a></li>
+          <li><a href="pontos.html">Pontos de Descarte</a></li>
+          <li><a href="ocorrencias.html">Ocorrências</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p></div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="coleta.js"></script>
+</body>
+</html>

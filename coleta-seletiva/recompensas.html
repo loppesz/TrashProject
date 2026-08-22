@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Recompensas – ColetaFácil</title>
+  <link rel="stylesheet" href="style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <ul class="nav-links">
+        <li><a href="index.html">Início</a></li>
+        <li><a href="materiais.html">Materiais</a></li>
+        <li><a href="pontos.html">Pontos</a></li>
+        <li><a href="ocorrencias.html">Ocorrências</a></li>
+        <li><a href="kids.html" class="nav-kids">🧒 Área Kids</a></li>
+        <li><a href="recompensas.html" class="nav-reward active">⭐ Recompensas</a></li>
+        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+      </ul>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">🏠 Início</a>
+      <a href="materiais.html">📦 Materiais</a>
+      <a href="pontos.html">📍 Pontos</a>
+      <a href="ocorrencias.html">🚨 Ocorrências</a>
+      <a href="kids.html">🧒 Área Kids</a>
+      <a href="recompensas.html">⭐ Recompensas</a>
+    </div>
+  </nav>
+
+  <!-- HERO RECOMPENSAS -->
+  <section class="reward-hero">
+    <div class="container">
+      <div class="reward-hero-inner">
+        <div>
+          <span class="hero-badge">⭐ Sistema de Recompensas</span>
+          <h1>Recicle, reporte<br>e <span class="text-yellow">ganhe prêmios!</span></h1>
+          <p>Cada ocorrência reportada vale pontos. Troque seus pontos por recompensas reais na sua comunidade.</p>
+          <a href="ocorrencias.html" class="btn-reward-hero">Começar a ganhar pontos →</a>
+        </div>
+        <div class="reward-hero-visual">
+          <div class="reward-coin">
+            <span>⭐</span>
+            <strong>+50 pts</strong>
+            <small>por ocorrência</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MEUS PONTOS (simulado) -->
+  <section class="container my-points-section">
+    <div class="my-points-card">
+      <div class="points-left">
+        <div class="points-avatar">👤</div>
+        <div>
+          <p class="points-greeting">Olá, <strong>Visitante!</strong></p>
+          <p class="points-sub">Faça seu cadastro para acumular pontos</p>
+        </div>
+      </div>
+      <div class="points-right">
+        <div class="points-display">
+          <span class="points-value">0</span>
+          <span class="points-unit">pontos</span>
+        </div>
+        <div class="points-level">
+          <span>🌱 Nível: Iniciante</span>
+          <div class="level-bar-wrap">
+            <div class="level-bar" style="width: 0%"></div>
+          </div>
+          <span class="level-next">0 / 500 pts para o próximo nível</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMO GANHAR PONTOS -->
+  <section class="container">
+    <div class="section-header">
+      <h2>Como ganhar pontos?</h2>
+      <p>Cada ação de conscientização vale pontos no ColetaFácil</p>
+    </div>
+    <div class="pontos-como-grid">
+      <div class="pontos-como-item">
+        <span class="pc-icon">🚨</span>
+        <div>
+          <h4>Reportar ocorrência</h4>
+          <p>Cada ocorrência registrada e validada</p>
+        </div>
+        <span class="pc-pts">+50 pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">📸</span>
+        <div>
+          <h4>Foto com evidência</h4>
+          <p>Ocorrência com foto aprovada</p>
+        </div>
+        <span class="pc-pts">+20 pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">🔥</span>
+        <div>
+          <h4>Sequência de 7 dias</h4>
+          <p>Acessar a plataforma por 7 dias seguidos</p>
+        </div>
+        <span class="pc-pts">+100 pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">🧒</span>
+        <div>
+          <h4>Completar quiz kids</h4>
+          <p>Criança completar quiz na Área Kids</p>
+        </div>
+        <span class="pc-pts">+30 pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">👥</span>
+        <div>
+          <h4>Indicar um amigo</h4>
+          <p>Quando o amigo se cadastrar</p>
+        </div>
+        <span class="pc-pts">+80 pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">✅</span>
+        <div>
+          <h4>Ocorrência resolvida</h4>
+          <p>Bônus quando o problema for resolvido</p>
+        </div>
+        <span class="pc-pts">+30 pts</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMPENSAS DISPONÍVEIS -->
+  <section class="recompensas-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Troque seus pontos</h2>
+        <p>Recompensas pensadas para a sua comunidade</p>
+      </div>
+      <div class="recompensas-grid">
+
+        <div class="recompensa-card">
+          <div class="rc-badge disponivel">Disponível</div>
+          <div class="rc-icon">☕</div>
+          <h3>Café Grátis</h3>
+          <p>Parceiro: Padaria Central</p>
+          <div class="rc-cost">
+            <span>⭐ 200 pts</span>
+          </div>
+          <button class="btn-resgatar" onclick="resgatar(this, 200)">Resgatar</button>
+        </div>
+
+        <div class="recompensa-card">
+          <div class="rc-badge disponivel">Disponível</div>
+          <div class="rc-icon">🛒</div>
+          <h3>Desconto no Mercado</h3>
+          <p>5% de desconto – Supermercado Boa Compra</p>
+          <div class="rc-cost">
+            <span>⭐ 500 pts</span>
+          </div>
+          <button class="btn-resgatar" onclick="resgatar(this, 500)">Resgatar</button>
+        </div>
+
+        <div class="recompensa-card">
+          <div class="rc-badge disponivel">Disponível</div>
+          <div class="rc-icon">🌱</div>
+          <h3>Kit de Mudas</h3>
+          <p>3 mudas de plantas para o seu jardim</p>
+          <div class="rc-cost">
+            <span>⭐ 300 pts</span>
+          </div>
+          <button class="btn-resgatar" onclick="resgatar(this, 300)">Resgatar</button>
+        </div>
+
+        <div class="recompensa-card">
+          <div class="rc-badge disponivel">Disponível</div>
+          <div class="rc-icon">🎓</div>
+          <h3>Certificado Digital</h3>
+          <p>Certificado de Agente Ambiental</p>
+          <div class="rc-cost">
+            <span>⭐ 1.000 pts</span>
+          </div>
+          <button class="btn-resgatar" onclick="resgatar(this, 1000)">Resgatar</button>
+        </div>
+
+        <div class="recompensa-card">
+          <div class="rc-badge em-breve">Em breve</div>
+          <div class="rc-icon">🚲</div>
+          <h3>Desconto Bicicletaria</h3>
+          <p>10% de desconto em serviços</p>
+          <div class="rc-cost">
+            <span>⭐ 800 pts</span>
+          </div>
+          <button class="btn-resgatar disabled" disabled>Em breve</button>
+        </div>
+
+        <div class="recompensa-card">
+          <div class="rc-badge em-breve">Em breve</div>
+          <div class="rc-icon">🎨</div>
+          <h3>Kit Escolar Eco</h3>
+          <p>Material escolar sustentável</p>
+          <div class="rc-cost">
+            <span>⭐ 600 pts</span>
+          </div>
+          <button class="btn-resgatar disabled" disabled>Em breve</button>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- RANKING -->
+  <section class="ranking-section">
+    <div class="container">
+      <div class="section-header light">
+        <h2>🏆 Ranking do Mês</h2>
+        <p>Os maiores contribuidores da comunidade</p>
+      </div>
+      <div class="ranking-full-table">
+        <div class="rt-header">
+          <span>#</span>
+          <span>Participante</span>
+          <span>Bairro</span>
+          <span>Ocorrências</span>
+          <span>Pontos</span>
+          <span>Nível</span>
+        </div>
+        <div class="rt-row gold-row">
+          <span>🥇 1</span>
+          <span>👩 Maria Silva</span>
+          <span>Centro</span>
+          <span>24</span>
+          <span><strong>2.450</strong></span>
+          <span class="nivel-badge ouro">🏅 Ouro</span>
+        </div>
+        <div class="rt-row silver-row">
+          <span>🥈 2</span>
+          <span>👨 João Ferreira</span>
+          <span>Vila Nova</span>
+          <span>18</span>
+          <span><strong>2.190</strong></span>
+          <span class="nivel-badge ouro">🏅 Ouro</span>
+        </div>
+        <div class="rt-row bronze-row">
+          <span>🥉 3</span>
+          <span>👧 Ana Costa</span>
+          <span>Bairro Novo</span>
+          <span>15</span>
+          <span><strong>1.870</strong></span>
+          <span class="nivel-badge prata">🥈 Prata</span>
+        </div>
+        <div class="rt-row">
+          <span>4</span>
+          <span>🧑 Carlos M.</span>
+          <span>Jardim América</span>
+          <span>12</span>
+          <span><strong>1.540</strong></span>
+          <span class="nivel-badge prata">🥈 Prata</span>
+        </div>
+        <div class="rt-row">
+          <span>5</span>
+          <span>👩 Paula R.</span>
+          <span>Centro</span>
+          <span>10</span>
+          <span><strong>1.320</strong></span>
+          <span class="nivel-badge bronze">🥉 Bronze</span>
+        </div>
+        <div class="rt-row">
+          <span>6</span>
+          <span>👨 Lucas T.</span>
+          <span>Bairro Escolar</span>
+          <span>8</span>
+          <span><strong>980</strong></span>
+          <span class="nivel-badge bronze">🥉 Bronze</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL RESGATE -->
+  <div id="modalResgate" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-icon">🎉</div>
+      <h3>Resgate Solicitado!</h3>
+      <p>Sua solicitação foi registrada.</p>
+      <p>Apresente este código no parceiro:</p>
+      <div class="resgate-code" id="resgateCode"></div>
+      <p style="font-size:0.8rem; color:#6b7280; margin-top:8px;">Válido por 7 dias. Leve um documento com foto.</p>
+      <button class="btn-primary" onclick="fecharModalResgate()">Fechar</button>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo" style="color:#4ade80; font-size:1.3rem;">♻️ ColetaFácil</span>
+        <p>Recicle, reporte e ganhe recompensas pela sua contribuição ambiental.</p>
+      </div>
+      <div class="footer-links">
+        <h4>Navegação</h4>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="ocorrencias.html">Registrar Ocorrência</a></li>
+          <li><a href="recompensas.html">Recompensas</a></li>
+          <li><a href="kids.html">Área Kids</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script>
+    function resgatar(btn, custo) {
+      const code = 'CF-' + Math.random().toString(36).substring(2,8).toUpperCase();
+      document.getElementById('resgateCode').textContent = code;
+      document.getElementById('modalResgate').style.display = 'flex';
+    }
+    function fecharModalResgate() {
+      document.getElementById('modalResgate').style.display = 'none';
+    }
+  </script>
+</body>
+</html>

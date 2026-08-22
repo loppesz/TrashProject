@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <script>
+    (function(){
+      var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      if(t === 'dark') document.documentElement.classList.add('dark');
+    })();
+  </script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="ColetaFácil – Plataforma de coleta seletiva de Muriaé-MG. Consulte o calendário de coleta, pontos de descarte e reporte ocorrências.">
+  <title>ColetaFácil – Coleta Seletiva Muriaé-MG</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#16a34a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="ColetaFácil">
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="logo">
+        <span class="logo-icon">♻️</span>
+        <span>ColetaFácil</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Início</a></li>
+        <li><a href="coleta.html">🗓️ Coleta</a></li>
+        <li><a href="materiais.html">Materiais</a></li>
+        <li><a href="pontos.html">Pontos</a></li>
+        <li><a href="ocorrencias.html">Ocorrências</a></li>
+        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+      </ul>
+      <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
+      <button class="menu-btn" onclick="toggleMenu()">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="index.html">🏠 Início</a>
+      <a href="coleta.html">🗓️ Consultar Coleta</a>
+      <a href="materiais.html">📦 Materiais</a>
+      <a href="pontos.html">📍 Pontos</a>
+      <a href="ocorrencias.html">🚨 Ocorrências</a>
+      <a href="kids.html">🧒 Kids</a>
+      <a href="recompensas.html">⭐ Recompensas</a>
+      <a href="admin/index.html">⚙️ Admin</a>
+    </div>
+  </nav>
+
+  <!-- ================================================
+       HERO SECTION
+  ================================================ -->
+  <section class="hero-v2">
+    <div class="hero-bg-shapes">
+      <div class="shape shape1"></div>
+      <div class="shape shape2"></div>
+      <div class="shape shape3"></div>
+    </div>
+    <div class="container hero-v2-inner">
+      <div class="hero-v2-text">
+        <div class="hero-badge animate-in">
+          <span class="badge-dot"></span>
+          🌱 Plataforma de Conscientização Ambiental
+        </div>
+        <h1 class="hero-v2-title animate-in delay-1">
+          Cidade mais limpa<br>
+          começa <span class="text-green">com você</span>
+        </h1>
+        <p class="hero-v2-sub animate-in delay-2">
+          Descubra quando a coleta seletiva passa na sua rua, aprenda a descartar corretamente e ajude a proteger os coletores. Juntos fazemos a diferença.
+        </p>
+        <div class="hero-v2-actions animate-in delay-3">
+          <form class="search-form-v2" onsubmit="irParaColeta(event)">
+            <span class="search-icon">📍</span>
+            <input type="text" id="enderecoInput" placeholder="Digite seu endereço em Muriaé-MG..." required>
+            <button type="submit">Consultar coleta</button>
+          </form>
+        </div>
+        <div class="hero-v2-links animate-in delay-4">
+          <a href="coleta.html" class="quick-link">🗓️ Ver Calendário de Coleta</a>
+          <a href="materiais.html" class="quick-link">📦 Guia de Materiais</a>
+          <a href="pontos.html" class="quick-link">📍 Pontos de Descarte</a>
+          <a href="kids.html" class="quick-link kids-link">🧒 Área Kids</a>
+        </div>
+      </div>
+
+      <!-- VIDEO PLACEHOLDER -->
+      <div class="hero-video-wrap animate-in delay-2">
+        <div class="video-container" id="videoContainer">
+          <div class="video-thumb" onclick="playVideo()">
+            <div class="video-overlay">
+              <div class="play-btn">
+                <span>▶</span>
+              </div>
+              <p>Assista: O que é a Coleta Seletiva?</p>
+            </div>
+            <div class="video-placeholder-bg">
+              <span class="video-emoji">♻️</span>
+            </div>
+          </div>
+          <!-- Troque o src pelo link do seu vídeo -->
+          <video id="meuVideo" controls style="display:none; width:100%; border-radius:16px;">
+            <source src="video-apresentacao.mp4" type="video/mp4">
+            Seu navegador não suporta vídeo HTML5.
+          </video>
+        </div>
+        <div class="video-caption">
+          <span>🎬</span> Vídeo de apresentação — 2 min
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTADO DA CONSULTA -->
+  <div class="container" id="resultadoColeta" style="display:none;">
+    <div class="resultado-card-v2">
+      <div class="resultado-header">
+        <span class="resultado-icon">📍</span>
+        <div>
+          <h2>Coleta para: <strong id="enderecoResultado"></strong></h2>
+          <p>Informações encontradas para a sua região</p>
+        </div>
+      </div>
+      <div class="coleta-info-v2">
+        <div class="info-block">
+          <span class="info-emoji">📅</span>
+          <strong>Dias</strong>
+          <p>Terça e Sexta-feira</p>
+        </div>
+        <div class="info-block">
+          <span class="info-emoji">🕐</span>
+          <strong>Horário</strong>
+          <p>07h às 12h</p>
+        </div>
+        <div class="info-block">
+          <span class="info-emoji">♻️</span>
+          <strong>Materiais</strong>
+          <p>Papel, Plástico, Metal, Vidro</p>
+        </div>
+        <div class="info-block">
+          <span class="info-emoji">📞</span>
+          <strong>Contato</strong>
+          <p>(32) 3333-0000</p>
+        </div>
+      </div>
+      <div class="alerta-v2">
+        ⚠️ Coloque os materiais na calçada <strong>até às 06h30</strong> no dia da coleta, devidamente separados e ensacados.
+      </div>
+    </div>
+  </div>
+
+  <!-- ================================================
+       CONTADORES DE IMPACTO
+  ================================================ -->
+  <section class="impact-section">
+    <div class="container">
+      <div class="impact-grid">
+        <div class="impact-item">
+          <span class="impact-number" data-target="1240">0</span>
+          <span class="impact-label">Ocorrências Resolvidas</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="5830">0</span>
+          <span class="impact-label">Consultas Realizadas</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="342">0</span>
+          <span class="impact-label">Heróis da Reciclagem</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="18">0</span>
+          <span class="impact-label">Bairros Atendidos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       FUNCIONALIDADES PRINCIPAIS
+  ================================================ -->
+  <section class="features-v2">
+    <div class="container">
+      <div class="section-header">
+        <h2>Tudo que você precisa saber</h2>
+        <p>Uma plataforma completa para tornar a reciclagem parte do seu dia a dia</p>
+      </div>
+      <div class="features-v2-grid">
+
+        <a href="#consulta" class="feature-card-v2 green" onclick="document.getElementById('enderecoInput').focus()">
+          <div class="fc-icon">🗓️</div>
+          <h3>Quando passa a coleta?</h3>
+          <p>Informe seu endereço e veja os dias e horários exatos para o seu bairro.</p>
+          <span class="fc-link">Consultar agora →</span>
+        </a>
+
+        <a href="materiais.html" class="feature-card-v2 blue">
+          <div class="fc-icon">📦</div>
+          <h3>Guia de Materiais</h3>
+          <p>Saiba o que reciclar, como preparar e quais materiais oferecem risco.</p>
+          <span class="fc-link">Ver materiais →</span>
+        </a>
+
+        <a href="pontos.html" class="feature-card-v2 orange">
+          <div class="fc-icon">📍</div>
+          <h3>Pontos de Descarte</h3>
+          <p>Encontre o local mais próximo para descartar pilhas, eletrônicos e mais.</p>
+          <span class="fc-link">Ver pontos →</span>
+        </a>
+
+        <a href="ocorrencias.html" class="feature-card-v2 red">
+          <div class="fc-icon">🚨</div>
+          <h3>Reportar Ocorrência</h3>
+          <p>Viu descarte irregular? Reporte e ganhe pontos para trocar por recompensas.</p>
+          <span class="fc-link">Reportar agora →</span>
+        </a>
+
+        <a href="kids.html" class="feature-card-v2 purple">
+          <div class="fc-icon">🧒</div>
+          <h3>Área Kids</h3>
+          <p>Jogos, quiz e atividades para ensinar as crianças sobre reciclagem de forma divertida!</p>
+          <span class="fc-link">Entrar na Área Kids →</span>
+        </a>
+
+        <a href="recompensas.html" class="feature-card-v2 yellow">
+          <div class="fc-icon">⭐</div>
+          <h3>Recompensas</h3>
+          <p>Acumule pontos reportando ocorrências e troque por prêmios e benefícios.</p>
+          <span class="fc-link">Ver recompensas →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       COMO FUNCIONA
+  ================================================ -->
+  <section class="howto-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Como funciona?</h2>
+        <p>Em 3 passos simples você já pode participar</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-item">
+          <div class="step-num">1</div>
+          <div class="step-content">
+            <h3>Consulte sua rua</h3>
+            <p>Digite seu endereço e descubra os dias e horários da coleta seletiva na sua região.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-item">
+          <div class="step-num">2</div>
+          <div class="step-content">
+            <h3>Separe corretamente</h3>
+            <p>Use o guia de materiais para aprender a separar e preparar cada tipo de resíduo com segurança.</p>
+          </div>
+        </div>
+        <div class="step-arrow">→</div>
+        <div class="step-item">
+          <div class="step-num">3</div>
+          <div class="step-content">
+            <h3>Reporte e ganhe</h3>
+            <p>Viu algum problema? Reporte uma ocorrência e acumule pontos para trocar por recompensas.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       RANKING – HERÓIS DA RECICLAGEM
+  ================================================ -->
+  <section class="ranking-section">
+    <div class="container">
+      <div class="section-header light">
+        <h2>🏆 Heróis da Reciclagem</h2>
+        <p>Quem mais contribuiu com a limpeza da cidade esse mês</p>
+      </div>
+      <div class="ranking-grid">
+        <div class="ranking-card">
+          <div class="ranking-podium gold">🥇</div>
+          <div class="ranking-avatar">👩</div>
+          <h4>Maria Silva</h4>
+          <p class="ranking-bairro">Centro</p>
+          <div class="ranking-points">2.450 pts</div>
+          <div class="ranking-badges">
+            <span title="Reportou 10 ocorrências">🚨</span>
+            <span title="30 dias seguidos">🔥</span>
+            <span title="Estrela da semana">⭐</span>
+          </div>
+        </div>
+        <div class="ranking-card">
+          <div class="ranking-podium silver">🥈</div>
+          <div class="ranking-avatar">👨</div>
+          <h4>João Ferreira</h4>
+          <p class="ranking-bairro">Vila Nova</p>
+          <div class="ranking-points">2.190 pts</div>
+          <div class="ranking-badges">
+            <span title="Reportou 8 ocorrências">🚨</span>
+            <span title="Mestre do Vidro">🍶</span>
+          </div>
+        </div>
+        <div class="ranking-card">
+          <div class="ranking-podium bronze">🥉</div>
+          <div class="ranking-avatar">👧</div>
+          <h4>Ana Costa</h4>
+          <p class="ranking-bairro">Bairro Novo</p>
+          <div class="ranking-points">1.870 pts</div>
+          <div class="ranking-badges">
+            <span title="Kids Master">🧒</span>
+            <span title="Eco Guerreiro">🌿</span>
+          </div>
+        </div>
+        <div class="ranking-card small">
+          <span class="rank-pos">4º</span>
+          <div class="ranking-avatar sm">🧑</div>
+          <h4>Carlos M.</h4>
+          <div class="ranking-points sm">1.540 pts</div>
+        </div>
+        <div class="ranking-card small">
+          <span class="rank-pos">5º</span>
+          <div class="ranking-avatar sm">👩</div>
+          <h4>Paula R.</h4>
+          <div class="ranking-points sm">1.320 pts</div>
+        </div>
+        <div class="ranking-card small cta-card" onclick="location.href='recompensas.html'">
+          <span class="rank-pos">Você?</span>
+          <div class="ranking-avatar sm">🤔</div>
+          <h4>Cadastre-se</h4>
+          <div class="ranking-points sm">0 pts</div>
+        </div>
+      </div>
+      <div class="ranking-cta">
+        <a href="recompensas.html" class="btn-ranking">Ver ranking completo →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       ORIENTAÇÕES RÁPIDAS
+  ================================================ -->
+  <section class="orientacoes-v2">
+    <div class="container">
+      <div class="section-header">
+        <h2>Descarte correto, coletor protegido</h2>
+        <p>Pequenos cuidados fazem grande diferença para quem faz a coleta</p>
+      </div>
+      <div class="orientacoes-v2-grid">
+        <div class="ov2-item">
+          <div class="ov2-icon green">✅</div>
+          <div>
+            <h4>Papel e Papelão</h4>
+            <p>Seco, dobrado, sem grampos e fitas adesivas.</p>
+          </div>
+        </div>
+        <div class="ov2-item">
+          <div class="ov2-icon blue">✅</div>
+          <div>
+            <h4>Plástico</h4>
+            <p>Lavado e amassado. Tampas retiradas das garrafas PET.</p>
+          </div>
+        </div>
+        <div class="ov2-item">
+          <div class="ov2-icon yellow">✅</div>
+          <div>
+            <h4>Metal</h4>
+            <p>Latas lavadas e amassadas. ⚠️ Cuidado com bordas cortantes.</p>
+          </div>
+        </div>
+        <div class="ov2-item">
+          <div class="ov2-icon orange">⚠️</div>
+          <div>
+            <h4>Vidro</h4>
+            <p>Vidros quebrados: embrulhe em jornal e escreva "CUIDADO VIDRO".</p>
+          </div>
+        </div>
+        <div class="ov2-item">
+          <div class="ov2-icon red">❌</div>
+          <div>
+            <h4>Seringas e perfurocortantes</h4>
+            <p>NUNCA coloque na coleta. Leve a uma UBS ou farmácia.</p>
+          </div>
+        </div>
+        <div class="ov2-item">
+          <div class="ov2-icon red">❌</div>
+          <div>
+            <h4>Lixo orgânico e fraldas</h4>
+            <p>Não pertencem à coleta seletiva. Use o lixo comum.</p>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:32px;">
+        <a href="materiais.html" class="btn-outline-green">Ver guia completo de materiais →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       CTA KIDS
+  ================================================ -->
+  <section class="kids-cta-section">
+    <div class="container">
+      <div class="kids-cta-card">
+        <div class="kids-cta-text">
+          <span class="kids-tag">🧒 Área Kids</span>
+          <h2>Seu filho sabe reciclar?</h2>
+          <p>A Área Kids do ColetaFácil tem jogos, quiz e atividades educativas para ensinar as crianças a cuidar do planeta de forma divertida!</p>
+          <a href="kids.html" class="btn-kids">Entrar na Área Kids 🚀</a>
+        </div>
+        <div class="kids-cta-emojis">
+          <span class="ke">🌍</span>
+          <span class="ke">♻️</span>
+          <span class="ke">🧒</span>
+          <span class="ke">🌱</span>
+          <span class="ke">🐸</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div class="footer-brand">
+        <span class="logo" style="color:#4ade80; font-size:1.3rem;">♻️ ColetaFácil</span>
+        <p>Promovendo a coleta seletiva e a conscientização ambiental na nossa comunidade.</p>
+        <div class="footer-social">
+          <a href="#" title="Instagram">📸</a>
+          <a href="#" title="Facebook">📘</a>
+          <a href="#" title="WhatsApp">💬</a>
+        </div>
+      </div>
+      <div class="footer-links">
+        <h4>Plataforma</h4>
+        <ul>
+          <li><a href="index.html">Início</a></li>
+          <li><a href="materiais.html">Guia de Materiais</a></li>
+          <li><a href="pontos.html">Pontos de Descarte</a></li>
+          <li><a href="ocorrencias.html">Registrar Ocorrência</a></li>
+          <li><a href="recompensas.html">Recompensas</a></li>
+          <li><a href="kids.html">Área Kids</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
+        <h4>Projeto</h4>
+        <ul>
+          <li>Curso: ADS</li>
+          <li>Extensão Universitária III</li>
+          <li>Prof. Aldecir Fonseca</li>
+          <li style="margin-top:8px; color:#94a3b8;">Heron Leal – (32) 9 8411-6731</li>
+          <li style="color:#94a3b8;">Nattan Silva – (32) 9 9917-3481</li>
+          <li style="color:#94a3b8;">Paulo Victor – (32) 9 8809-4464</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III – ADS</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
