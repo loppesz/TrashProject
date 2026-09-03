@@ -1,27 +1,27 @@
-const CACHE_NAME = 'coletafacil-v1';
+﻿const CACHE_NAME = 'coletafacil-v1';
 const PRECACHE = [
-  './index.html',
+  './index.php',
   './style.css',
   './script.js',
-  './coleta.html',
+  './coleta.php',
   './coleta.css',
   './coleta.js',
-  './pontos.html',
+  './pontos.php',
   './pontos.css',
   './pontos.js',
-  './materiais.html',
-  './ocorrencias.html',
+  './materiais.php',
+  './ocorrencias.php',
   './ocorrencias.css',
   './ocorrencias.js',
-  './recompensas.html',
-  './kids.html',
+  './recompensas.php',
+  './kids.php',
   './kids.css',
   './kids.js',
   './kids-data.js',
-  './busca.html',
+  './busca.php',
   './busca.js',
-  './offline.html',
-  './404.html',
+  './offline.php',
+  './404.php',
 ];
 
 // Install – precache
@@ -57,12 +57,12 @@ self.addEventListener('fetch', e => {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
           return res;
-        }).catch(() => caches.match('./offline.html'));
+        }).catch(() => caches.match('./offline.php'));
       })
     );
   } else {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match('./offline.html'))
+      fetch(e.request).catch(() => caches.match('./offline.php'))
     );
   }
 });

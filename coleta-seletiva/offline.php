@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -25,10 +25,10 @@
     <h1>Você está offline</h1>
     <p>Sem conexão com a internet no momento. As páginas que você visitou anteriormente ainda estão disponíveis no cache do seu dispositivo.</p>
     <div class="links">
-      <a href="./index.html">🏠 Ir para o Início</a>
-      <a href="./coleta.html">🗓️ Consultar Coleta</a>
-      <a href="./materiais.html">📦 Guia de Materiais</a>
-      <a href="./pontos.html" class="secondary">📍 Pontos de Descarte</a>
+      <a href="./index.php">🏠 Ir para o Início</a>
+      <a href="./coleta.php">🗓️ Consultar Coleta</a>
+      <a href="./materiais.php">📦 Guia de Materiais</a>
+      <a href="./pontos.php" class="secondary">📍 Pontos de Descarte</a>
     </div>
   </div>
 </body>

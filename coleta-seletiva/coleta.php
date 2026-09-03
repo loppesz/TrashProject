@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <script>
@@ -24,26 +24,26 @@
 
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
       <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html">Pontos</a></li>
-        <li><a href="coleta.html" class="active">Coleta</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
-        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
-        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+        <li><a href="index.php">Início</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php">Pontos</a></li>
+        <li><a href="coleta.php" class="active">Coleta</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="admin/index.php" class="nav-admin">Admin</a></li>
       </ul>
       <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">Início</a>
-      <a href="materiais.html">Materiais</a>
-      <a href="pontos.html">Pontos</a>
-      <a href="coleta.html">Coleta</a>
-      <a href="ocorrencias.html">Ocorrências</a>
+      <a href="index.php">Início</a>
+      <a href="materiais.php">Materiais</a>
+      <a href="pontos.php">Pontos</a>
+      <a href="coleta.php">Coleta</a>
+      <a href="ocorrencias.php">Ocorrências</a>
     </div>
   </nav>
 
@@ -53,7 +53,7 @@
       <div class="coleta-hero-inner">
         <div class="coleta-hero-text">
           <nav class="breadcrumb-nav" style="margin-bottom:10px">
-            <a href="index.html" style="color:#4ade80">Início</a> <span style="color:#475569">/</span>
+            <a href="index.php" style="color:#4ade80">Início</a> <span style="color:#475569">/</span>
             <span style="color:#94a3b8">Consultar Coleta</span>
           </nav>
           <h1>🗓️ Quando passa a coleta<br>na <span style="color:#4ade80">sua rua?</span></h1>
@@ -177,7 +177,7 @@
               <span>💊 Medicamentos</span>
               <span>💉 Perfurocortantes</span>
             </div>
-            <a href="pontos.html" class="link-pontos">Ver pontos para esses materiais →</a>
+            <a href="pontos.php" class="link-pontos">Ver pontos para esses materiais →</a>
           </div>
         </div>
 
@@ -246,7 +246,7 @@
               <strong>Ponto de descarte mais próximo</strong>
               <p>Ecoponto Centro – Rua das Flores, 123 (0,3km)</p>
             </div>
-            <a href="pontos.html#ponto1" class="mri-link">Ver →</a>
+            <a href="pontos.php#ponto1" class="mri-link">Ver →</a>
           </div>
           <div class="mri-item">
             <span>🏥</span>
@@ -254,7 +254,7 @@
               <strong>Para materiais especiais</strong>
               <p>UBS Central – Rua da Saúde, 10 (0,8km)</p>
             </div>
-            <a href="pontos.html#ponto4" class="mri-link">Ver →</a>
+            <a href="pontos.php#ponto4" class="mri-link">Ver →</a>
           </div>
         </div>
       </div>
@@ -372,10 +372,10 @@
       <div class="footer-links">
         <h4>Navegação</h4>
         <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="coleta.html">Consultar Coleta</a></li>
-          <li><a href="pontos.html">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="index.php">Início</a></li>
+          <li><a href="coleta.php">Consultar Coleta</a></li>
+          <li><a href="pontos.php">Pontos de Descarte</a></li>
+          <li><a href="ocorrencias.php">Ocorrências</a></li>
         </ul>
       </div>
     </div>

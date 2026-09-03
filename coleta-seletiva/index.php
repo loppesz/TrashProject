@@ -25,32 +25,32 @@
   <!-- NAVBAR -->
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo">
+      <a href="index.php" class="logo">
         <span class="logo-icon">♻️</span>
         <span>ColetaFácil</span>
       </a>
       <ul class="nav-links">
-        <li><a href="index.html" class="active">Início</a></li>
-        <li><a href="coleta.html">🗓️ Coleta</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html">Pontos</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
-        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
-        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+        <li><a href="index.php" class="active">Início</a></li>
+        <li><a href="coleta.php">🗓️ Coleta</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php">Pontos</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="admin/index.php" class="nav-admin">Admin</a></li>
       </ul>
       <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">🏠 Início</a>
-      <a href="coleta.html">🗓️ Consultar Coleta</a>
-      <a href="materiais.html">📦 Materiais</a>
-      <a href="pontos.html">📍 Pontos</a>
-      <a href="ocorrencias.html">🚨 Ocorrências</a>
-      <a href="kids.html">🧒 Kids</a>
-      <a href="recompensas.html">⭐ Recompensas</a>
-      <a href="admin/index.html">⚙️ Admin</a>
+      <a href="index.php">🏠 Início</a>
+      <a href="coleta.php">🗓️ Consultar Coleta</a>
+      <a href="materiais.php">📦 Materiais</a>
+      <a href="pontos.php">📍 Pontos</a>
+      <a href="ocorrencias.php">🚨 Ocorrências</a>
+      <a href="kids.php">🧒 Kids</a>
+      <a href="recompensas.php">⭐ Recompensas</a>
+      <a href="admin/index.php">⚙️ Admin</a>
     </div>
   </nav>
 
@@ -84,10 +84,10 @@
           </form>
         </div>
         <div class="hero-v2-links animate-in delay-4">
-          <a href="coleta.html" class="quick-link">🗓️ Ver Calendário de Coleta</a>
-          <a href="materiais.html" class="quick-link">📦 Guia de Materiais</a>
-          <a href="pontos.html" class="quick-link">📍 Pontos de Descarte</a>
-          <a href="kids.html" class="quick-link kids-link">🧒 Área Kids</a>
+          <a href="coleta.php" class="quick-link">🗓️ Ver Calendário de Coleta</a>
+          <a href="materiais.php" class="quick-link">📦 Guia de Materiais</a>
+          <a href="pontos.php" class="quick-link">📍 Pontos de Descarte</a>
+          <a href="kids.php" class="quick-link kids-link">🧒 Área Kids</a>
         </div>
       </div>
 
@@ -200,35 +200,35 @@
           <span class="fc-link">Consultar agora →</span>
         </a>
 
-        <a href="materiais.html" class="feature-card-v2 blue">
+        <a href="materiais.php" class="feature-card-v2 blue">
           <div class="fc-icon">📦</div>
           <h3>Guia de Materiais</h3>
           <p>Saiba o que reciclar, como preparar e quais materiais oferecem risco.</p>
           <span class="fc-link">Ver materiais →</span>
         </a>
 
-        <a href="pontos.html" class="feature-card-v2 orange">
+        <a href="pontos.php" class="feature-card-v2 orange">
           <div class="fc-icon">📍</div>
           <h3>Pontos de Descarte</h3>
           <p>Encontre o local mais próximo para descartar pilhas, eletrônicos e mais.</p>
           <span class="fc-link">Ver pontos →</span>
         </a>
 
-        <a href="ocorrencias.html" class="feature-card-v2 red">
+        <a href="ocorrencias.php" class="feature-card-v2 red">
           <div class="fc-icon">🚨</div>
           <h3>Reportar Ocorrência</h3>
           <p>Viu descarte irregular? Reporte e ganhe pontos para trocar por recompensas.</p>
           <span class="fc-link">Reportar agora →</span>
         </a>
 
-        <a href="kids.html" class="feature-card-v2 purple">
+        <a href="kids.php" class="feature-card-v2 purple">
           <div class="fc-icon">🧒</div>
           <h3>Área Kids</h3>
           <p>Jogos, quiz e atividades para ensinar as crianças sobre reciclagem de forma divertida!</p>
           <span class="fc-link">Entrar na Área Kids →</span>
         </a>
 
-        <a href="recompensas.html" class="feature-card-v2 yellow">
+        <a href="recompensas.php" class="feature-card-v2 yellow">
           <div class="fc-icon">⭐</div>
           <h3>Recompensas</h3>
           <p>Acumule pontos reportando ocorrências e troque por prêmios e benefícios.</p>
@@ -332,7 +332,7 @@
           <h4>Paula R.</h4>
           <div class="ranking-points sm">1.320 pts</div>
         </div>
-        <div class="ranking-card small cta-card" onclick="location.href='recompensas.html'">
+        <div class="ranking-card small cta-card" onclick="location.href='recompensas.php'">
           <span class="rank-pos">Você?</span>
           <div class="ranking-avatar sm">🤔</div>
           <h4>Cadastre-se</h4>
@@ -340,7 +340,7 @@
         </div>
       </div>
       <div class="ranking-cta">
-        <a href="recompensas.html" class="btn-ranking">Ver ranking completo →</a>
+        <a href="recompensas.php" class="btn-ranking">Ver ranking completo →</a>
       </div>
     </div>
   </section>
@@ -399,7 +399,7 @@
         </div>
       </div>
       <div style="text-align:center; margin-top:32px;">
-        <a href="materiais.html" class="btn-outline-green">Ver guia completo de materiais →</a>
+        <a href="materiais.php" class="btn-outline-green">Ver guia completo de materiais →</a>
       </div>
     </div>
   </section>
@@ -414,7 +414,7 @@
           <span class="kids-tag">🧒 Área Kids</span>
           <h2>Seu filho sabe reciclar?</h2>
           <p>A Área Kids do ColetaFácil tem jogos, quiz e atividades educativas para ensinar as crianças a cuidar do planeta de forma divertida!</p>
-          <a href="kids.html" class="btn-kids">Entrar na Área Kids 🚀</a>
+          <a href="kids.php" class="btn-kids">Entrar na Área Kids 🚀</a>
         </div>
         <div class="kids-cta-emojis">
           <span class="ke">🌍</span>
@@ -442,12 +442,12 @@
       <div class="footer-links">
         <h4>Plataforma</h4>
         <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="materiais.html">Guia de Materiais</a></li>
-          <li><a href="pontos.html">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.html">Registrar Ocorrência</a></li>
-          <li><a href="recompensas.html">Recompensas</a></li>
-          <li><a href="kids.html">Área Kids</a></li>
+          <li><a href="index.php">Início</a></li>
+          <li><a href="materiais.php">Guia de Materiais</a></li>
+          <li><a href="pontos.php">Pontos de Descarte</a></li>
+          <li><a href="ocorrencias.php">Registrar Ocorrência</a></li>
+          <li><a href="recompensas.php">Recompensas</a></li>
+          <li><a href="kids.php">Área Kids</a></li>
         </ul>
       </div>
       <div class="footer-links">

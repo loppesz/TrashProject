@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -15,26 +15,26 @@
       <small>Painel Admin</small>
     </div>
     <nav class="sidebar-nav">
-      <a href="index.html" class="sidebar-link" data-page="dashboard">
+      <a href="index.php" class="sidebar-link" data-page="dashboard">
         <span class="sidebar-icon">📊</span> Dashboard
       </a>
-      <a href="ocorrencias.html" class="sidebar-link active" data-page="ocorrencias">
+      <a href="ocorrencias.php" class="sidebar-link active" data-page="ocorrencias">
         <span class="sidebar-icon">🚨</span> Ocorrências
       </a>
-      <a href="materiais.html" class="sidebar-link" data-page="materiais">
+      <a href="materiais.php" class="sidebar-link" data-page="materiais">
         <span class="sidebar-icon">📦</span> Materiais
       </a>
-      <a href="coleta.html" class="sidebar-link" data-page="coleta">
+      <a href="coleta.php" class="sidebar-link" data-page="coleta">
         <span class="sidebar-icon">🗓️</span> Coleta
       </a>
-      <a href="pontos.html" class="sidebar-link" data-page="pontos">
+      <a href="pontos.php" class="sidebar-link" data-page="pontos">
         <span class="sidebar-icon">📍</span> Pontos de Descarte
       </a>
-      <a href="indicadores.html" class="sidebar-link" data-page="indicadores">
+      <a href="indicadores.php" class="sidebar-link" data-page="indicadores">
         <span class="sidebar-icon">📈</span> Indicadores
       </a>
       <div class="sidebar-divider"></div>
-      <a href="../index.html" class="sidebar-link">
+      <a href="../index.php" class="sidebar-link">
         <span class="sidebar-icon">🌐</span> Ver Site
       </a>
     </nav>

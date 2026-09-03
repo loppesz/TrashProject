@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -14,25 +14,25 @@
 <body>
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
       <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="coleta.html">🗓️ Coleta</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html">Pontos</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
-        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="index.php">Início</a></li>
+        <li><a href="coleta.php">🗓️ Coleta</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php">Pontos</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
       </ul>
       <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">🏠 Início</a>
-      <a href="coleta.html">🗓️ Coleta</a>
-      <a href="materiais.html">📦 Materiais</a>
-      <a href="pontos.html">📍 Pontos</a>
-      <a href="ocorrencias.html">🚨 Ocorrências</a>
+      <a href="index.php">🏠 Início</a>
+      <a href="coleta.php">🗓️ Coleta</a>
+      <a href="materiais.php">📦 Materiais</a>
+      <a href="pontos.php">📍 Pontos</a>
+      <a href="ocorrencias.php">🚨 Ocorrências</a>
     </div>
   </nav>
 
@@ -73,18 +73,18 @@
         <span>🔍</span>
         <h3>Nenhum resultado encontrado</h3>
         <p>Tente buscar por: "papel", "Centro", "pilhas", "ecoponto"...</p>
-        <a href="index.html" class="btn-outline-green">← Voltar ao início</a>
+        <a href="index.php" class="btn-outline-green">← Voltar ao início</a>
       </div>
 
       <!-- Estado inicial -->
       <div id="buscaInicial" class="busca-inicial">
         <div class="bi-grid">
-          <a href="coleta.html" class="bi-card"><span>🗓️</span><p>Consultar Coleta</p></a>
-          <a href="pontos.html" class="bi-card"><span>📍</span><p>Pontos de Descarte</p></a>
-          <a href="materiais.html" class="bi-card"><span>📦</span><p>Guia de Materiais</p></a>
-          <a href="ocorrencias.html" class="bi-card"><span>🚨</span><p>Registrar Ocorrência</p></a>
-          <a href="recompensas.html" class="bi-card"><span>⭐</span><p>Recompensas</p></a>
-          <a href="kids.html" class="bi-card purple"><span>🧒</span><p>Área Kids</p></a>
+          <a href="coleta.php" class="bi-card"><span>🗓️</span><p>Consultar Coleta</p></a>
+          <a href="pontos.php" class="bi-card"><span>📍</span><p>Pontos de Descarte</p></a>
+          <a href="materiais.php" class="bi-card"><span>📦</span><p>Guia de Materiais</p></a>
+          <a href="ocorrencias.php" class="bi-card"><span>🚨</span><p>Registrar Ocorrência</p></a>
+          <a href="recompensas.php" class="bi-card"><span>⭐</span><p>Recompensas</p></a>
+          <a href="kids.php" class="bi-card purple"><span>🧒</span><p>Área Kids</p></a>
         </div>
         <div class="busca-sugestoes">
           <p>Sugestões de busca:</p>

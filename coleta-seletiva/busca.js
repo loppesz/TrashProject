@@ -1,4 +1,4 @@
-// =============================================
+﻿// =============================================
 // DADOS PARA BUSCA GLOBAL
 // =============================================
 const BAIRROS_DATA = [
@@ -17,26 +17,26 @@ const BAIRROS_DATA = [
 ];
 
 const MATERIAIS_DATA = [
-  { nome: 'Papel e Papelão', aceito: true, keywords: 'papel papelão jornal revista caixa', slug: 'materiais.html', cor: '#3b82f6' },
-  { nome: 'Plástico', aceito: true, keywords: 'plástico plástico pet garrafa frasco sacola', slug: 'materiais.html', cor: '#ef4444' },
-  { nome: 'Metal / Latas', aceito: true, keywords: 'metal lata alumínio ferro aço latinha', slug: 'materiais.html', cor: '#eab308' },
-  { nome: 'Vidro', aceito: true, keywords: 'vidro garrafa pote frasco', slug: 'materiais.html', cor: '#22c55e' },
-  { nome: 'Pilhas e Baterias', aceito: false, keywords: 'pilhas bateria baterias', slug: 'pontos.html', cor: '#f97316' },
-  { nome: 'Eletrônicos', aceito: false, keywords: 'eletrônico celular notebook computador tv monitor', slug: 'pontos.html', cor: '#7c3aed' },
-  { nome: 'Medicamentos', aceito: false, keywords: 'medicamento remédio farmácia vencido', slug: 'pontos.html', cor: '#ec4899' },
-  { nome: 'Óleo de Cozinha', aceito: false, keywords: 'óleo cozinha usado gordura', slug: 'pontos.html', cor: '#a16207' },
-  { nome: 'Lixo Orgânico', aceito: false, keywords: 'orgânico comida resto casca fruta alimento', slug: 'materiais.html', cor: '#6b7280' },
-  { nome: 'Seringas / Perfurocortantes', aceito: false, keywords: 'seringa agulha perfurocortante', slug: 'pontos.html', cor: '#ef4444' },
-  { nome: 'Entulho / Móveis', aceito: false, keywords: 'entulho obra mobília móvel sofá', slug: 'ocorrencias.html', cor: '#6b7280' },
+  { nome: 'Papel e Papelão', aceito: true, keywords: 'papel papelão jornal revista caixa', slug: 'materiais.php', cor: '#3b82f6' },
+  { nome: 'Plástico', aceito: true, keywords: 'plástico plástico pet garrafa frasco sacola', slug: 'materiais.php', cor: '#ef4444' },
+  { nome: 'Metal / Latas', aceito: true, keywords: 'metal lata alumínio ferro aço latinha', slug: 'materiais.php', cor: '#eab308' },
+  { nome: 'Vidro', aceito: true, keywords: 'vidro garrafa pote frasco', slug: 'materiais.php', cor: '#22c55e' },
+  { nome: 'Pilhas e Baterias', aceito: false, keywords: 'pilhas bateria baterias', slug: 'pontos.php', cor: '#f97316' },
+  { nome: 'Eletrônicos', aceito: false, keywords: 'eletrônico celular notebook computador tv monitor', slug: 'pontos.php', cor: '#7c3aed' },
+  { nome: 'Medicamentos', aceito: false, keywords: 'medicamento remédio farmácia vencido', slug: 'pontos.php', cor: '#ec4899' },
+  { nome: 'Óleo de Cozinha', aceito: false, keywords: 'óleo cozinha usado gordura', slug: 'pontos.php', cor: '#a16207' },
+  { nome: 'Lixo Orgânico', aceito: false, keywords: 'orgânico comida resto casca fruta alimento', slug: 'materiais.php', cor: '#6b7280' },
+  { nome: 'Seringas / Perfurocortantes', aceito: false, keywords: 'seringa agulha perfurocortante', slug: 'pontos.php', cor: '#ef4444' },
+  { nome: 'Entulho / Móveis', aceito: false, keywords: 'entulho obra mobília móvel sofá', slug: 'ocorrencias.php', cor: '#6b7280' },
 ];
 
 const PONTOS_DATA = [
-  { nome: 'Ecoponto Municipal de Muriaé', endereco: 'Av. Maestro Haroldo Braga – Industrial', materiais: 'Pilhas, Eletrônicos, Cartuchos', link: 'pontos.html#ponto1' },
-  { nome: 'Farmácia Popular – Centro', endereco: 'Rua Coronel Albino Pinto, 150 – Centro', materiais: 'Medicamentos, Pilhas', link: 'pontos.html#ponto2' },
-  { nome: 'Super Maia – Santa Terezinha', endereco: 'Rua João Pinheiro, 200 – Santa Terezinha', materiais: 'Óleo de cozinha, Pilhas, Plástico', link: 'pontos.html#ponto3' },
-  { nome: 'UBS Central – Muriaé', endereco: 'Rua Comendador Venâncio, 80 – Centro', materiais: 'Medicamentos, Seringas', link: 'pontos.html#ponto4' },
-  { nome: 'Ponto Recicle – Padre Eustáquio', endereco: 'Praça da Igreja – Padre Eustáquio', materiais: 'Papel, Plástico, Metal, Vidro', link: 'pontos.html#ponto5' },
-  { nome: 'E.M. Nossa Senhora de Fátima', endereco: 'Rua Dom Silvério – N. S. de Fátima', materiais: 'Papel, Livros, Papelão', link: 'pontos.html#ponto6' },
+  { nome: 'Ecoponto Municipal de Muriaé', endereco: 'Av. Maestro Haroldo Braga – Industrial', materiais: 'Pilhas, Eletrônicos, Cartuchos', link: 'pontos.php#ponto1' },
+  { nome: 'Farmácia Popular – Centro', endereco: 'Rua Coronel Albino Pinto, 150 – Centro', materiais: 'Medicamentos, Pilhas', link: 'pontos.php#ponto2' },
+  { nome: 'Super Maia – Santa Terezinha', endereco: 'Rua João Pinheiro, 200 – Santa Terezinha', materiais: 'Óleo de cozinha, Pilhas, Plástico', link: 'pontos.php#ponto3' },
+  { nome: 'UBS Central – Muriaé', endereco: 'Rua Comendador Venâncio, 80 – Centro', materiais: 'Medicamentos, Seringas', link: 'pontos.php#ponto4' },
+  { nome: 'Ponto Recicle – Padre Eustáquio', endereco: 'Praça da Igreja – Padre Eustáquio', materiais: 'Papel, Plástico, Metal, Vidro', link: 'pontos.php#ponto5' },
+  { nome: 'E.M. Nossa Senhora de Fátima', endereco: 'Rua Dom Silvério – N. S. de Fátima', materiais: 'Papel, Livros, Papelão', link: 'pontos.php#ponto6' },
 ];
 
 // =============================================
@@ -89,7 +89,7 @@ function executarBusca(q) {
   const resB = document.getElementById('resBairros');
   if (bairros.length > 0) {
     resB.innerHTML = bairros.map(b => `
-      <a href="coleta.html?bairro=${b.slug}" class="busca-card">
+      <a href="coleta.php?bairro=${b.slug}" class="busca-card">
         <div class="bc-title">🏘️ ${b.nome}</div>
         <div class="bc-sub">📅 ${b.dias} &nbsp;|&nbsp; 🕐 ${b.horario}</div>
         <span class="bc-tag">Ver calendário →</span>

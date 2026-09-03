@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -11,25 +11,25 @@
 
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
       <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html">Pontos</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
-        <li><a href="kids.html" class="nav-kids">🧒 Área Kids</a></li>
-        <li><a href="recompensas.html" class="nav-reward active">⭐ Recompensas</a></li>
-        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+        <li><a href="index.php">Início</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php">Pontos</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <li><a href="kids.php" class="nav-kids">🧒 Área Kids</a></li>
+        <li><a href="recompensas.php" class="nav-reward active">⭐ Recompensas</a></li>
+        <li><a href="admin/index.php" class="nav-admin">Admin</a></li>
       </ul>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">🏠 Início</a>
-      <a href="materiais.html">📦 Materiais</a>
-      <a href="pontos.html">📍 Pontos</a>
-      <a href="ocorrencias.html">🚨 Ocorrências</a>
-      <a href="kids.html">🧒 Área Kids</a>
-      <a href="recompensas.html">⭐ Recompensas</a>
+      <a href="index.php">🏠 Início</a>
+      <a href="materiais.php">📦 Materiais</a>
+      <a href="pontos.php">📍 Pontos</a>
+      <a href="ocorrencias.php">🚨 Ocorrências</a>
+      <a href="kids.php">🧒 Área Kids</a>
+      <a href="recompensas.php">⭐ Recompensas</a>
     </div>
   </nav>
 
@@ -41,7 +41,7 @@
           <span class="hero-badge">⭐ Sistema de Recompensas</span>
           <h1>Recicle, reporte<br>e <span class="text-yellow">ganhe prêmios!</span></h1>
           <p>Cada ocorrência reportada vale pontos. Troque seus pontos por recompensas reais na sua comunidade.</p>
-          <a href="ocorrencias.html" class="btn-reward-hero">Começar a ganhar pontos →</a>
+          <a href="ocorrencias.php" class="btn-reward-hero">Começar a ganhar pontos →</a>
         </div>
         <div class="reward-hero-visual">
           <div class="reward-coin">
@@ -307,10 +307,10 @@
       <div class="footer-links">
         <h4>Navegação</h4>
         <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="ocorrencias.html">Registrar Ocorrência</a></li>
-          <li><a href="recompensas.html">Recompensas</a></li>
-          <li><a href="kids.html">Área Kids</a></li>
+          <li><a href="index.php">Início</a></li>
+          <li><a href="ocorrencias.php">Registrar Ocorrência</a></li>
+          <li><a href="recompensas.php">Recompensas</a></li>
+          <li><a href="kids.php">Área Kids</a></li>
         </ul>
       </div>
     </div>

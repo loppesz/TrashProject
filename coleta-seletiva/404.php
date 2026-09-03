@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -14,23 +14,23 @@
 <body>
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
       <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="coleta.html">🗓️ Coleta</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html">Pontos</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
+        <li><a href="index.php">Início</a></li>
+        <li><a href="coleta.php">🗓️ Coleta</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php">Pontos</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
       </ul>
       <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">🏠 Início</a>
-      <a href="coleta.html">🗓️ Coleta</a>
-      <a href="materiais.html">📦 Materiais</a>
-      <a href="pontos.html">📍 Pontos</a>
-      <a href="ocorrencias.html">🚨 Ocorrências</a>
+      <a href="index.php">🏠 Início</a>
+      <a href="coleta.php">🗓️ Coleta</a>
+      <a href="materiais.php">📦 Materiais</a>
+      <a href="pontos.php">📍 Pontos</a>
+      <a href="ocorrencias.php">🚨 Ocorrências</a>
     </div>
   </nav>
 
@@ -42,12 +42,12 @@
         <h1>Página não encontrada</h1>
         <p>O endereço que você digitou não existe ou foi movido.<br>Mas ainda dá para encontrar o que precisa aqui:</p>
         <div class="nf-links">
-          <a href="index.html" class="nf-link green">🏠 Ir para o Início</a>
-          <a href="coleta.html" class="nf-link">🗓️ Consultar Coleta</a>
-          <a href="pontos.html" class="nf-link">📍 Pontos de Descarte</a>
-          <a href="materiais.html" class="nf-link">📦 Guia de Materiais</a>
-          <a href="ocorrencias.html" class="nf-link">🚨 Registrar Ocorrência</a>
-          <a href="kids.html" class="nf-link purple">🧒 Área Kids</a>
+          <a href="index.php" class="nf-link green">🏠 Ir para o Início</a>
+          <a href="coleta.php" class="nf-link">🗓️ Consultar Coleta</a>
+          <a href="pontos.php" class="nf-link">📍 Pontos de Descarte</a>
+          <a href="materiais.php" class="nf-link">📦 Guia de Materiais</a>
+          <a href="ocorrencias.php" class="nf-link">🚨 Registrar Ocorrência</a>
+          <a href="kids.php" class="nf-link purple">🧒 Área Kids</a>
         </div>
       </div>
     </div>

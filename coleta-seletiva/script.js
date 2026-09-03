@@ -1,4 +1,4 @@
-// =============================================
+﻿// =============================================
 // DARK MODE
 // =============================================
 function toggleTheme() {
@@ -29,7 +29,7 @@ function irParaColeta(event) {
   if (event) event.preventDefault();
   const endereco = document.getElementById('enderecoInput')?.value.trim();
   if (!endereco) return;
-  window.location.href = 'coleta.html?q=' + encodeURIComponent(endereco);
+  window.location.href = 'coleta.php?q=' + encodeURIComponent(endereco);
 }
 
 // Mantido para compatibilidade
@@ -46,7 +46,7 @@ function irParaBusca(event) {
   const input = document.getElementById('globalSearchInput') || document.getElementById('enderecoInput');
   const q = input?.value.trim();
   if (!q) return;
-  window.location.href = 'busca.html?q=' + encodeURIComponent(q);
+  window.location.href = 'busca.php?q=' + encodeURIComponent(q);
 }
 
 // =============================================

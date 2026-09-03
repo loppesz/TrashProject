@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -13,10 +13,10 @@
   <!-- NAVBAR KIDS -->
   <nav class="navbar kids-navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
+      <a href="index.php" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
       <div class="kids-nav-right">
         <div class="kids-nav-points">⭐ <span id="kidsPointsNav">0</span> pts</div>
-        <a href="index.html" class="kids-back-btn">← Voltar ao site</a>
+        <a href="index.php" class="kids-back-btn">← Voltar ao site</a>
       </div>
     </div>
   </nav>
@@ -457,7 +457,7 @@
 
   <footer style="background:#1a1a2e;color:#a0a0c0;text-align:center;padding:20px;">
     <p>🌍 ColetaFácil Kids – Aprendendo a cuidar do planeta! © 2026</p>
-    <a href="index.html" style="color:#4ade80;font-size:.85rem;">← Voltar ao site principal</a>
+    <a href="index.php" style="color:#4ade80;font-size:.85rem;">← Voltar ao site principal</a>
   </footer>
 
   <script src="script.js"></script>

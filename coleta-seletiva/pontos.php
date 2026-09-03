@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -12,26 +12,26 @@
 
   <nav class="navbar">
     <div class="container nav-inner">
-      <a href="index.html" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
+      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
       <ul class="nav-links">
-        <li><a href="index.html">Início</a></li>
-        <li><a href="materiais.html">Materiais</a></li>
-        <li><a href="pontos.html" class="active">Pontos</a></li>
-        <li><a href="coleta.html">Coleta</a></li>
-        <li><a href="ocorrencias.html">Ocorrências</a></li>
-        <li><a href="kids.html" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.html" class="nav-reward">⭐ Pontos</a></li>
-        <li><a href="admin/index.html" class="nav-admin">Admin</a></li>
+        <li><a href="index.php">Início</a></li>
+        <li><a href="materiais.php">Materiais</a></li>
+        <li><a href="pontos.php" class="active">Pontos</a></li>
+        <li><a href="coleta.php">Coleta</a></li>
+        <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
+        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
+        <li><a href="admin/index.php" class="nav-admin">Admin</a></li>
       </ul>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
     <div class="mobile-menu" id="mobileMenu">
-      <a href="index.html">🏠 Início</a>
-      <a href="materiais.html">📦 Materiais</a>
-      <a href="pontos.html">📍 Pontos</a>
-      <a href="coleta.html">🗓️ Coleta</a>
-      <a href="ocorrencias.html">🚨 Ocorrências</a>
-      <a href="kids.html">🧒 Kids</a>
+      <a href="index.php">🏠 Início</a>
+      <a href="materiais.php">📦 Materiais</a>
+      <a href="pontos.php">📍 Pontos</a>
+      <a href="coleta.php">🗓️ Coleta</a>
+      <a href="ocorrencias.php">🚨 Ocorrências</a>
+      <a href="kids.php">🧒 Kids</a>
     </div>
   </nav>
 
@@ -41,7 +41,7 @@
       <div class="phr-inner">
         <div>
           <nav class="breadcrumb-nav">
-            <a href="index.html">Início</a> <span>/</span>
+            <a href="index.php">Início</a> <span>/</span>
             <span class="bc-active">Pontos de Descarte</span>
           </nav>
           <h1>📍 Pontos de Descarte</h1>
@@ -733,11 +733,11 @@
       <div class="footer-links">
         <h4>Navegação</h4>
         <ul>
-          <li><a href="index.html">Início</a></li>
-          <li><a href="materiais.html">Guia de Materiais</a></li>
-          <li><a href="pontos.html">Pontos de Descarte</a></li>
-          <li><a href="coleta.html">Consultar Coleta</a></li>
-          <li><a href="ocorrencias.html">Ocorrências</a></li>
+          <li><a href="index.php">Início</a></li>
+          <li><a href="materiais.php">Guia de Materiais</a></li>
+          <li><a href="pontos.php">Pontos de Descarte</a></li>
+          <li><a href="coleta.php">Consultar Coleta</a></li>
+          <li><a href="ocorrencias.php">Ocorrências</a></li>
         </ul>
       </div>
       <div class="footer-links">

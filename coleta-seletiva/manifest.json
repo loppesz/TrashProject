@@ -1,8 +1,8 @@
-{
+﻿{
   "name": "ColetaFácil – Muriaé",
   "short_name": "ColetaFácil",
   "description": "Plataforma de coleta seletiva de Muriaé-MG",
-  "start_url": "./index.html",
+  "start_url": "./index.php",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#16a34a",

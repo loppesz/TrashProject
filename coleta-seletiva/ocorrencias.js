@@ -1,4 +1,4 @@
-// =============================================
+﻿// =============================================
 // DADOS HISTÓRICO FAKE
 // =============================================
 const HISTORICO_FAKE = [
@@ -16,7 +16,7 @@ const TIPO_ICONS = { 'descarte-irregular':'🗑️', 'coleta':'🚛', 'descarte'
 const TIPO_CORES = { 'descarte-irregular':'#fee2e2', 'coleta':'#dbeafe', 'entulho':'#fef3c7', 'toxico':'#fff7ed', 'default':'#f1f5f9' };
 const TIPO_INFO  = {
   'descarte-irregular': '⚡ Ocorrência frequente. Fotos ajudam muito na resolução!',
-  'coleta-nao-realizada': '📅 Verifique o <a href="coleta.html">calendário de coleta</a> antes de registrar.',
+  'coleta-nao-realizada': '📅 Verifique o <a href="coleta.php">calendário de coleta</a> antes de registrar.',
   'material-nao-recolhido': '♻️ Materiais deixados para trás geralmente são recolhidos no próximo turno.',
   'ponto-inadequado': '📍 Inclua o endereço exato do ponto de descarte com problema.',
   'entulho': '🧱 Entulho de obras requer coleta especial — informe tamanho aproximado.',
