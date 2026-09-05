@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<?php require_once __DIR__ . '/auth.php'; ?>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -17,6 +18,7 @@
       <div class="kids-nav-right">
         <div class="kids-nav-points">⭐ <span id="kidsPointsNav">0</span> pts</div>
         <a href="index.php" class="kids-back-btn">← Voltar ao site</a>
+        <?= site_auth_mobile_links() ?>
       </div>
     </div>
   </nav>

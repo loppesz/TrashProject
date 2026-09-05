@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<?php require_once __DIR__ . '/../auth.php'; require_auth(true); ?>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">

@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<?php require_once __DIR__ . '/auth.php'; ?>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -19,7 +20,7 @@
         <li><a href="ocorrencias.php">Ocorrências</a></li>
         <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
         <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <li><a href="admin/index.php" class="nav-admin">Admin</a></li>
+        <?= site_auth_links() ?>
       </ul>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
     </div>
@@ -31,7 +32,7 @@
       <a href="ocorrencias.php">🚨 Ocorrências</a>
       <a href="kids.php">🧒 Kids</a>
       <a href="recompensas.php">⭐ Recompensas</a>
-      <a href="admin/index.php">⚙️ Admin</a>
+      <?= site_auth_mobile_links() ?>
     </div>
   </nav>
 

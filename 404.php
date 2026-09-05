@@ -1,4 +1,5 @@
-﻿<!DOCTYPE html>
+﻿<?php require_once __DIR__ . '/auth.php'; ?>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
@@ -21,6 +22,7 @@
         <li><a href="materiais.php">Materiais</a></li>
         <li><a href="pontos.php">Pontos</a></li>
         <li><a href="ocorrencias.php">Ocorrências</a></li>
+        <?= site_auth_links() ?>
       </ul>
       <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
       <button class="menu-btn" onclick="toggleMenu()">☰</button>
@@ -31,6 +33,7 @@
       <a href="materiais.php">📦 Materiais</a>
       <a href="pontos.php">📍 Pontos</a>
       <a href="ocorrencias.php">🚨 Ocorrências</a>
+      <?= site_auth_mobile_links() ?>
     </div>
   </nav>
 
