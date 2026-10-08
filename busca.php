@@ -7,37 +7,13 @@
   <title>Busca – ColetaFácil Muriaé</title>
   <meta name="description" content="Busque bairros, materiais e pontos de descarte em Muriaé-MG">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#16a34a">
+  <meta name="theme-color" content="#00c853">
   <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}());</script>
   <link rel="stylesheet" href="style.css">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
-      <ul class="nav-links">
-        <li><a href="index.php">Início</a></li>
-        <li><a href="coleta.php">🗓️ Coleta</a></li>
-        <li><a href="materiais.php">Materiais</a></li>
-        <li><a href="pontos.php">Pontos</a></li>
-        <li><a href="ocorrencias.php">Ocorrências</a></li>
-        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <?= site_auth_links() ?>
-      </ul>
-      <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.php">🏠 Início</a>
-      <a href="coleta.php">🗓️ Coleta</a>
-      <a href="materiais.php">📦 Materiais</a>
-      <a href="pontos.php">📍 Pontos</a>
-      <a href="ocorrencias.php">🚨 Ocorrências</a>
-      <?= site_auth_mobile_links() ?>
-    </div>
-  </nav>
+  <?= site_navbar('') ?>
 
   <div class="container busca-page">
     <div class="busca-page-header">
@@ -112,10 +88,10 @@
     .busca-page-header h1 { font-size: 1.6rem; font-weight: 900; margin-bottom: 16px; color: var(--text,#111827); }
     .busca-global-form { width: 100%; max-width: 640px; }
     .busca-global-wrap { display: flex; align-items: center; background: var(--surface,#fff); border: 2px solid var(--border,#e5e7eb); border-radius: 14px; padding: 0 16px; gap: 10px; transition: border-color .2s; }
-    .busca-global-wrap:focus-within { border-color: #16a34a; }
+    .busca-global-wrap:focus-within { border-color: #00c853; }
     .busca-global-wrap input { flex: 1; border: none; outline: none; padding: 14px 0; font-size: 1rem; background: transparent; font-family: inherit; color: var(--text,#111827); }
-    .busca-global-wrap button { background: #16a34a; color: #fff; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer; font-family: inherit; transition: background .2s; }
-    .busca-global-wrap button:hover { background: #15803d; }
+    .busca-global-wrap button { background: linear-gradient(135deg,#00c853,#00e5cc); color: #06130c; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 800; cursor: pointer; font-family: inherit; transition: transform .2s, box-shadow .2s; box-shadow: 0 4px 14px rgba(0,200,83,0.35); }
+    .busca-global-wrap button:hover { transform: translateY(-2px); box-shadow: 0 8px 22px rgba(0,200,83,0.35); }
     .busca-resumo { font-size: 0.85rem; color: var(--text-muted,#6b7280); margin-top: 10px; }
     .busca-section { margin-bottom: 32px; }
     .busca-section h2 { font-size: 1rem; font-weight: 800; color: var(--text,#111827); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid var(--border,#e5e7eb); }

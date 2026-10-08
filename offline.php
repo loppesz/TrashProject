@@ -12,7 +12,7 @@
     h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 10px; }
     p { color: #94a3b8; font-size: 0.9rem; line-height: 1.7; margin-bottom: 24px; }
     .links { display: flex; flex-direction: column; gap: 10px; }
-    a { background: #16a34a; color: #fff; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 700; font-size: 0.9rem; transition: opacity 0.2s; }
+    a { background: linear-gradient(135deg,#00c853,#00e5cc); color: #06130c; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: 800; font-size: 0.9rem; transition: opacity 0.2s; }
     a:hover { opacity: 0.85; }
     a.secondary { background: #334155; }
     .logo { color: #4ade80; font-size: 1.1rem; font-weight: 800; margin-bottom: 24px; display: block; }

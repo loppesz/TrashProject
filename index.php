@@ -13,7 +13,7 @@
   <meta name="description" content="ColetaFácil – Plataforma de coleta seletiva de Muriaé-MG. Consulte o calendário de coleta, pontos de descarte e reporte ocorrências.">
   <title>ColetaFácil – Coleta Seletiva Muriaé-MG</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#16a34a">
+  <meta name="theme-color" content="#00c853">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ColetaFácil">
@@ -24,36 +24,7 @@
 <body>
 
   <!-- NAVBAR -->
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a href="index.php" class="logo">
-        <span class="logo-icon">♻️</span>
-        <span>ColetaFácil</span>
-      </a>
-      <ul class="nav-links">
-        <li><a href="index.php" class="active">Início</a></li>
-        <li><a href="coleta.php">🗓️ Coleta</a></li>
-        <li><a href="materiais.php">Materiais</a></li>
-        <li><a href="pontos.php">Pontos</a></li>
-        <li><a href="ocorrencias.php">Ocorrências</a></li>
-        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <?= site_auth_links() ?>
-      </ul>
-      <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.php">🏠 Início</a>
-      <a href="coleta.php">🗓️ Consultar Coleta</a>
-      <a href="materiais.php">📦 Materiais</a>
-      <a href="pontos.php">📍 Pontos</a>
-      <a href="ocorrencias.php">🚨 Ocorrências</a>
-      <a href="kids.php">🧒 Kids</a>
-      <a href="recompensas.php">⭐ Recompensas</a>
-      <?= site_auth_mobile_links() ?>
-    </div>
-  </nav>
+  <?= site_navbar('inicio') ?>
 
   <!-- ================================================
        HERO SECTION
@@ -107,10 +78,16 @@
             </div>
           </div>
           <!-- Troque o src pelo link do seu vídeo -->
-          <video id="meuVideo" controls style="display:none; width:100%; border-radius:16px;">
+          <video id="meuVideo" controls controlslist="nodownload" preload="metadata" playsinline style="display:none; width:100%; border-radius:16px;">
             <source src="video-apresentacao.mp4" type="video/mp4">
             Seu navegador não suporta vídeo HTML5.
           </video>
+          <!-- Controles rápidos de avanço/retrocesso -->
+          <div class="video-quick-controls" id="videoQuickControls" style="display:none;">
+            <button type="button" onclick="seekVideo(-10)" aria-label="Voltar 10 segundos">⏪ 10s</button>
+            <button type="button" onclick="togglePlayPause()" id="playPauseBtn" aria-label="Reproduzir ou pausar">⏸️ Pausar</button>
+            <button type="button" onclick="seekVideo(10)" aria-label="Avançar 10 segundos">10s ⏩</button>
+          </div>
         </div>
         <div class="video-caption">
           <span>🎬</span> Vídeo de apresentação — 2 min

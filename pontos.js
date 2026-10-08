@@ -83,6 +83,9 @@ function aplicarFiltros() {
 
   // Atualiza bordas (primeiro/último visível)
   updateCardBorders();
+
+  // Sincroniza os marcadores do mapa com os filtros aplicados
+  if (typeof sincronizarMapaComFiltros === 'function') sincronizarMapaComFiltros();
 }
 
 function updateCardBorders() {

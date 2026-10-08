@@ -74,6 +74,67 @@ function require_auth(bool $adminOnly = false): void
     }
 }
 
+/**
+ * Itens de navegação padronizados do site público, em ordem única.
+ * A chave é usada para marcar o item ativo em cada página.
+ */
+function site_nav_items(): array
+{
+    return [
+        'inicio'       => ['index.php',       'Início',          ''],
+        'coleta'       => ['coleta.php',      '🗓️ Coleta',       ''],
+        'materiais'    => ['materiais.php',   'Materiais',       ''],
+        'pontos'       => ['pontos.php',      'Pontos',          ''],
+        'ocorrencias'  => ['ocorrencias.php', 'Ocorrências',     ''],
+        'kids'         => ['kids.php',        '🧒 Kids',         'nav-kids'],
+        'recompensas'  => ['recompensas.php', '⭐ Recompensas',   'nav-reward'],
+    ];
+}
+
+/**
+ * Renderiza a navbar completa (desktop + mobile) de forma idêntica em todas
+ * as páginas do site. $active deve ser a chave do item atual (ex.: 'coleta').
+ */
+function site_navbar(string $active = '', string $prefix = ''): string
+{
+    $items = site_nav_items();
+
+    // Links desktop
+    $desktop = '';
+    foreach ($items as $key => [$href, $label, $extra]) {
+        $classes = trim($extra . ($key === $active ? ' active' : ''));
+        $classAttr = $classes !== '' ? ' class="' . $classes . '"' : '';
+        $desktop .= '<li><a href="' . $prefix . $href . '"' . $classAttr . '>' . $label . '</a></li>';
+    }
+
+    // Links mobile (mesma ordem)
+    $mobile = '';
+    foreach ($items as $key => [$href, $label, $extra]) {
+        $classAttr = $key === $active ? ' class="active"' : '';
+        $mobile .= '<a href="' . $prefix . $href . '"' . $classAttr . '>' . $label . '</a>';
+    }
+
+    return '
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="' . $prefix . 'index.php" class="logo">
+        <span class="logo-icon">♻️</span>
+        <span class="logo-text">ColetaFácil</span>
+      </a>
+      <ul class="nav-links">
+        ' . $desktop . '
+        ' . site_auth_links($prefix) . '
+      </ul>
+      ' . theme_toggle_button() . '
+      <button class="menu-btn" onclick="toggleMenu()" aria-label="Abrir menu">☰</button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      ' . $mobile . '
+      ' . site_auth_mobile_links($prefix) . '
+    </div>
+  </nav>';
+}
+
 function site_auth_links(string $prefix = ''): string
 {
     $user = auth_user();
@@ -90,6 +151,21 @@ function site_auth_links(string $prefix = ''): string
         $links .= '<li><a href="' . $prefix . 'cadastro.php">Cadastrar</a></li>';
     }
     return $links;
+}
+
+/**
+ * Script anti-flash de tema. Deve ir o mais cedo possível dentro do <head>,
+ * antes do CSS, para evitar o "flash" de tema claro ao carregar no escuro.
+ */
+function theme_head_script(): string
+{
+    return "<script>(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>";
+}
+
+/** Botão de alternância de tema (claro/escuro) usado na navbar. */
+function theme_toggle_button(): string
+{
+    return '<button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>';
 }
 
 function site_auth_mobile_links(string $prefix = ''): string

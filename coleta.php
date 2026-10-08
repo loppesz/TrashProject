@@ -13,7 +13,7 @@
   <meta name="description" content="Consulte o calendário de coleta seletiva em Muriaé-MG. Veja os dias e horários de coleta por bairro – ColetaFácil.">
   <title>Consultar Coleta – ColetaFácil</title>
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#16a34a">
+  <meta name="theme-color" content="#00c853">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ColetaFácil">
@@ -23,31 +23,7 @@
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
-      <ul class="nav-links">
-        <li><a href="index.php">Início</a></li>
-        <li><a href="materiais.php">Materiais</a></li>
-        <li><a href="pontos.php">Pontos</a></li>
-        <li><a href="coleta.php" class="active">Coleta</a></li>
-        <li><a href="ocorrencias.php">Ocorrências</a></li>
-        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <?= site_auth_links() ?>
-      </ul>
-      <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema"></button>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.php">Início</a>
-      <a href="materiais.php">Materiais</a>
-      <a href="pontos.php">Pontos</a>
-      <a href="coleta.php">Coleta</a>
-      <a href="ocorrencias.php">Ocorrências</a>
-      <?= site_auth_mobile_links() ?>
-    </div>
-  </nav>
+  <?= site_navbar('coleta') ?>
 
   <!-- HERO COLETA -->
   <section class="coleta-hero">

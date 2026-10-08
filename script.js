@@ -12,6 +12,35 @@ function toggleTheme() {
 document.addEventListener('DOMContentLoaded', () => {
   const btn = document.getElementById('themeToggle');
   if (btn) btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
+
+  const segmenter = typeof Intl.Segmenter === 'function'
+    ? new Intl.Segmenter(undefined, { granularity: 'grapheme' })
+    : null;
+  if (!segmenter) return;
+
+  const emojiPattern = /[\p{Extended_Pictographic}\p{Regional_Indicator}]/u;
+  document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
+    const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
+    const textNodes = [];
+    while (walker.nextNode()) textNodes.push(walker.currentNode);
+
+    textNodes.forEach(textNode => {
+      const fragment = document.createDocumentFragment();
+      let hasEmoji = false;
+      for (const { segment } of segmenter.segment(textNode.nodeValue || '')) {
+        if (emojiPattern.test(segment) || segment.includes('\u20e3')) {
+          const emoji = document.createElement('span');
+          emoji.className = 'title-emoji';
+          emoji.textContent = segment;
+          fragment.append(emoji);
+          hasEmoji = true;
+        } else {
+          fragment.append(document.createTextNode(segment));
+        }
+      }
+      if (hasEmoji) textNode.replaceWith(fragment);
+    });
+  });
 });
 
 // =============================================
@@ -50,20 +79,42 @@ function irParaBusca(event) {
 }
 
 // =============================================
-// VÍDEO – PLAY
+// VÍDEO – PLAY / CONTROLES
 // =============================================
 function playVideo() {
   const thumb = document.querySelector('.video-thumb');
   const video = document.getElementById('meuVideo');
+  const controls = document.getElementById('videoQuickControls');
   if (!thumb || !video) return;
   thumb.style.display = 'none';
   video.style.display = 'block';
-  video.play().catch(() => {
+  video.play().then(() => {
+    if (controls) controls.style.display = 'flex';
+  }).catch(() => {
     thumb.style.display = 'block';
     video.style.display = 'none';
     const overlay = document.querySelector('.video-overlay p');
     if (overlay) { overlay.textContent = '📁 Adicione video-apresentacao.mp4 na pasta'; overlay.style.color = '#fbbf24'; }
   });
+}
+
+function seekVideo(seconds) {
+  const video = document.getElementById('meuVideo');
+  if (!video) return;
+  video.currentTime = Math.max(0, Math.min(video.duration || 0, video.currentTime + seconds));
+}
+
+function togglePlayPause() {
+  const video = document.getElementById('meuVideo');
+  const btn = document.getElementById('playPauseBtn');
+  if (!video) return;
+  if (video.paused) {
+    video.play();
+    if (btn) btn.textContent = '⏸️ Pausar';
+  } else {
+    video.pause();
+    if (btn) btn.textContent = '▶️ Reproduzir';
+  }
 }
 
 // =============================================
@@ -162,6 +213,66 @@ document.addEventListener('keydown', e => {
     fecharModal();
     if (typeof fecharModalAdmin === 'function') fecharModalAdmin();
   }
+});
+
+// =============================================
+// SCROLL REVEAL – anima elementos ao entrar na tela
+// =============================================
+function initScrollReveal() {
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Seleciona blocos que valem a pena animar
+  const targets = document.querySelectorAll(
+    '.feature-card-v2, .material-card, .ponto-card, .recompensa-card, ' +
+    '.step-item, .ov2-item, .pontos-como-item, .section-header, ' +
+    '.ranking-card, .my-points-card, .kids-cta-card, .resultado-card-v2'
+  );
+
+  targets.forEach((el, i) => {
+    el.classList.add('reveal');
+    // cascata leve dentro de grupos
+    el.classList.add('d' + ((i % 5) + 1));
+  });
+
+  if (prefersReduced || !('IntersectionObserver' in window)) {
+    targets.forEach(el => el.classList.add('is-visible'));
+    return;
+  }
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+  targets.forEach(el => observer.observe(el));
+}
+
+// =============================================
+// BOTÃO VOLTAR AO TOPO
+// =============================================
+function initBackToTop() {
+  let btn = document.getElementById('backToTop');
+  if (!btn) {
+    btn = document.createElement('button');
+    btn.id = 'backToTop';
+    btn.className = 'back-to-top';
+    btn.setAttribute('aria-label', 'Voltar ao topo');
+    btn.innerHTML = '↑';
+    btn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+    document.body.appendChild(btn);
+  }
+  const toggle = () => btn.classList.toggle('show', window.scrollY > 500);
+  window.addEventListener('scroll', toggle, { passive: true });
+  toggle();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  initScrollReveal();
+  initBackToTop();
 });
 
 // =============================================

@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <?= theme_head_script() ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ocorrências – ColetaFácil</title>
@@ -11,32 +12,7 @@
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
-      <ul class="nav-links">
-        <li><a href="index.php">Início</a></li>
-        <li><a href="coleta.php">🗓️ Coleta</a></li>
-        <li><a href="materiais.php">Materiais</a></li>
-        <li><a href="pontos.php">Pontos</a></li>
-        <li><a href="ocorrencias.php" class="active">Ocorrências</a></li>
-        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <?= site_auth_links() ?>
-      </ul>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.php">🏠 Início</a>
-      <a href="coleta.php">🗓️ Coleta</a>
-      <a href="materiais.php">📦 Materiais</a>
-      <a href="pontos.php">📍 Pontos</a>
-      <a href="ocorrencias.php">🚨 Ocorrências</a>
-      <?= site_auth_mobile_links() ?>
-      <a href="kids.php">🧒 Kids</a>
-      <a href="recompensas.php">⭐ Recompensas</a>
-    </div>
-  </nav>
+  <?= site_navbar('ocorrencias') ?>
 
   <!-- HEADER -->
   <div class="page-header-rich">

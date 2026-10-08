@@ -2,40 +2,20 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+  <?= theme_head_script() ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Pontos de Descarte – ColetaFácil</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="pontos.css">
+  <!-- Leaflet (mapa interativo, OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-  <nav class="navbar">
-    <div class="container nav-inner">
-      <a href="index.php" class="logo"><span class="logo-icon">♻️</span><span>ColetaFácil</span></a>
-      <ul class="nav-links">
-        <li><a href="index.php">Início</a></li>
-        <li><a href="materiais.php">Materiais</a></li>
-        <li><a href="pontos.php" class="active">Pontos</a></li>
-        <li><a href="coleta.php">Coleta</a></li>
-        <li><a href="ocorrencias.php">Ocorrências</a></li>
-        <li><a href="kids.php" class="nav-kids">🧒 Kids</a></li>
-        <li><a href="recompensas.php" class="nav-reward">⭐ Pontos</a></li>
-        <?= site_auth_links() ?>
-      </ul>
-      <button class="menu-btn" onclick="toggleMenu()">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      <a href="index.php">🏠 Início</a>
-      <a href="materiais.php">📦 Materiais</a>
-      <a href="pontos.php">📍 Pontos</a>
-      <a href="coleta.php">🗓️ Coleta</a>
-      <a href="ocorrencias.php">🚨 Ocorrências</a>
-      <?= site_auth_mobile_links() ?>
-      <a href="kids.php">🧒 Kids</a>
-    </div>
-  </nav>
+  <?= site_navbar('pontos') ?>
 
   <!-- PAGE HEADER -->
   <div class="page-header-rich">
@@ -99,7 +79,7 @@
       <!-- PONTO 1 – ECOPONTO CENTRO -->
       <div class="ponto-rich-card" id="ponto1"
            data-nome="ecoponto centro" data-material="pilhas eletronicos cartuchos impressora"
-           data-status="aberto" data-lat="-21.7555" data-lng="-43.3496"
+           data-status="aberto" data-lat="-21.1306" data-lng="-42.3664"
            data-endereco="Rua das Flores, 123 – Centro">
 
         <div class="prc-header" onclick="togglePonto('ponto1')">
@@ -185,7 +165,7 @@
                 <h4>📞 Contato & Informações</h4>
                 <div class="contato-list">
                   <div class="ct-item"><span>📞</span> (32) 3333-1001</div>
-                  <div class="ct-item"><span>📧</span> ecoponto@prefeiturajf.gov.br</div>
+                  <div class="ct-item"><span>📧</span> ecoponto@muriae.mg.gov.br</div>
                   <div class="ct-item"><span>♿</span> Acessível para PCD</div>
                   <div class="ct-item"><span>🅿️</span> Estacionamento disponível</div>
                 </div>
@@ -205,26 +185,26 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+das+Flores+123+Juiz+de+Fora" target="_blank" class="open-maps-btn">
+                <a href="https://www.google.com/maps/search/Rua+das+Flores+123+Muriae+MG" target="_blank" class="open-maps-btn">
                   Abrir no Google Maps ↗
                 </a>
               </div>
               <div class="prc-map-embed">
                 <iframe
-                  src="https://maps.google.com/maps?q=Rua+das+Flores+123+Juiz+de+Fora+MG&output=embed&z=16"
+                  src="https://maps.google.com/maps?q=Rua+das+Flores+123+Muriae+MG&output=embed&z=16"
                   width="100%" height="300" style="border:0;border-radius:12px;"
                   allowfullscreen="" loading="lazy"
                   referrerpolicy="no-referrer-when-downgrade">
                 </iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Juiz+de+Fora" target="_blank" class="como-chegar-btn">
+                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG" target="_blank" class="como-chegar-btn">
                   🧭 Como chegar de carro
                 </a>
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">
+                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">
                   🚌 Como chegar de ônibus
                 </a>
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Juiz+de+Fora&travelmode=walking" target="_blank" class="como-chegar-btn">
+                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">
                   🚶 Ir a pé
                 </a>
               </div>
@@ -237,7 +217,7 @@
       <!-- PONTO 2 – FARMÁCIA -->
       <div class="ponto-rich-card" id="ponto2"
            data-nome="farmacia saude total" data-material="medicamentos pilhas remédios"
-           data-status="aberto" data-lat="-21.7620" data-lng="-43.3550"
+           data-status="aberto" data-lat="-21.1358" data-lng="-42.3721"
            data-endereco="Av. Brasil, 456 – Bairro Novo">
 
         <div class="prc-header" onclick="togglePonto('ponto2')">
@@ -308,15 +288,15 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Av+Brasil+456+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                <a href="https://www.google.com/maps/search/Av+Brasil+456+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
               </div>
               <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Av+Brasil+456+Juiz+de+Fora+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                <iframe src="https://maps.google.com/maps?q=Av+Brasil+456+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Juiz+de+Fora" target="_blank" class="como-chegar-btn">🧭 Como chegar de carro</a>
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Juiz+de+Fora&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
+                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Como chegar de carro</a>
+                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
               </div>
             </div>
           </div>
@@ -326,7 +306,7 @@
       <!-- PONTO 3 – SUPERMERCADO -->
       <div class="ponto-rich-card" id="ponto3"
            data-nome="supermercado boa compra" data-material="oleo cozinha pilhas plastico"
-           data-status="aberto" data-lat="-21.7600" data-lng="-43.3580"
+           data-status="aberto" data-lat="-21.1251" data-lng="-42.3598"
            data-endereco="Rua Dom Pedro, 789 – Vila Nova">
 
         <div class="prc-header" onclick="togglePonto('ponto3')">
@@ -399,15 +379,15 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+Dom+Pedro+789+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                <a href="https://www.google.com/maps/search/Rua+Dom+Pedro+789+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
               </div>
               <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+Dom+Pedro+789+Juiz+de+Fora+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                <iframe src="https://maps.google.com/maps?q=Rua+Dom+Pedro+789+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Juiz+de+Fora" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Juiz+de+Fora&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
+                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
+                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
               </div>
             </div>
           </div>
@@ -417,7 +397,7 @@
       <!-- PONTO 4 – UBS -->
       <div class="ponto-rich-card" id="ponto4"
            data-nome="ubs posto saude central" data-material="seringas medicamentos perfurocortantes"
-           data-status="aberto" data-lat="-21.7580" data-lng="-43.3510"
+           data-status="aberto" data-lat="-21.1289" data-lng="-42.3627"
            data-endereco="Rua da Saúde, 10 – Centro">
 
         <div class="prc-header" onclick="togglePonto('ponto4')">
@@ -486,15 +466,15 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+da+Saude+10+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                <a href="https://www.google.com/maps/search/Rua+da+Saude+10+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
               </div>
               <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+da+Saude+10+Juiz+de+Fora+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                <iframe src="https://maps.google.com/maps?q=Rua+da+Saude+10+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Juiz+de+Fora" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Juiz+de+Fora&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
               </div>
             </div>
           </div>
@@ -504,7 +484,7 @@
       <!-- PONTO 5 – PONTO RECICLE -->
       <div class="ponto-rich-card" id="ponto5"
            data-nome="ponto recicle jardim america" data-material="papel plastico metal vidro papelao"
-           data-status="fechado" data-lat="-21.7700" data-lng="-43.3600"
+           data-status="fechado" data-lat="-21.1402" data-lng="-42.3589"
            data-endereco="Praça da Amizade – Jardim América">
 
         <div class="prc-header" onclick="togglePonto('ponto5')">
@@ -573,14 +553,14 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Praca+da+Amizade+Jardim+America+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                <a href="https://www.google.com/maps/search/Praca+da+Amizade+Jardim+America+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
               </div>
               <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Jardim+America+Juiz+de+Fora+MG&output=embed&z=15" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                <iframe src="https://maps.google.com/maps?q=Jardim+America+Muriae+MG&output=embed&z=15" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Jardim+America+Juiz+de+Fora" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Jardim+America+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                <a href="https://www.google.com/maps/dir//Jardim+America+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
+                <a href="https://www.google.com/maps/dir//Jardim+America+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
               </div>
             </div>
           </div>
@@ -590,7 +570,7 @@
       <!-- PONTO 6 – ESCOLA -->
       <div class="ponto-rich-card" id="ponto6"
            data-nome="escola municipal professor souza" data-material="papel livros papelao"
-           data-status="aberto" data-lat="-21.7650" data-lng="-43.3520"
+           data-status="aberto" data-lat="-21.1223" data-lng="-42.3702"
            data-endereco="Rua da Educação, 55 – Bairro Escolar">
 
         <div class="prc-header" onclick="togglePonto('ponto6')">
@@ -650,15 +630,15 @@
             <div class="prc-map-section">
               <div class="prc-map-header">
                 <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+da+Educacao+55+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                <a href="https://www.google.com/maps/search/Rua+da+Educacao+55+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
               </div>
               <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+da+Educacao+55+Juiz+de+Fora+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                <iframe src="https://maps.google.com/maps?q=Rua+da+Educacao+55+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
               </div>
               <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Juiz+de+Fora" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Juiz+de+Fora&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Juiz+de+Fora&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
               </div>
             </div>
           </div>
@@ -675,21 +655,21 @@
 
   </div><!-- fim container -->
 
-  <!-- MAPA GERAL -->
+  <!-- MAPA GERAL INTERATIVO (Leaflet + OpenStreetMap) -->
   <section class="mapa-geral-section">
     <div class="container">
       <div class="mapa-geral-header">
         <h2>🗺️ Todos os pontos no mapa</h2>
-        <a href="https://www.google.com/maps/search/pontos+de+reciclagem+Juiz+de+Fora" target="_blank" class="btn-outline-green">Ver no Google Maps ↗</a>
+        <a href="https://www.google.com/maps/search/pontos+de+reciclagem+Muriae+MG" target="_blank" class="btn-outline-green">Ver no Google Maps ↗</a>
       </div>
-      <div class="mapa-geral-embed">
-        <iframe
-          src="https://maps.google.com/maps?q=Juiz+de+Fora+MG+reciclagem&output=embed&z=13"
-          width="100%" height="400"
-          style="border:0;border-radius:16px;"
-          allowfullscreen="" loading="lazy">
-        </iframe>
+
+      <div class="mapa-legenda">
+        <span class="mapa-leg-item"><span class="leg-dot aberto"></span> Aberto agora</span>
+        <span class="mapa-leg-item"><span class="leg-dot fechado"></span> Fechado agora</span>
+        <span class="mapa-leg-hint">💡 Clique em um marcador para ver os detalhes do ponto</span>
       </div>
+
+      <div id="mapaInterativo" class="mapa-interativo" role="application" aria-label="Mapa dos pontos de coleta em Muriaé"></div>
     </div>
   </section>
 
@@ -754,7 +734,10 @@
     <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p></div>
   </footer>
 
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
   <script src="script.js"></script>
   <script src="pontos.js"></script>
+  <script src="mapa.js"></script>
 </body>
 </html>
