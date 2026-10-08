@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $erro = 'E-mail ou senha incorretos.';
           } else {
             auth_login($usuario);
-                $destino = $next;
+            $destino = $next;
             header('Location: ' . $destino);
             exit;
           }
@@ -69,7 +69,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
        LOGIN – ESTILOS ESPECÍFICOS
        ============================================= */
 
-    /* Hero da tela de login */
     .login-section {
       min-height: calc(100vh - 64px - 240px);
       background: linear-gradient(135deg, #0f172a 0%, #1e293b 60%, #134e4a 100%);
@@ -81,14 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       overflow: hidden;
     }
 
-    /* Formas decorativas (igual ao hero-v2) */
     .login-bg-shapes { position: absolute; inset: 0; pointer-events: none; }
     .login-bg-shapes .shape { position: absolute; border-radius: 50%; opacity: 0.06; }
     .login-bg-shapes .s1 { width: 420px; height: 420px; background: #4ade80; top: -120px; right: -80px; }
     .login-bg-shapes .s2 { width: 260px; height: 260px; background: #22d3ee; bottom: -80px; left: 5%; }
     .login-bg-shapes .s3 { width: 160px; height: 160px; background: #f59e0b; top: 40%; left: 42%; }
 
-    /* Layout de duas colunas */
     .login-inner {
       position: relative;
       z-index: 2;
@@ -100,7 +97,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       width: 100%;
     }
 
-    /* Lado esquerdo – copy */
     .login-brand { color: #fff; }
 
     .login-brand .hero-badge {
@@ -159,7 +155,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       flex-shrink: 0;
     }
 
-    /* Card do formulário */
     .login-card {
       background: #fff;
       border-radius: 20px;
@@ -172,7 +167,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .login-card-header h2 { font-size: 1.4rem; font-weight: 800; color: var(--gray-900); margin-bottom: 6px; }
     .login-card-header p  { font-size: 0.85rem; color: var(--gray-500); }
 
-    /* Alerta de erro */
     .login-error {
       background: #fee2e2;
       border-left: 4px solid var(--red);
@@ -187,7 +181,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       gap: 8px;
     }
 
-    /* Alerta de sucesso (para mensagens vindas via query string) */
     .login-success {
       background: #dcfce7;
       border-left: 4px solid var(--green);
@@ -202,10 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       gap: 8px;
     }
 
-    /* Campo com ícone */
-    .input-icon-wrap {
-      position: relative;
-    }
+    .input-icon-wrap { position: relative; }
     .input-icon-wrap .field-icon {
       position: absolute;
       left: 13px;
@@ -214,11 +204,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       font-size: 1rem;
       pointer-events: none;
     }
-    .input-icon-wrap input {
-      padding-left: 40px !important;
-    }
+    .input-icon-wrap input { padding-left: 40px !important; }
 
-    /* Toggle de visibilidade da senha */
     .input-icon-wrap .senha-toggle {
       position: absolute;
       right: 12px;
@@ -234,11 +221,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
     .input-icon-wrap .senha-toggle:hover { color: var(--green); }
     .input-icon-wrap input[type="password"],
-    .input-icon-wrap input[type="text"] {
-      padding-right: 40px !important;
-    }
+    .input-icon-wrap input[type="text"] { padding-right: 40px !important; }
 
-    /* Linha lembrar / esqueci */
     .login-row {
       display: flex;
       align-items: center;
@@ -261,14 +245,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       accent-color: var(--green);
       cursor: pointer;
     }
-    .login-row a {
-      color: var(--green);
-      font-weight: 600;
-      transition: color 0.2s;
-    }
+    .login-row a { color: var(--green); font-weight: 600; transition: color 0.2s; }
     .login-row a:hover { color: var(--green-dark); text-decoration: underline; }
 
-    /* Botão de submit */
     .btn-login {
       width: 100%;
       background: var(--green);
@@ -290,7 +269,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     .btn-login:active { transform: scale(0.98); }
     .btn-login:disabled { background: var(--gray-300); cursor: not-allowed; }
 
-    /* Divider */
     .login-divider {
       display: flex;
       align-items: center;
@@ -307,33 +285,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       background: var(--gray-200);
     }
 
-    /* Link de cadastro */
-    .login-signup {
-      text-align: center;
-      font-size: 0.85rem;
-      color: var(--gray-500);
-    }
-    .login-signup a {
-      color: var(--green);
-      font-weight: 700;
-      transition: color 0.2s;
-    }
+    .login-signup { text-align: center; font-size: 0.85rem; color: var(--gray-500); }
+    .login-signup a { color: var(--green); font-weight: 700; transition: color 0.2s; }
     .login-signup a:hover { color: var(--green-dark); text-decoration: underline; }
 
-    /* Dark mode */
-    html.dark .login-card {
-      background: #1e293b;
-      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
-    }
+    html.dark .login-card { background: #1e293b; box-shadow: 0 8px 40px rgba(0,0,0,0.5); }
     html.dark .login-card-header h2 { color: #f1f5f9; }
     html.dark .login-card-header p  { color: #94a3b8; }
     html.dark .form-group label     { color: #cbd5e1; }
     html.dark .form-group input,
-    html.dark .form-group select    {
-      background: #0f172a;
-      border-color: #334155;
-      color: #f1f5f9;
-    }
+    html.dark .form-group select    { background: #0f172a; border-color: #334155; color: #f1f5f9; }
     html.dark .form-group input:focus { border-color: #4ade80; }
     html.dark .login-row label       { color: #cbd5e1; }
     html.dark .login-divider         { color: #475569; }
@@ -341,18 +302,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     html.dark .login-divider::after  { background: #334155; }
     html.dark .login-signup          { color: #94a3b8; }
 
-    /* Responsivo */
     @media (max-width: 768px) {
-      .login-inner {
-        grid-template-columns: 1fr;
-        gap: 32px;
-      }
+      .login-inner { grid-template-columns: 1fr; gap: 32px; }
       .login-brand { text-align: center; }
       .login-brand h1 { font-size: 1.8rem; }
       .login-features { align-items: center; }
       .login-card { padding: 28px 22px; }
     }
-
     @media (max-width: 480px) {
       .login-section { padding: 32px 16px; }
       .login-card    { padding: 24px 18px; }
@@ -393,9 +349,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
   </nav>
 
-  <!-- =============================================
-       SEÇÃO DE LOGIN
-  ============================================= -->
+  <!-- SEÇÃO DE LOGIN -->
   <section class="login-section">
     <div class="login-bg-shapes">
       <div class="shape s1"></div>
@@ -416,7 +370,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           Acesse sua conta para acompanhar pontos, reportar ocorrências e
           ajudar a manter Muriaé-MG mais limpa.
         </p>
-
         <div class="login-features">
           <div class="login-feature-item">
             <div class="lfi-icon">🗓️</div>
@@ -469,7 +422,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <form method="POST" action="login.php" id="loginForm" novalidate>
           <input type="hidden" name="next" value="<?= htmlspecialchars($next, ENT_QUOTES, 'UTF-8') ?>">
 
-          <!-- E-mail -->
           <div class="form-group">
             <label for="email">E-mail</label>
             <div class="input-icon-wrap">
@@ -487,7 +439,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <!-- Senha -->
           <div class="form-group">
             <label for="senha">Senha</label>
             <div class="input-icon-wrap">
@@ -510,16 +461,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
           </div>
 
-          <!-- Lembrar / Esqueci -->
           <div class="login-row">
             <label>
               <input type="checkbox" name="lembrar" id="lembrar">
               Lembrar de mim
             </label>
-            <a href="recuperar-senha.php">Esqueci minha senha</a>
+            <a href="#" onclick="return false;" title="Recuperação de senha em breve">Esqueci minha senha</a>
           </div>
 
-          <!-- Botão de submit -->
           <button type="submit" class="btn-login" id="btnLogin">
             <span id="btnLoginText">🔑 Entrar</span>
             <span id="btnLoginLoad" style="display:none;">⏳ Verificando...</span>
@@ -580,9 +529,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <script src="script.js"></script>
   <script>
-    // =============================================
-    // TOGGLE VISIBILIDADE DA SENHA
-    // =============================================
     function toggleSenha() {
       const input = document.getElementById('senha');
       const btn   = document.getElementById('senhaToggleBtn');
@@ -593,24 +539,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       btn.setAttribute('aria-label', escondida ? 'Ocultar senha' : 'Mostrar senha');
     }
 
-    // =============================================
-    // FEEDBACK VISUAL NO SUBMIT
-    // =============================================
     document.getElementById('loginForm')?.addEventListener('submit', function (e) {
       const email = document.getElementById('email').value.trim();
       const senha = document.getElementById('senha').value;
-
-      // Validação básica antes de enviar
-      if (!email || !senha) {
-        e.preventDefault();
-        return;
-      }
-
-      const btn      = document.getElementById('btnLogin');
-      const txtNorm  = document.getElementById('btnLoginText');
-      const txtLoad  = document.getElementById('btnLoginLoad');
+      if (!email || !senha) { e.preventDefault(); return; }
+      const btn     = document.getElementById('btnLogin');
+      const txtNorm = document.getElementById('btnLoginText');
+      const txtLoad = document.getElementById('btnLoginLoad');
       if (btn && txtNorm && txtLoad) {
-        btn.disabled      = true;
+        btn.disabled          = true;
         txtNorm.style.display = 'none';
         txtLoad.style.display = 'inline';
       }
