@@ -22,6 +22,23 @@
     </div>
   </div>
 
+  <!-- DESTAQUE: PROTEÇÃO DO COLETOR -->
+  <div class="container">
+    <div class="coletor-destaque">
+      <div class="coletor-destaque-img" style="background-image:url('img/hero-coletor.jpg')" role="img" aria-label="Coletor de resíduos sorrindo durante o trabalho"></div>
+      <div class="coletor-destaque-text">
+        <span class="coletor-tag">🧤 A sua atitude em casa salva vidas</span>
+        <h2>Como você separa define a segurança de quem recolhe</h2>
+        <p>Atrás de cada saco de lixo existe uma pessoa. Vidros quebrados, latas com bordas afiadas e materiais perfurocortantes mal embalados provocam <strong>cortes graves</strong> nas mãos dos coletores todos os dias.</p>
+        <div class="coletor-dicas">
+          <div class="coletor-dica"><span>🍶</span><p><strong>Vidro quebrado:</strong> embrulhe em jornal grosso ou papelão e escreva "CUIDADO VIDRO".</p></div>
+          <div class="coletor-dica"><span>🥫</span><p><strong>Metais cortantes:</strong> lave, amasse e, se tiver bordas, proteja antes de descartar.</p></div>
+          <div class="coletor-dica"><span>💉</span><p><strong>Perfurocortantes:</strong> nunca na coleta — leve a uma farmácia ou UBS.</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- FILTROS -->
   <div class="container">
     <div class="filtros">

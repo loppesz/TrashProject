@@ -45,6 +45,19 @@
     </div>
   </div>
 
+  <!-- CONSCIENTIZAÇÃO CÍVICA -->
+  <div class="container">
+    <div class="civica-banner">
+      <div class="civica-img" style="background-image:url('img/lixo-urbano.jpg')" role="img" aria-label="Lixo acumulado em via pública"></div>
+      <div class="civica-text">
+        <span class="civica-tag">🏙️ Cidadania ativa</span>
+        <h2>O lixo no lugar errado volta pra todo mundo</h2>
+        <p>O descarte irregular em terrenos, calçadas e esquinas <strong>entope bueiros</strong>, provoca <strong>enchentes</strong> nas chuvas, atrai pragas e degrada o espaço público que é de todos.</p>
+        <p class="civica-cta">Ao registrar uma ocorrência, você aciona a limpeza, protege sua rua e participa da fiscalização colaborativa da cidade. 👇</p>
+      </div>
+    </div>
+  </div>
+
   <!-- ABAS -->
   <div class="container">
     <div class="oc-tabs">

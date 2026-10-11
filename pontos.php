@@ -47,6 +47,19 @@
     </div>
   </div>
 
+  <!-- BANNER DE CONSCIENTIZAÇÃO -->
+  <div class="container">
+    <div class="eco-banner">
+      <div class="eco-banner-img" style="background-image:url('img/poluicao-residuos.jpg')" role="img" aria-label="Resíduos descartados de forma incorreta no ambiente"></div>
+      <div class="eco-banner-text">
+        <span class="eco-banner-tag">🌍 Por que entregar no lugar certo?</span>
+        <h2>Eletrônicos, pilhas e lâmpadas não são lixo comum</h2>
+        <p>Quando descartados no lixo normal, liberam <strong>metais pesados</strong> como mercúrio, chumbo e cádmio. Eles contaminam o <strong>solo e os lençóis freáticos</strong>, chegando à água que bebemos e aos alimentos que comemos — uma única pilha pode poluir milhares de litros de água.</p>
+        <p class="eco-banner-cta">Levar esses materiais a um ponto de entrega voluntária garante o tratamento adequado e protege a saúde de toda a comunidade. 👇</p>
+      </div>
+    </div>
+  </div>
+
   <!-- BUSCA E FILTROS -->
   <div class="container">
     <div class="filtros-avancados">

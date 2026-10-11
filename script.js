@@ -52,6 +52,47 @@ function toggleMenu() {
 }
 
 // =============================================
+// NAVBAR – DROPDOWNS (Coleta ▾ / 👤)
+// =============================================
+function toggleDropdown(event, id) {
+  if (event) event.stopPropagation();
+  const dd = document.getElementById(id);
+  if (!dd) return;
+  const abrindo = !dd.classList.contains('open');
+  // Fecha todos antes de abrir o alvo
+  document.querySelectorAll('.nav-dropdown.open').forEach(el => {
+    el.classList.remove('open');
+    const t = el.querySelector('[aria-expanded]');
+    if (t) t.setAttribute('aria-expanded', 'false');
+  });
+  if (abrindo) {
+    dd.classList.add('open');
+    const trigger = dd.querySelector('[aria-expanded]');
+    if (trigger) trigger.setAttribute('aria-expanded', 'true');
+  }
+}
+
+// Fecha os dropdowns ao clicar fora ou apertar Esc
+document.addEventListener('click', e => {
+  if (!e.target.closest('.nav-dropdown')) {
+    document.querySelectorAll('.nav-dropdown.open').forEach(el => {
+      el.classList.remove('open');
+      const t = el.querySelector('[aria-expanded]');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.nav-dropdown.open').forEach(el => {
+      el.classList.remove('open');
+      const t = el.querySelector('[aria-expanded]');
+      if (t) t.setAttribute('aria-expanded', 'false');
+    });
+  }
+});
+
+// =============================================
 // HOME – REDIRECIONA PARA PÁGINA DE COLETA
 // =============================================
 function irParaColeta(event) {

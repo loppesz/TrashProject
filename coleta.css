@@ -64,6 +64,34 @@
   background: transparent;
 }
 
+.coleta-form-card .input-with-icon input {
+  color: #0f172a;
+  box-shadow: none;
+  border: none;
+  background: transparent;
+}
+
+.coleta-form-card .input-with-icon input:focus {
+  box-shadow: none;
+  border: none;
+}
+
+.coleta-form-card .input-with-icon input::placeholder {
+  color: #64748b;
+}
+
+.coleta-form-card .form-group select {
+  background: #fff;
+  color: #0f172a;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+}
+
+.coleta-form-card .form-group select option {
+  background: #fff;
+  color: #0f172a;
+}
+
 .btn-consultar {
   width: 100%;
   background: linear-gradient(135deg, #16a34a, #15803d);
@@ -252,7 +280,7 @@
 .dica-item { display: flex; align-items: flex-start; gap: 10px; }
 .dica-num {
   width: 24px; height: 24px; min-width: 24px;
-  background: #16a34a; color: #fff;
+  background: #16a34a; color: #18b437;
   border-radius: 50%; display: flex; align-items: center; justify-content: center;
   font-size: 0.72rem; font-weight: 900; flex-shrink: 0;
   margin-top: 1px;
@@ -434,7 +462,9 @@
   gap: 12px;
 }
 
-.tg-header h2 { font-size: 1.3rem; font-weight: 800; }
+.tg-header h2 { font-size: 1.3rem; font-weight: 800; color: #15803d !important; -webkit-text-fill-color: #15803d !important; background: none !important; }
+
+.coleta-form-card .form-group label { color: #334155; }
 
 .tg-busca {
   padding: 10px 16px;
@@ -445,6 +475,9 @@
   font-family: inherit;
   transition: border-color 0.2s;
   min-width: 240px;
+  color: #000 !important;
+  -webkit-text-fill-color: #000 !important;
+  background: #fff;
 }
 .tg-busca:focus { border-color: #16a34a; }
 

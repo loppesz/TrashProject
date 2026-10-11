@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ColetaFácil">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=17">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -54,12 +54,6 @@
             <input type="text" id="enderecoInput" placeholder="Digite seu endereço em Muriaé-MG..." required>
             <button type="submit">Consultar coleta</button>
           </form>
-        </div>
-        <div class="hero-v2-links animate-in delay-4">
-          <a href="coleta.php" class="quick-link">🗓️ Ver Calendário de Coleta</a>
-          <a href="materiais.php" class="quick-link">📦 Guia de Materiais</a>
-          <a href="pontos.php" class="quick-link">📍 Pontos de Descarte</a>
-          <a href="kids.php" class="quick-link kids-link">🧒 Área Kids</a>
         </div>
       </div>
 
@@ -135,6 +129,131 @@
   </div>
 
   <!-- ================================================
+       FUNCIONALIDADES PRINCIPAIS
+  ================================================ -->
+  <section class="features-v2">
+    <div class="container">
+      <div class="section-header">
+        <h2>Três passos para reciclar certo</h2>
+        <p>Serviços essenciais para participar da coleta seletiva em Muriaé-MG</p>
+      </div>
+      <div class="features-v2-grid pilares-3">
+
+        <a href="#consulta" class="feature-card-v2 green" onclick="document.getElementById('enderecoInput').focus()">
+          <div class="fc-icon">🗓️</div>
+          <h3>Quando passa a coleta?</h3>
+          <p>Informe seu endereço e veja os dias e horários exatos para o seu bairro.</p>
+          <div class="fc-chips">
+            <span>8 bairros</span>
+            <span>06h às 11h</span>
+            <span>4 materiais</span>
+          </div>
+          <span class="fc-link">Consultar agora →</span>
+        </a>
+
+        <a href="materiais.php" class="feature-card-v2 blue">
+          <div class="fc-icon">📦</div>
+          <h3>Guia de Materiais</h3>
+          <p>Saiba o que reciclar, como preparar e quais materiais oferecem risco.</p>
+          <div class="fc-chips">
+            <span>8 guias</span>
+            <span>Como preparar</span>
+            <span>Riscos</span>
+          </div>
+          <span class="fc-link">Ver materiais →</span>
+        </a>
+
+        <a href="pontos.php" class="feature-card-v2 orange">
+          <div class="fc-icon">📍</div>
+          <h3>Pontos de Descarte</h3>
+          <p>Encontre o local mais próximo para descartar pilhas, eletrônicos e mais.</p>
+          <div class="fc-chips">
+            <span>6 pontos</span>
+            <span>Pilhas e eletrônicos</span>
+            <span>Busca por material</span>
+          </div>
+          <span class="fc-link">Ver pontos →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       O IMPACTO REAL DO DESCARTE
+  ================================================ -->
+  <section class="impacto-real-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>O Impacto Real do Descarte</h2>
+        <p>Dados que mostram por que a forma como descartamos faz diferença</p>
+      </div>
+      <div class="impacto-grid">
+
+        <article class="impacto-card">
+          <div class="impacto-img" style="background-image:url('img/poluicao-residuos.jpg')" role="img" aria-label="Resíduos plásticos acumulados na água"></div>
+          <div class="impacto-body">
+            <span class="impacto-dado">+80 mil ton/dia</span>
+            <h3>O crescimento da poluição</h3>
+            <p>O Brasil gera mais de 80 mil toneladas de lixo por dia e cerca de 40% ainda vai para destinos irregulares. Resíduos sem tratamento poluem rios, mares e o ar das cidades.</p>
+          </div>
+        </article>
+
+        <article class="impacto-card">
+          <div class="impacto-img" style="background-image:url('img/hero-coletor.jpg')" role="img" aria-label="Trabalhador da limpeza urbana"></div>
+          <div class="impacto-body">
+            <span class="impacto-dado">Risco diário</span>
+            <h3>O risco humano dos coletores</h3>
+            <p>Vidros, latas e materiais perfurocortantes mal embalados são a principal causa de cortes e perfurações nas mãos dos garis. Embalar corretamente protege quem recolhe o seu lixo.</p>
+          </div>
+        </article>
+
+        <article class="impacto-card">
+          <div class="impacto-img" style="background-image:url('img/caminhao-coleta.jpg')" role="img" aria-label="Caminhão de coleta de resíduos"></div>
+          <div class="impacto-body">
+            <span class="impacto-dado">Economia circular</span>
+            <h3>A transformação positiva</h3>
+            <p>Reciclar reduz a pressão sobre os aterros, economiza energia e matéria-prima e gera renda para cooperativas. Cada material separado corretamente volta ao ciclo produtivo.</p>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
+       CONSCIENTIZAÇÃO
+  ================================================ -->
+  <section class="conscientiza-section">
+    <div class="container">
+      <div class="section-header">
+        <h2>Reciclar certo protege pessoas</h2>
+        <p>A forma como separamos o lixo tem impacto direto na saúde dos coletores e do meio ambiente</p>
+      </div>
+      <div class="cz-pilares">
+        <a href="materiais.php" class="cz-pilar">
+          <span class="cz-pilar-icon">🧤</span>
+          <h3>Proteja os coletores</h3>
+          <p>Vidros e materiais cortantes mal embalados causam acidentes graves. Embale com cuidado e identifique.</p>
+          <span class="cz-pilar-link">Ver guia de materiais →</span>
+        </a>
+        <a href="pontos.php" class="cz-pilar">
+          <span class="cz-pilar-icon">🌱</span>
+          <h3>Evite a contaminação</h3>
+          <p>Pilhas, óleo e eletrônicos no lixo comum contaminam o solo e a água por décadas. Leve a pontos adequados.</p>
+          <span class="cz-pilar-link">Encontrar pontos de descarte →</span>
+        </a>
+        <a href="ocorrencias.php" class="cz-pilar">
+          <span class="cz-pilar-icon">♻️</span>
+          <h3>Cuide do espaço público</h3>
+          <p>Descarte irregular entope bueiros e causa enchentes. Reporte e ajude a manter a cidade limpa.</p>
+          <span class="cz-pilar-link">Registrar uma ocorrência →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
        CONTADORES DE IMPACTO
   ================================================ -->
   <section class="impact-section">
@@ -156,63 +275,6 @@
           <span class="impact-number" data-target="18">0</span>
           <span class="impact-label">Bairros Atendidos</span>
         </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       FUNCIONALIDADES PRINCIPAIS
-  ================================================ -->
-  <section class="features-v2">
-    <div class="container">
-      <div class="section-header">
-        <h2>Tudo que você precisa saber</h2>
-        <p>Uma plataforma completa para tornar a reciclagem parte do seu dia a dia</p>
-      </div>
-      <div class="features-v2-grid">
-
-        <a href="#consulta" class="feature-card-v2 green" onclick="document.getElementById('enderecoInput').focus()">
-          <div class="fc-icon">🗓️</div>
-          <h3>Quando passa a coleta?</h3>
-          <p>Informe seu endereço e veja os dias e horários exatos para o seu bairro.</p>
-          <span class="fc-link">Consultar agora →</span>
-        </a>
-
-        <a href="materiais.php" class="feature-card-v2 blue">
-          <div class="fc-icon">📦</div>
-          <h3>Guia de Materiais</h3>
-          <p>Saiba o que reciclar, como preparar e quais materiais oferecem risco.</p>
-          <span class="fc-link">Ver materiais →</span>
-        </a>
-
-        <a href="pontos.php" class="feature-card-v2 orange">
-          <div class="fc-icon">📍</div>
-          <h3>Pontos de Descarte</h3>
-          <p>Encontre o local mais próximo para descartar pilhas, eletrônicos e mais.</p>
-          <span class="fc-link">Ver pontos →</span>
-        </a>
-
-        <a href="ocorrencias.php" class="feature-card-v2 red">
-          <div class="fc-icon">🚨</div>
-          <h3>Reportar Ocorrência</h3>
-          <p>Viu descarte irregular? Reporte e ganhe pontos para trocar por recompensas.</p>
-          <span class="fc-link">Reportar agora →</span>
-        </a>
-
-        <a href="kids.php" class="feature-card-v2 purple">
-          <div class="fc-icon">🧒</div>
-          <h3>Área Kids</h3>
-          <p>Jogos, quiz e atividades para ensinar as crianças sobre reciclagem de forma divertida!</p>
-          <span class="fc-link">Entrar na Área Kids →</span>
-        </a>
-
-        <a href="recompensas.php" class="feature-card-v2 yellow">
-          <div class="fc-icon">⭐</div>
-          <h3>Recompensas</h3>
-          <p>Acumule pontos reportando ocorrências e troque por prêmios e benefícios.</p>
-          <span class="fc-link">Ver recompensas →</span>
-        </a>
-
       </div>
     </div>
   </section>
@@ -445,6 +507,6 @@
     </div>
   </footer>
 
-  <script src="script.js"></script>
+  <script src="script.js?v=16"></script>
 </body>
 </html>

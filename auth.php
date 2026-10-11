@@ -99,20 +99,17 @@ function site_navbar(string $active = '', string $prefix = ''): string
 {
     $items = site_nav_items();
 
-    // Links desktop
-    $desktop = '';
+    // Itens que ficam dentro do dropdown "Coleta ▾" (todas as páginas, exceto a própria Coleta)
+    $menuItems = '';
     foreach ($items as $key => [$href, $label, $extra]) {
-        $classes = trim($extra . ($key === $active ? ' active' : ''));
-        $classAttr = $classes !== '' ? ' class="' . $classes . '"' : '';
-        $desktop .= '<li><a href="' . $prefix . $href . '"' . $classAttr . '>' . $label . '</a></li>';
+        if ($key === 'coleta') {
+            continue;
+        }
+        $classAttr = $key === $active ? ' class="active"' : '';
+        $menuItems .= '<a href="' . $prefix . $href . '"' . $classAttr . '>' . $label . '</a>';
     }
 
-    // Links mobile (mesma ordem)
-    $mobile = '';
-    foreach ($items as $key => [$href, $label, $extra]) {
-        $classAttr = $key === $active ? ' class="active"' : '';
-        $mobile .= '<a href="' . $prefix . $href . '"' . $classAttr . '>' . $label . '</a>';
-    }
+    $coletaActive = $active === 'coleta' ? ' active' : '';
 
     return '
   <nav class="navbar">
@@ -121,16 +118,28 @@ function site_navbar(string $active = '', string $prefix = ''): string
         <span class="logo-icon">♻️</span>
         <span class="logo-text">ColetaFácil</span>
       </a>
-      <ul class="nav-links">
-        ' . $desktop . '
-        ' . site_auth_links($prefix) . '
-      </ul>
+
+      <div class="nav-dropdown" id="navMenuDropdown">
+        <button type="button" class="nav-dd-trigger' . $coletaActive . '" onclick="toggleDropdown(event, \'navMenuDropdown\')" aria-haspopup="true" aria-expanded="false">
+          🗓️ Coleta <span class="nav-dd-caret">▾</span>
+        </button>
+        <div class="nav-dd-panel">
+          <a href="' . $prefix . 'coleta.php"' . ($active === 'coleta' ? ' class="active"' : '') . '>🗓️ Consultar Coleta</a>
+          <div class="nav-dd-sep"></div>
+          ' . $menuItems . '
+        </div>
+      </div>
+
       ' . theme_toggle_button() . '
-      <button class="menu-btn" onclick="toggleMenu()" aria-label="Abrir menu">☰</button>
-    </div>
-    <div class="mobile-menu" id="mobileMenu">
-      ' . $mobile . '
-      ' . site_auth_mobile_links($prefix) . '
+
+      <div class="nav-dropdown" id="navUserDropdown">
+        <button type="button" class="nav-user-trigger" onclick="toggleDropdown(event, \'navUserDropdown\')" aria-haspopup="true" aria-expanded="false" aria-label="Conta">
+          👤
+        </button>
+        <div class="nav-dd-panel nav-dd-panel-right">
+          ' . site_auth_links($prefix) . '
+        </div>
+      </div>
     </div>
   </nav>';
 }
@@ -141,14 +150,15 @@ function site_auth_links(string $prefix = ''): string
     $links = '';
     if ($user) {
         $nome = htmlspecialchars($user['nome'], ENT_QUOTES, 'UTF-8');
-        $links .= '<li><span class="nav-user">Olá, ' . $nome . '</span></li>';
+        $links .= '<span class="nav-dd-user">Olá, ' . $nome . '</span>';
+        $links .= '<div class="nav-dd-sep"></div>';
         if ($user['tipo'] === 'ADMINISTRADOR') {
-            $links .= '<li><a href="' . $prefix . 'admin/index.php" class="nav-admin">Admin</a></li>';
+            $links .= '<a href="' . $prefix . 'admin/index.php">⚙️ Admin</a>';
         }
-        $links .= '<li><a href="' . $prefix . 'logout.php">Sair</a></li>';
+        $links .= '<a href="' . $prefix . 'logout.php">🚪 Sair</a>';
     } else {
-        $links .= '<li><a href="' . $prefix . 'login.php">Entrar</a></li>';
-        $links .= '<li><a href="' . $prefix . 'cadastro.php">Cadastrar</a></li>';
+        $links .= '<a href="' . $prefix . 'login.php">🔑 Entrar</a>';
+        $links .= '<a href="' . $prefix . 'cadastro.php">📝 Cadastrar</a>';
     }
     return $links;
 }
@@ -168,6 +178,7 @@ function theme_toggle_button(): string
     return '<button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>';
 }
 
+/** Links de conta usados pela navbar própria da Área Kids. */
 function site_auth_mobile_links(string $prefix = ''): string
 {
     $user = auth_user();
@@ -180,3 +191,5 @@ function site_auth_mobile_links(string $prefix = ''): string
     }
     return '<a href="' . $prefix . 'login.php">🔑 Entrar</a><a href="' . $prefix . 'cadastro.php">📝 Cadastrar</a>';
 }
+
+
