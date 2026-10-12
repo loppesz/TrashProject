@@ -17,7 +17,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ColetaFácil">
-  <link rel="stylesheet" href="style.css?v=17">
+  <link rel="stylesheet" href="style.css?v=31">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
@@ -180,6 +180,32 @@
   </section>
 
   <!-- ================================================
+       CONTADORES DE IMPACTO
+  ================================================ -->
+  <section class="impact-section">
+    <div class="container">
+      <div class="impact-grid">
+        <div class="impact-item">
+          <span class="impact-number" data-target="1240">0</span>
+          <span class="impact-label">Ocorrências Resolvidas</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="5830">0</span>
+          <span class="impact-label">Consultas Realizadas</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="342">0</span>
+          <span class="impact-label">Heróis da Reciclagem</span>
+        </div>
+        <div class="impact-item">
+          <span class="impact-number" data-target="18">0</span>
+          <span class="impact-label">Bairros Atendidos</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================
        O IMPACTO REAL DO DESCARTE
   ================================================ -->
   <section class="impacto-real-section">
@@ -222,247 +248,46 @@
   </section>
 
   <!-- ================================================
-       CONSCIENTIZAÇÃO
+       ÁREA KIDS + RANKING
   ================================================ -->
-  <section class="conscientiza-section">
+  <section class="kr2-section">
     <div class="container">
       <div class="section-header">
-        <h2>Reciclar certo protege pessoas</h2>
-        <p>A forma como separamos o lixo tem impacto direto na saúde dos coletores e do meio ambiente</p>
+        <h2>Engaje, aprenda e seja recompensado</h2>
+        <p>Diversão para as crianças e reconhecimento para quem recicla</p>
       </div>
-      <div class="cz-pilares">
-        <a href="materiais.php" class="cz-pilar">
-          <span class="cz-pilar-icon">🧤</span>
-          <h3>Proteja os coletores</h3>
-          <p>Vidros e materiais cortantes mal embalados causam acidentes graves. Embale com cuidado e identifique.</p>
-          <span class="cz-pilar-link">Ver guia de materiais →</span>
+
+      <div class="kr2-grid">
+
+        <!-- CARD: ÁREA KIDS (estilo da página Kids) -->
+        <a href="kids.php" class="kr2-card kr2-kids">
+          <div class="kr2-kids-mascot" aria-hidden="true">
+            <div class="kkm-eyes"><span></span><span></span></div>
+            <div class="kkm-smile">◡</div>
+          </div>
+          <h3>Área Kids</h3>
+          <p>Jogos educativos, quizzes e desafios que ensinam as crianças a reciclar de um jeito divertido.</p>
+          <div class="kr2-chips">
+            <span>🎮 Jogos</span>
+            <span>❓ Quiz</span>
+            <span>🏅 Conquistas</span>
+          </div>
+          <span class="kr2-link kr2-link-light">Entrar na Área Kids →</span>
         </a>
-        <a href="pontos.php" class="cz-pilar">
-          <span class="cz-pilar-icon">🌱</span>
-          <h3>Evite a contaminação</h3>
-          <p>Pilhas, óleo e eletrônicos no lixo comum contaminam o solo e a água por décadas. Leve a pontos adequados.</p>
-          <span class="cz-pilar-link">Encontrar pontos de descarte →</span>
-        </a>
-        <a href="ocorrencias.php" class="cz-pilar">
-          <span class="cz-pilar-icon">♻️</span>
-          <h3>Cuide do espaço público</h3>
-          <p>Descarte irregular entope bueiros e causa enchentes. Reporte e ajude a manter a cidade limpa.</p>
-          <span class="cz-pilar-link">Registrar uma ocorrência →</span>
-        </a>
-      </div>
-    </div>
-  </section>
 
-  <!-- ================================================
-       CONTADORES DE IMPACTO
-  ================================================ -->
-  <section class="impact-section">
-    <div class="container">
-      <div class="impact-grid">
-        <div class="impact-item">
-          <span class="impact-number" data-target="1240">0</span>
-          <span class="impact-label">Ocorrências Resolvidas</span>
+        <!-- CARD: RANKING / RECOMPENSAS -->
+        <div class="kr2-card kr2-reward">
+          <div class="kr2-icon">🏆</div>
+          <h3>Heróis da Reciclagem</h3>
+          <p>Ganhe pontos reciclando e reportando. Veja quem lidera o ranking da cidade este mês.</p>
+          <ul class="kr2-rank">
+            <li><span class="kr2-pos pos-1">1º</span> <span class="kr2-name">Maria Silva</span> <span class="kr2-pts">2.450 pts</span></li>
+            <li><span class="kr2-pos pos-2">2º</span> <span class="kr2-name">João Ferreira</span> <span class="kr2-pts">2.190 pts</span></li>
+            <li><span class="kr2-pos pos-3">3º</span> <span class="kr2-name">Ana Costa</span> <span class="kr2-pts">1.870 pts</span></li>
+          </ul>
+          <a href="recompensas.php" class="kr2-link kr2-link-reward">Ver ranking completo →</a>
         </div>
-        <div class="impact-item">
-          <span class="impact-number" data-target="5830">0</span>
-          <span class="impact-label">Consultas Realizadas</span>
-        </div>
-        <div class="impact-item">
-          <span class="impact-number" data-target="342">0</span>
-          <span class="impact-label">Heróis da Reciclagem</span>
-        </div>
-        <div class="impact-item">
-          <span class="impact-number" data-target="18">0</span>
-          <span class="impact-label">Bairros Atendidos</span>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- ================================================
-       COMO FUNCIONA
-  ================================================ -->
-  <section class="howto-section">
-    <div class="container">
-      <div class="section-header">
-        <h2>Como funciona?</h2>
-        <p>Em 3 passos simples você já pode participar</p>
-      </div>
-      <div class="steps-grid">
-        <div class="step-item">
-          <div class="step-num">1</div>
-          <div class="step-content">
-            <h3>Consulte sua rua</h3>
-            <p>Digite seu endereço e descubra os dias e horários da coleta seletiva na sua região.</p>
-          </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-item">
-          <div class="step-num">2</div>
-          <div class="step-content">
-            <h3>Separe corretamente</h3>
-            <p>Use o guia de materiais para aprender a separar e preparar cada tipo de resíduo com segurança.</p>
-          </div>
-        </div>
-        <div class="step-arrow">→</div>
-        <div class="step-item">
-          <div class="step-num">3</div>
-          <div class="step-content">
-            <h3>Reporte e ganhe</h3>
-            <p>Viu algum problema? Reporte uma ocorrência e acumule pontos para trocar por recompensas.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       RANKING – HERÓIS DA RECICLAGEM
-  ================================================ -->
-  <section class="ranking-section">
-    <div class="container">
-      <div class="section-header light">
-        <h2>🏆 Heróis da Reciclagem</h2>
-        <p>Quem mais contribuiu com a limpeza da cidade esse mês</p>
-      </div>
-      <div class="ranking-grid">
-        <div class="ranking-card">
-          <div class="ranking-podium gold">🥇</div>
-          <div class="ranking-avatar">👩</div>
-          <h4>Maria Silva</h4>
-          <p class="ranking-bairro">Centro</p>
-          <div class="ranking-points">2.450 pts</div>
-          <div class="ranking-badges">
-            <span title="Reportou 10 ocorrências">🚨</span>
-            <span title="30 dias seguidos">🔥</span>
-            <span title="Estrela da semana">⭐</span>
-          </div>
-        </div>
-        <div class="ranking-card">
-          <div class="ranking-podium silver">🥈</div>
-          <div class="ranking-avatar">👨</div>
-          <h4>João Ferreira</h4>
-          <p class="ranking-bairro">Vila Nova</p>
-          <div class="ranking-points">2.190 pts</div>
-          <div class="ranking-badges">
-            <span title="Reportou 8 ocorrências">🚨</span>
-            <span title="Mestre do Vidro">🍶</span>
-          </div>
-        </div>
-        <div class="ranking-card">
-          <div class="ranking-podium bronze">🥉</div>
-          <div class="ranking-avatar">👧</div>
-          <h4>Ana Costa</h4>
-          <p class="ranking-bairro">Bairro Novo</p>
-          <div class="ranking-points">1.870 pts</div>
-          <div class="ranking-badges">
-            <span title="Kids Master">🧒</span>
-            <span title="Eco Guerreiro">🌿</span>
-          </div>
-        </div>
-        <div class="ranking-card small">
-          <span class="rank-pos">4º</span>
-          <div class="ranking-avatar sm">🧑</div>
-          <h4>Carlos M.</h4>
-          <div class="ranking-points sm">1.540 pts</div>
-        </div>
-        <div class="ranking-card small">
-          <span class="rank-pos">5º</span>
-          <div class="ranking-avatar sm">👩</div>
-          <h4>Paula R.</h4>
-          <div class="ranking-points sm">1.320 pts</div>
-        </div>
-        <div class="ranking-card small cta-card" onclick="location.href='recompensas.php'">
-          <span class="rank-pos">Você?</span>
-          <div class="ranking-avatar sm">🤔</div>
-          <h4>Cadastre-se</h4>
-          <div class="ranking-points sm">0 pts</div>
-        </div>
-      </div>
-      <div class="ranking-cta">
-        <a href="recompensas.php" class="btn-ranking">Ver ranking completo →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       ORIENTAÇÕES RÁPIDAS
-  ================================================ -->
-  <section class="orientacoes-v2">
-    <div class="container">
-      <div class="section-header">
-        <h2>Descarte correto, coletor protegido</h2>
-        <p>Pequenos cuidados fazem grande diferença para quem faz a coleta</p>
-      </div>
-      <div class="orientacoes-v2-grid">
-        <div class="ov2-item">
-          <div class="ov2-icon green">✅</div>
-          <div>
-            <h4>Papel e Papelão</h4>
-            <p>Seco, dobrado, sem grampos e fitas adesivas.</p>
-          </div>
-        </div>
-        <div class="ov2-item">
-          <div class="ov2-icon blue">✅</div>
-          <div>
-            <h4>Plástico</h4>
-            <p>Lavado e amassado. Tampas retiradas das garrafas PET.</p>
-          </div>
-        </div>
-        <div class="ov2-item">
-          <div class="ov2-icon yellow">✅</div>
-          <div>
-            <h4>Metal</h4>
-            <p>Latas lavadas e amassadas. ⚠️ Cuidado com bordas cortantes.</p>
-          </div>
-        </div>
-        <div class="ov2-item">
-          <div class="ov2-icon orange">⚠️</div>
-          <div>
-            <h4>Vidro</h4>
-            <p>Vidros quebrados: embrulhe em jornal e escreva "CUIDADO VIDRO".</p>
-          </div>
-        </div>
-        <div class="ov2-item">
-          <div class="ov2-icon red">❌</div>
-          <div>
-            <h4>Seringas e perfurocortantes</h4>
-            <p>NUNCA coloque na coleta. Leve a uma UBS ou farmácia.</p>
-          </div>
-        </div>
-        <div class="ov2-item">
-          <div class="ov2-icon red">❌</div>
-          <div>
-            <h4>Lixo orgânico e fraldas</h4>
-            <p>Não pertencem à coleta seletiva. Use o lixo comum.</p>
-          </div>
-        </div>
-      </div>
-      <div style="text-align:center; margin-top:32px;">
-        <a href="materiais.php" class="btn-outline-green">Ver guia completo de materiais →</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ================================================
-       CTA KIDS
-  ================================================ -->
-  <section class="kids-cta-section">
-    <div class="container">
-      <div class="kids-cta-card">
-        <div class="kids-cta-text">
-          <span class="kids-tag">🧒 Área Kids</span>
-          <h2>Seu filho sabe reciclar?</h2>
-          <p>A Área Kids do ColetaFácil tem jogos, quiz e atividades educativas para ensinar as crianças a cuidar do planeta de forma divertida!</p>
-          <a href="kids.php" class="btn-kids">Entrar na Área Kids 🚀</a>
-        </div>
-        <div class="kids-cta-emojis">
-          <span class="ke">🌍</span>
-          <span class="ke">♻️</span>
-          <span class="ke">🧒</span>
-          <span class="ke">🌱</span>
-          <span class="ke">🐸</span>
-        </div>
       </div>
     </div>
   </section>
@@ -507,6 +332,6 @@
     </div>
   </footer>
 
-  <script src="script.js?v=16"></script>
+  <script src="script.js?v=31"></script>
 </body>
 </html>

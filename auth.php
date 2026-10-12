@@ -88,6 +88,7 @@ function site_nav_items(): array
         'ocorrencias'  => ['ocorrencias.php', 'Ocorrências',     ''],
         'kids'         => ['kids.php',        '🧒 Kids',         'nav-kids'],
         'recompensas'  => ['recompensas.php', '⭐ Recompensas',   'nav-reward'],
+        'sobre'        => ['sobre.php',       'Quem somos',      ''],
     ];
 }
 
@@ -129,6 +130,9 @@ function site_navbar(string $active = '', string $prefix = ''): string
           ' . $menuItems . '
         </div>
       </div>
+
+      <a href="' . $prefix . 'kids.php" class="nav-pill nav-pill-kids' . ($active === 'kids' ? ' active' : '') . '">🧒 Kids</a>
+      <a href="' . $prefix . 'recompensas.php" class="nav-pill nav-pill-reward' . ($active === 'recompensas' ? ' active' : '') . '">⭐ Recompensas</a>
 
       ' . theme_toggle_button() . '
 

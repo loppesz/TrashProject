@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'coletafacil-v17';
+﻿const CACHE_NAME = 'coletafacil-v31';
 const PRECACHE = [
   './index.php',
   './style.css',
@@ -21,6 +21,7 @@ const PRECACHE = [
   './kids-data.js',
   './busca.php',
   './busca.js',
+  './sobre.php',
   './offline.php',
   './404.php',
 ];

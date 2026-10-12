@@ -265,8 +265,8 @@ function initScrollReveal() {
   // Seleciona blocos que valem a pena animar
   const targets = document.querySelectorAll(
     '.feature-card-v2, .material-card, .ponto-card, .recompensa-card, ' +
-    '.step-item, .ov2-item, .pontos-como-item, .section-header, ' +
-    '.ranking-card, .my-points-card, .kids-cta-card, .resultado-card-v2'
+    '.pontos-como-item, .section-header, .impacto-card, .kr2-card, ' +
+    '.ranking-card, .my-points-card, .resultado-card-v2'
   );
 
   targets.forEach((el, i) => {
