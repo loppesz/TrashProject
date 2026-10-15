@@ -1,18 +1,4 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ocorrências – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="ocorrencias.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <?= site_navbar('ocorrencias') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- HEADER -->
   <div class="page-header-rich">
@@ -20,7 +6,7 @@
       <div class="phr-inner">
         <div>
           <nav class="breadcrumb-nav" style="margin-bottom:10px">
-            <a href="index.php" style="color:#4ade80">Início</a>
+            <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a>
             <span style="color:#475569">/</span>
             <span style="color:#94a3b8">Ocorrências</span>
           </nav>
@@ -48,7 +34,7 @@
   <!-- CONSCIENTIZAÇÃO CÍVICA -->
   <div class="container">
     <div class="civica-banner">
-      <div class="civica-img" style="background-image:url('img/lixo-urbano.jpg')" role="img" aria-label="Lixo acumulado em via pública"></div>
+      <div class="civica-img" style="background-image:url('<?= baseUrl('assets/img/lixo-urbano.jpg') ?>')" role="img" aria-label="Lixo acumulado em via pública"></div>
       <div class="civica-text">
         <span class="civica-tag">🏙️ Cidadania ativa</span>
         <h2>O lixo no lugar errado volta pra todo mundo</h2>
@@ -244,7 +230,7 @@
             <div class="pl-item"><span>📸 + Foto aprovada</span><strong>+20 pts</strong></div>
             <div class="pl-item"><span>✅ Quando resolvida</span><strong>+30 pts</strong></div>
           </div>
-          <a href="recompensas.php" class="link-recompensas">Ver o que fazer com os pontos →</a>
+          <a href="<?= baseUrl('home/recompensas') ?>" class="link-recompensas">Ver o que fazer com os pontos →</a>
         </div>
 
         <!-- URGÊNCIA -->
@@ -445,36 +431,4 @@
   <!-- TOAST -->
   <div id="ocToast" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:opacity .3s;"></div>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Juntos tornamos nossa cidade mais limpa e saudável.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Navegação</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="coleta.php">Consultar Coleta</a></li>
-          <li><a href="materiais.php">Guia de Materiais</a></li>
-          <li><a href="pontos.php">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.php">Ocorrências</a></li>
-          <li><a href="recompensas.php">Recompensas</a></li>
-        </ul>
-      </div>
-      <div class="footer-links">
-        <h4>Projeto</h4>
-        <ul>
-          <li>Curso: ADS</li>
-          <li>Extensão Universitária III</li>
-          <li>Prof. Aldecir Fonseca</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p></div>
-  </footer>
-
-  <script src="script.js"></script>
-  <script src="ocorrencias.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>

@@ -1,9 +1,10 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sem conexão – ColetaFácil</title>
+  <link rel="stylesheet" href="/assets/css/style.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Segoe UI', sans-serif; background: #0f172a; color: #f1f5f9; display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 20px; }
@@ -25,10 +26,10 @@
     <h1>Você está offline</h1>
     <p>Sem conexão com a internet no momento. As páginas que você visitou anteriormente ainda estão disponíveis no cache do seu dispositivo.</p>
     <div class="links">
-      <a href="./index.php">🏠 Ir para o Início</a>
-      <a href="./coleta.php">🗓️ Consultar Coleta</a>
-      <a href="./materiais.php">📦 Guia de Materiais</a>
-      <a href="./pontos.php" class="secondary">📍 Pontos de Descarte</a>
+      <a href="/">🏠 Ir para o Início</a>
+      <a href="/coleta">🗓️ Consultar Coleta</a>
+      <a href="/home/materiais">📦 Guia de Materiais</a>
+      <a href="/ponto" class="secondary">📍 Pontos de Descarte</a>
     </div>
   </div>
 </body>

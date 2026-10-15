@@ -1,37 +1,18 @@
-﻿const CACHE_NAME = 'coletafacil-v31';
+﻿const CACHE_NAME = 'coletafacil-v32';
 const PRECACHE = [
-  './index.php',
-  './style.css',
-  './script.js',
-  './coleta.php',
-  './coleta.css',
-  './coleta.js',
-  './pontos.php',
-  './pontos.css',
-  './pontos.js',
-  './mapa.js',
-  './materiais.php',
-  './ocorrencias.php',
-  './ocorrencias.css',
-  './ocorrencias.js',
-  './recompensas.php',
-  './kids.php',
-  './kids.css',
-  './kids.js',
-  './kids-data.js',
-  './busca.php',
-  './busca.js',
-  './sobre.php',
-  './offline.php',
-  './404.php',
+  '/',
+  '/assets/css/style.css',
+  '/assets/js/script.js',
+  '/home/offline',
 ];
 
-// Install – precache
+// Install – precache mínimo (demais recursos entram sob demanda no fetch)
 self.addEventListener('install', e => {
   e.waitUntil(
     caches.open(CACHE_NAME)
       .then(c => c.addAll(PRECACHE))
       .then(() => self.skipWaiting())
+      .catch(() => self.skipWaiting())
   );
 });
 
@@ -44,12 +25,12 @@ self.addEventListener('activate', e => {
   );
 });
 
-// Fetch – cache-first para estáticos, network-first para o resto
+// Fetch – cache-first para estáticos, network-first para páginas (rotas MVC)
 self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
 
   const url = new URL(e.request.url);
-  const isStatic = /\.(html|css|js|json|png|jpg|svg|ico|webp|woff2?)$/.test(url.pathname);
+  const isStatic = /\.(css|js|json|png|jpg|jpeg|svg|ico|webp|woff2?|mp4)$/.test(url.pathname);
 
   if (isStatic) {
     e.respondWith(
@@ -59,12 +40,12 @@ self.addEventListener('fetch', e => {
           const clone = res.clone();
           caches.open(CACHE_NAME).then(c => c.put(e.request, clone));
           return res;
-        }).catch(() => caches.match('./offline.php'));
+        }).catch(() => caches.match('/home/offline'));
       })
     );
   } else {
     e.respondWith(
-      fetch(e.request).catch(() => caches.match('./offline.php'))
+      fetch(e.request).catch(() => caches.match('/home/offline'))
     );
   }
 });

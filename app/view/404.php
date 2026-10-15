@@ -1,19 +1,4 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Página não encontrada – ColetaFácil</title>
-  <meta name="description" content="Página não encontrada no ColetaFácil – Plataforma de coleta seletiva de Muriaé-MG">
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#00c853">
-  <script>(function(){var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}());</script>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-  <?= site_navbar('') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <div class="not-found-section">
     <div class="container">
@@ -23,12 +8,12 @@
         <h1>Página não encontrada</h1>
         <p>O endereço que você digitou não existe ou foi movido.<br>Mas ainda dá para encontrar o que precisa aqui:</p>
         <div class="nf-links">
-          <a href="index.php" class="nf-link green">🏠 Ir para o Início</a>
-          <a href="coleta.php" class="nf-link">🗓️ Consultar Coleta</a>
-          <a href="pontos.php" class="nf-link">📍 Pontos de Descarte</a>
-          <a href="materiais.php" class="nf-link">📦 Guia de Materiais</a>
-          <a href="ocorrencias.php" class="nf-link">🚨 Registrar Ocorrência</a>
-          <a href="kids.php" class="nf-link purple">🧒 Área Kids</a>
+          <a href="<?= baseUrl() ?>" class="nf-link green">🏠 Ir para o Início</a>
+          <a href="<?= baseUrl('coleta') ?>" class="nf-link">🗓️ Consultar Coleta</a>
+          <a href="<?= baseUrl('ponto') ?>" class="nf-link">📍 Pontos de Descarte</a>
+          <a href="<?= baseUrl('home/materiais') ?>" class="nf-link">📦 Guia de Materiais</a>
+          <a href="<?= baseUrl('ocorrencia') ?>" class="nf-link">🚨 Registrar Ocorrência</a>
+          <a href="<?= baseUrl('home/kids') ?>" class="nf-link purple">🧒 Área Kids</a>
         </div>
       </div>
     </div>
@@ -50,16 +35,4 @@
     @media(max-width:480px){.nf-links{grid-template-columns:1fr}}
   </style>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Plataforma de coleta seletiva de Muriaé-MG.</p>
-      </div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III – ADS</p></div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>

@@ -1,29 +1,4 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <script>
-    (function(){
-      var t = localStorage.getItem('theme') || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-      if(t === 'dark') document.documentElement.classList.add('dark');
-    })();
-  </script>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Consulte o calendário de coleta seletiva em Muriaé-MG. Veja os dias e horários de coleta por bairro – ColetaFácil.">
-  <title>Consultar Coleta – ColetaFácil</title>
-  <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#00c853">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="ColetaFácil">
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="coleta.css?v=3">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <?= site_navbar('coleta') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- HERO COLETA -->
   <section class="coleta-hero">
@@ -31,7 +6,7 @@
       <div class="coleta-hero-inner">
         <div class="coleta-hero-text">
           <nav class="breadcrumb-nav" style="margin-bottom:10px">
-            <a href="index.php" style="color:#4ade80">Início</a> <span style="color:#475569">/</span>
+            <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a> <span style="color:#475569">/</span>
             <span style="color:#94a3b8">Consultar Coleta</span>
           </nav>
           <h1>🗓️ Quando passa a coleta<br>na <span style="color:#4ade80">sua rua?</span></h1>
@@ -155,7 +130,7 @@
               <span>💊 Medicamentos</span>
               <span>💉 Perfurocortantes</span>
             </div>
-            <a href="pontos.php" class="link-pontos">Ver pontos para esses materiais →</a>
+            <a href="<?= baseUrl('ponto') ?>" class="link-pontos">Ver pontos para esses materiais →</a>
           </div>
         </div>
 
@@ -224,7 +199,7 @@
               <strong>Ponto de descarte mais próximo</strong>
               <p>Ecoponto Centro – Rua das Flores, 123 (0,3km)</p>
             </div>
-            <a href="pontos.php#ponto1" class="mri-link">Ver →</a>
+            <a href="<?= baseUrl('ponto') ?>#ponto1" class="mri-link">Ver →</a>
           </div>
           <div class="mri-item">
             <span>🏥</span>
@@ -232,7 +207,7 @@
               <strong>Para materiais especiais</strong>
               <p>UBS Central – Rua da Saúde, 10 (0,8km)</p>
             </div>
-            <a href="pontos.php#ponto4" class="mri-link">Ver →</a>
+            <a href="<?= baseUrl('ponto') ?>#ponto4" class="mri-link">Ver →</a>
           </div>
         </div>
       </div>
@@ -341,26 +316,4 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Informação clara sobre coleta seletiva para toda a comunidade.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Navegação</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="coleta.php">Consultar Coleta</a></li>
-          <li><a href="pontos.php">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.php">Ocorrências</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p></div>
-  </footer>
-
-  <script src="script.js"></script>
-  <script src="coleta.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>

@@ -1,21 +1,7 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pontos de Descarte – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="pontos.css">
-  <!-- Leaflet (mapa interativo, OpenStreetMap) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
-  <?= site_navbar('pontos') ?>
+  <!-- Leaflet (mapa interativo, OpenStreetMap) -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
   <!-- PAGE HEADER -->
   <div class="page-header-rich">
@@ -23,7 +9,7 @@
       <div class="phr-inner">
         <div>
           <nav class="breadcrumb-nav">
-            <a href="index.php">Início</a> <span>/</span>
+            <a href="<?= baseUrl() ?>">Início</a> <span>/</span>
             <span class="bc-active">Pontos de Descarte</span>
           </nav>
           <h1>📍 Pontos de Descarte</h1>
@@ -50,7 +36,7 @@
   <!-- BANNER DE CONSCIENTIZAÇÃO -->
   <div class="container">
     <div class="eco-banner">
-      <div class="eco-banner-img" style="background-image:url('img/poluicao-residuos.jpg')" role="img" aria-label="Resíduos descartados de forma incorreta no ambiente"></div>
+      <div class="eco-banner-img" style="background-image:url('<?= baseUrl('assets/img/poluicao-residuos.jpg') ?>')" role="img" aria-label="Resíduos descartados de forma incorreta no ambiente"></div>
       <div class="eco-banner-text">
         <span class="eco-banner-tag">🌍 Por que entregar no lugar certo?</span>
         <h2>Eletrônicos, pilhas e lâmpadas não são lixo comum</h2>
@@ -719,38 +705,6 @@
   <!-- TOAST -->
   <div id="toastMsg" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);"></div>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Facilitando o descarte correto para toda a comunidade.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Navegação</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="materiais.php">Guia de Materiais</a></li>
-          <li><a href="pontos.php">Pontos de Descarte</a></li>
-          <li><a href="coleta.php">Consultar Coleta</a></li>
-          <li><a href="ocorrencias.php">Ocorrências</a></li>
-        </ul>
-      </div>
-      <div class="footer-links">
-        <h4>Projeto</h4>
-        <ul>
-          <li>Curso: ADS</li>
-          <li>Extensão Universitária III</li>
-          <li>Prof. Aldecir Fonseca</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom"><p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p></div>
-  </footer>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-  <script src="script.js"></script>
-  <script src="pontos.js"></script>
-  <script src="mapa.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>

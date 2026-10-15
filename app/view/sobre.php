@@ -1,18 +1,4 @@
-<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Quem somos – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css?v=31">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <?= site_navbar('sobre') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- PAGE HEADER -->
   <div class="page-header">
@@ -121,46 +107,4 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80; font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Promovendo a coleta seletiva e a conscientização ambiental na nossa comunidade.</p>
-        <div class="footer-social">
-          <a href="#" title="Instagram">📸</a>
-          <a href="#" title="Facebook">📘</a>
-          <a href="#" title="WhatsApp">💬</a>
-        </div>
-      </div>
-      <div class="footer-links">
-        <h4>Plataforma</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="materiais.php">Guia de Materiais</a></li>
-          <li><a href="pontos.php">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.php">Registrar Ocorrência</a></li>
-          <li><a href="recompensas.php">Recompensas</a></li>
-          <li><a href="kids.php">Área Kids</a></li>
-        </ul>
-      </div>
-      <div class="footer-links">
-        <h4>Projeto</h4>
-        <ul>
-          <li>Curso: ADS</li>
-          <li>Extensão Universitária III</li>
-          <li>Prof. Aldecir Fonseca</li>
-          <li style="margin-top:8px; color:#94a3b8;">Heron Leal – (32) 9 8411-6731</li>
-          <li style="color:#94a3b8;">Nattan Silva – (32) 9 9917-3481</li>
-          <li style="color:#94a3b8;">Paulo Victor – (32) 9 8809-4464</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III – ADS</p>
-    </div>
-  </footer>
-
-  <script src="script.js?v=31"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>

@@ -1,17 +1,4 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Recompensas – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <?= site_navbar('recompensas') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- HERO RECOMPENSAS -->
   <section class="reward-hero">
@@ -21,7 +8,7 @@
           <span class="hero-badge">⭐ Sistema de Recompensas</span>
           <h1>Recicle, reporte<br>e <span class="text-yellow">ganhe prêmios!</span></h1>
           <p>Cada ocorrência reportada vale pontos. Troque seus pontos por recompensas reais na sua comunidade.</p>
-          <a href="ocorrencias.php" class="btn-reward-hero">Começar a ganhar pontos →</a>
+          <a href="<?= baseUrl('ocorrencia') ?>" class="btn-reward-hero">Começar a ganhar pontos →</a>
         </div>
         <div class="reward-hero-visual">
           <div class="reward-coin">
@@ -278,28 +265,6 @@
     </div>
   </div>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80; font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Recicle, reporte e ganhe recompensas pela sua contribuição ambiental.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Navegação</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="ocorrencias.php">Registrar Ocorrência</a></li>
-          <li><a href="recompensas.php">Recompensas</a></li>
-          <li><a href="kids.php">Área Kids</a></li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
   <script>
     function resgatar(btn, custo) {
       const code = 'CF-' + Math.random().toString(36).substring(2,8).toUpperCase();
@@ -310,5 +275,5 @@
       document.getElementById('modalResgate').style.display = 'none';
     }
   </script>
-</body>
-</html>
+
+<?php require_once 'app/view/comuns/rodape.php'; ?>

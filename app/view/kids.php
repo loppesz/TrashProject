@@ -1,13 +1,12 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <?= theme_head_script() ?>
+  <?= themeHeadScript() ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Área Kids – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="kids.css">
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>">
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/kids.css') ?>">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="kids-body">
@@ -15,11 +14,11 @@
   <!-- NAVBAR KIDS -->
   <nav class="navbar kids-navbar">
     <div class="container nav-inner">
-      <a href="index.php" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
+      <a href="<?= baseUrl() ?>" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
       <div class="kids-nav-right">
         <div class="kids-nav-points">⭐ <span id="kidsPointsNav">0</span> pts</div>
-        <a href="index.php" class="kids-back-btn">← Voltar ao site</a>
-        <?= site_auth_mobile_links() ?>
+        <a href="<?= baseUrl() ?>" class="kids-back-btn">← Voltar ao site</a>
+        <a href="<?= baseUrl('usuario/login') ?>">🔑 Entrar</a>
       </div>
     </div>
   </nav>
@@ -460,11 +459,11 @@
 
   <footer style="background:#1a1a2e;color:#a0a0c0;text-align:center;padding:20px;">
     <p>🌍 ColetaFácil Kids – Aprendendo a cuidar do planeta! © 2026</p>
-    <a href="index.php" style="color:#4ade80;font-size:.85rem;">← Voltar ao site principal</a>
+    <a href="<?= baseUrl() ?>" style="color:#4ade80;font-size:.85rem;">← Voltar ao site principal</a>
   </footer>
 
-  <script src="script.js"></script>
-  <script src="kids-data.js"></script>
-  <script src="kids.js"></script>
+  <script src="<?= baseUrl('assets/js/script.js') ?>"></script>
+  <script src="<?= baseUrl('assets/js/kids-data.js') ?>"></script>
+  <script src="<?= baseUrl('assets/js/kids.js') ?>"></script>
 </body>
 </html>

@@ -1,0 +1,11 @@
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Nao reescreve se o alvo for um arquivo real (-f) ou diretorio real (-d).
+    # Isso permite servir assets (css/js/img), o manifest e o sw.js diretamente.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+
+    # Todas as demais requisicoes vao para o Front Controller.
+    RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>

@@ -1,18 +1,4 @@
-﻿<?php require_once __DIR__ . '/auth.php'; ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Guia de Materiais – ColetaFácil</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-  <?= site_navbar('materiais') ?>
+<?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- PAGE HEADER -->
   <div class="page-header">
@@ -25,7 +11,7 @@
   <!-- DESTAQUE: PROTEÇÃO DO COLETOR -->
   <div class="container">
     <div class="coletor-destaque">
-      <div class="coletor-destaque-img" style="background-image:url('img/hero-coletor.jpg')" role="img" aria-label="Coletor de resíduos sorrindo durante o trabalho"></div>
+      <div class="coletor-destaque-img" style="background-image:url('<?= baseUrl('assets/img/hero-coletor.jpg') ?>')" role="img" aria-label="Coletor de resíduos sorrindo durante o trabalho"></div>
       <div class="coletor-destaque-text">
         <span class="coletor-tag">🧤 A sua atitude em casa salva vidas</span>
         <h2>Como você separa define a segurança de quem recolhe</h2>
@@ -217,41 +203,4 @@
     </div>
   </section>
 
-  <footer class="footer">
-    <div class="container footer-inner">
-      <div class="footer-brand">
-        <span class="logo" style="color:#4ade80;font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Promovendo a coleta seletiva e a conscientização ambiental.</p>
-      </div>
-      <div class="footer-links">
-        <h4>Navegação</h4>
-        <ul>
-          <li><a href="index.php">Início</a></li>
-          <li><a href="coleta.php">Consultar Coleta</a></li>
-          <li><a href="materiais.php">Guia de Materiais</a></li>
-          <li><a href="pontos.php">Pontos de Descarte</a></li>
-          <li><a href="ocorrencias.php">Ocorrências</a></li>
-          <li><a href="recompensas.php">Recompensas</a></li>
-          <li><a href="kids.php">Área Kids</a></li>
-        </ul>
-      </div>
-      <div class="footer-links">
-        <h4>Projeto</h4>
-        <ul>
-          <li>Curso: ADS</li>
-          <li>Extensão Universitária III</li>
-          <li>Prof. Aldecir Fonseca</li>
-          <li style="margin-top:8px;color:#94a3b8;">Heron Leal</li>
-          <li style="color:#94a3b8;">Nattan Silva</li>
-          <li style="color:#94a3b8;">Paulo Victor</li>
-        </ul>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III – ADS</p>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/rodape.php'; ?>
