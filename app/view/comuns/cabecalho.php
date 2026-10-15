@@ -37,9 +37,10 @@ $usuario = auth_user();
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="ColetaFácil">
-  <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>">
+  <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>?v=<?= $assetV ?>">
   <?php foreach ($cssPagina as $css): ?>
-  <link rel="stylesheet" href="<?= baseUrl('assets/css/' . $css) ?>">
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/' . $css) ?>?v=<?= $assetV ?>">
   <?php endforeach; ?>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">

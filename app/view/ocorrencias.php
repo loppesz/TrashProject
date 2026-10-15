@@ -1,33 +1,13 @@
 <?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
   <!-- HEADER -->
-  <div class="page-header-rich">
+  <div class="page-header-slim">
     <div class="container">
-      <div class="phr-inner">
-        <div>
-          <nav class="breadcrumb-nav" style="margin-bottom:10px">
-            <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a>
-            <span style="color:#475569">/</span>
-            <span style="color:#94a3b8">Ocorrências</span>
-          </nav>
-          <h1>🚨 Ocorrências</h1>
-          <p>Registre descartes irregulares, problemas na coleta ou situações que prejudicam o meio ambiente. Cada registro gera pontos de recompensa e ajuda a resolver problemas na sua comunidade.</p>
-        </div>
-        <div class="phr-stats">
-          <div class="phr-stat">
-            <strong>24</strong>
-            <span>Registradas</span>
-          </div>
-          <div class="phr-stat">
-            <strong>18</strong>
-            <span>Resolvidas</span>
-          </div>
-          <div class="phr-stat">
-            <strong>75%</strong>
-            <span>Resolvidas</span>
-          </div>
-        </div>
-      </div>
+      <nav class="breadcrumb-nav">
+        <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a>
+        <span style="color:#475569">/</span>
+        <span style="color:#94a3b8">Ocorrências</span>
+      </nav>
     </div>
   </div>
 

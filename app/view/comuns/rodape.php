@@ -38,9 +38,10 @@
     </div>
   </footer>
 
-  <script src="<?= baseUrl('assets/js/script.js') ?>"></script>
+  <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
+  <script src="<?= baseUrl('assets/js/script.js') ?>?v=<?= $assetV ?>"></script>
   <?php foreach (($jsPagina ?? []) as $js): ?>
-  <script src="<?= baseUrl('assets/js/' . $js) ?>"></script>
+  <script src="<?= baseUrl('assets/js/' . $js) ?>?v=<?= $assetV ?>"></script>
   <?php endforeach; ?>
 </body>
 </html>

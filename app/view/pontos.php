@@ -3,33 +3,14 @@
   <!-- Leaflet (mapa interativo, OpenStreetMap) -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
 
-  <!-- PAGE HEADER -->
-  <div class="page-header-rich">
+  <!-- PAGE HEADER (breadcrumb enxuto) -->
+  <div class="page-header-slim">
     <div class="container">
-      <div class="phr-inner">
-        <div>
-          <nav class="breadcrumb-nav">
-            <a href="<?= baseUrl() ?>">Início</a> <span>/</span>
-            <span class="bc-active">Pontos de Descarte</span>
-          </nav>
-          <h1>📍 Pontos de Descarte</h1>
-          <p>Encontre locais para descartar materiais especiais próximos a você. Clique em qualquer ponto para ver detalhes, fotos e localização no mapa.</p>
-        </div>
-        <div class="phr-stats">
-          <div class="phr-stat">
-            <strong>6</strong>
-            <span>Pontos ativos</span>
-          </div>
-          <div class="phr-stat">
-            <strong>12</strong>
-            <span>Tipos de material</span>
-          </div>
-          <div class="phr-stat">
-            <strong>5km</strong>
-            <span>Raio coberto</span>
-          </div>
-        </div>
-      </div>
+      <nav class="breadcrumb-nav">
+        <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a>
+        <span style="color:#475569">/</span>
+        <span style="color:#94a3b8">Pontos de Descarte</span>
+      </nav>
     </div>
   </div>
 

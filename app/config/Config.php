@@ -5,7 +5,7 @@
  *
  * BASEURL usa caminho absoluto a partir da raiz do dominio ("/"), o que
  * funciona tanto no VirtualHost coletaseletiva/ quanto em coletafacil/ sem
- * precisar reconfigurar nada ao trocar o host.
+ * precisablr reconfigurar nada ao trocar o host.
  */
 
 // URL base da aplicacao, detectada automaticamente.
@@ -28,6 +28,10 @@ define('DB_CONF_CONEXAO', [
     'senha'    => '',
     'charset'  => 'utf8mb4',
 ]);
+
+// Versao dos assets (CSS/JS) para controle de cache do navegador.
+// Incremente ao publicar mudancas de estilo/script.
+define('ASSET_VER', '5');
 
 // Fuso horario padrao da aplicacao.
 date_default_timezone_set('America/Sao_Paulo');

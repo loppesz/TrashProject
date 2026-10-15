@@ -1,10 +1,13 @@
 <?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
-  <!-- PAGE HEADER -->
-  <div class="page-header">
+  <!-- PAGE HEADER (breadcrumb enxuto) -->
+  <div class="page-header-slim">
     <div class="container">
-      <h1>📦 Guia de Materiais</h1>
-      <p>Saiba o que pode ser reciclado, como preparar e o que não colocar na coleta seletiva.</p>
+      <nav class="breadcrumb-nav">
+        <a href="<?= baseUrl() ?>" style="color:#4ade80">Início</a>
+        <span style="color:#475569">/</span>
+        <span style="color:#94a3b8">Guia de Materiais</span>
+      </nav>
     </div>
   </div>
 
