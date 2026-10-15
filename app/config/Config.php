@@ -8,8 +8,15 @@
  * precisar reconfigurar nada ao trocar o host.
  */
 
-// URL base da aplicacao (raiz do VirtualHost).
-define('BASEURL', '/');
+// URL base da aplicacao, detectada automaticamente.
+// Funciona tanto em subpasta (http://localhost/TrashProject/) quanto na raiz
+// de um VirtualHost (http://coletafacil/), sem precisar reconfigurar.
+if (!defined('BASEURL')) {
+    // Diretorio onde esta o index.php (front controller), relativo a raiz web.
+    $raizApp = str_replace('\\', '/', dirname($_SERVER['SCRIPT_NAME'] ?? '/'));
+    $raizApp = rtrim($raizApp, '/') . '/';   // garante barra final
+    define('BASEURL', $raizApp);
+}
 
 // Dados de conexao do banco coletafacil (MySQL 8+, utf8mb4).
 define('DB_CONF_CONEXAO', [
