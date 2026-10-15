@@ -1,0 +1,21 @@
+# Materiais de aula / anotacoes (nao fazem parte do codigo da aplicacao)
+Slides/
+scratch_slides.txt
+
+# Dependencias e build
+/vendor/
+/node_modules/
+
+# Ambiente e credenciais
+.env
+*.local
+
+# Logs e cache
+*.log
+/tmp/
+
+# Arquivos de SO / editor
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/

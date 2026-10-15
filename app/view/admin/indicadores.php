@@ -1,40 +1,4 @@
-﻿<?php require_once __DIR__ . '/../auth.php'; require_auth(true); ?>
-<!DOCTYPE html>
-<html lang="pt-BR">
-<head>
-  <?= theme_head_script() ?>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Indicadores – Admin ColetaFácil</title>
-  <link rel="stylesheet" href="../style.css">
-  <link rel="stylesheet" href="admin.css">
-</head>
-<body class="admin-body">
-
-  <aside class="admin-sidebar" id="adminSidebar">
-    <div class="sidebar-logo">
-      <span>🌿 ColetaFácil</span>
-      <small>Painel Admin</small>
-    </div>
-    <nav class="sidebar-nav">
-      <a href="index.php" class="sidebar-link"><span class="sidebar-icon">📊</span> Dashboard</a>
-      <a href="ocorrencias.php" class="sidebar-link"><span class="sidebar-icon">🚨</span> Ocorrências</a>
-      <a href="materiais.php" class="sidebar-link"><span class="sidebar-icon">📦</span> Materiais</a>
-      <a href="coleta.php" class="sidebar-link"><span class="sidebar-icon">🗓️</span> Coleta</a>
-      <a href="pontos.php" class="sidebar-link"><span class="sidebar-icon">📍</span> Pontos de Descarte</a>
-      <a href="indicadores.php" class="sidebar-link active"><span class="sidebar-icon">📈</span> Indicadores</a>
-      <div class="sidebar-divider"></div>
-      <a href="../index.php" class="sidebar-link"><span class="sidebar-icon">🌐</span> Ver Site</a>
-    </nav>
-  </aside>
-
-  <div class="admin-main">
-    <header class="admin-topbar">
-      <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
-      <h1 class="topbar-title">Indicadores</h1>
-    </header>
-
-    <div class="admin-content">
+<?php require_once 'app/view/comuns/admin_cabecalho.php'; ?>
 
       <!-- MÉTRICAS RÁPIDAS -->
       <div class="metrics-grid">
@@ -206,10 +170,4 @@
         </table>
       </div>
 
-    </div>
-  </div>
-
-  <script src="../script.js"></script>
-  <script src="admin.js"></script>
-</body>
-</html>
+<?php require_once 'app/view/comuns/admin_rodape.php'; ?>
