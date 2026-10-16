@@ -31,7 +31,7 @@ define('DB_CONF_CONEXAO', [
 
 // Versao dos assets (CSS/JS) para controle de cache do navegador.
 // Incremente ao publicar mudancas de estilo/script.
-define('ASSET_VER', '5');
+define('ASSET_VER', '7');
 
 // Fuso horario padrao da aplicacao.
 date_default_timezone_set('America/Sao_Paulo');
