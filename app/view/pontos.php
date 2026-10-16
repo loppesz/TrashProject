@@ -52,578 +52,176 @@
     </div>
   </div>
 
-  <!-- GRID DE PONTOS -->
+  <!-- GRID DE PONTOS (gerado a partir do banco) -->
   <div class="container" id="pontosContainer">
     <div class="pontos-rich-grid" id="pontosGrid">
 
-      <!-- PONTO 1 – ECOPONTO CENTRO -->
-      <div class="ponto-rich-card" id="ponto1"
-           data-nome="ecoponto centro" data-material="pilhas eletronicos cartuchos impressora"
-           data-status="aberto" data-lat="-21.1306" data-lng="-42.3664"
-           data-endereco="Rua das Flores, 123 – Centro">
+      <?php
+      $pontos = $pontos ?? [];
+      $corClasse = [
+          'verde'    => 'prc-foto-verde',
+          'azul'     => 'prc-foto-azul',
+          'laranja'  => 'prc-foto-laranja',
+          'vermelho' => 'prc-foto-vermelho',
+          'roxo'     => 'prc-foto-roxo',
+      ];
+      $iconeMaterial = [
+          'Papel e Papelão' => '📄', 'Plástico' => '🧴', 'Metal' => '🥫', 'Vidro' => '🍶',
+          'Pilhas e Baterias' => '🔋', 'Medicamentos' => '💊', 'Materiais Perfurocortantes' => '💉',
+          'Lixo Orgânico' => '🍎',
+      ];
+      $hojeIso   = (int) date('N');            // 1=segunda..7=domingo
+      $hojeBanco = $hojeIso === 7 ? 1 : $hojeIso + 1; // 1=domingo..7=sabado
+      ?>
 
-        <div class="prc-header" onclick="togglePonto('ponto1')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-verde">
-              <span>🏭</span>
+      <?php foreach ($pontos as $p): ?>
+        <?php
+        $id         = (int) $p['id_ponto'];
+        $aberto     = $p['status_funcionamento'] === 'ABERTO';
+        $classeFoto = $corClasse[$p['cor']] ?? 'prc-foto-verde';
+        $materiais  = $p['materiais'] ?? [];
+        $dataMaterial = strtolower(implode(' ', array_map(static fn($m) => str_replace(' ', '', $m), $materiais)));
+        $dataNome   = strtolower($p['nome']);
+        $horarioHoje = '–';
+        foreach (($p['horarios'] ?? []) as $h) {
+            if ((int) $h['dia_semana'] === $hojeBanco) {
+                $horarioHoje = $h['fechado']
+                    ? 'Fechado'
+                    : formataHora($h['horario_inicio']) . ' – ' . formataHora($h['horario_fim']);
+            }
+        }
+        $enderecoMaps = rawurlencode($p['endereco'] . ' Muriae MG');
+        ?>
+        <div class="ponto-rich-card" id="ponto<?= $id ?>"
+             data-nome="<?= htmlspecialchars($dataNome, ENT_QUOTES) ?>"
+             data-material="<?= htmlspecialchars($dataMaterial, ENT_QUOTES) ?>"
+             data-status="<?= $aberto ? 'aberto' : 'fechado' ?>"
+             data-lat="<?= htmlspecialchars((string) $p['latitude'], ENT_QUOTES) ?>"
+             data-lng="<?= htmlspecialchars((string) $p['longitude'], ENT_QUOTES) ?>"
+             data-endereco="<?= htmlspecialchars($p['endereco'], ENT_QUOTES) ?>">
+
+          <div class="prc-header" onclick="togglePonto('ponto<?= $id ?>')">
+            <div class="prc-foto-wrap">
+              <div class="prc-foto <?= $classeFoto ?>"><span><?= $p['icone'] ?></span></div>
+              <span class="prc-status-dot <?= $aberto ? 'aberto' : 'fechado' ?>"></span>
             </div>
-            <span class="prc-status-dot aberto" title="Aberto agora"></span>
+            <div class="prc-info">
+              <div class="prc-title-row">
+                <h3><?= htmlspecialchars($p['nome']) ?></h3>
+                <span class="prc-status <?= $aberto ? 'aberto' : 'fechado' ?>"><?= $aberto ? '🟢 Aberto' : '🔴 Fechado agora' ?></span>
+              </div>
+              <p class="prc-endereco">📍 <?= htmlspecialchars($p['endereco']) ?></p>
+              <div class="prc-materiais-preview">
+                <?php foreach ($materiais as $mat): ?>
+                  <span class="mat-chip"><?= ($iconeMaterial[$mat] ?? '♻️') . ' ' . htmlspecialchars($mat) ?></span>
+                <?php endforeach; ?>
+              </div>
+            </div>
+            <div class="prc-horario-resumo">
+              <span class="prc-hoje-label">Hoje</span>
+              <span class="prc-hoje-hora"><?= htmlspecialchars($horarioHoje) ?></span>
+            </div>
+            <button class="prc-toggle-btn" id="btn-ponto<?= $id ?>">▼</button>
           </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>Ecoponto Centro</h3>
-              <span class="prc-status aberto">🟢 Aberto</span>
-            </div>
-            <p class="prc-endereco">📍 Rua das Flores, 123 – Centro</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip">🔋 Pilhas</span>
-              <span class="mat-chip">📱 Eletrônicos</span>
-              <span class="mat-chip">🖨️ Cartuchos</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Hoje</span>
-            <span class="prc-hoje-hora">08h – 17h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto1">▼</button>
-        </div>
 
-        <!-- EXPANDIDO -->
-        <div class="prc-expanded" id="exp-ponto1" style="display:none;">
-          <div class="prc-expanded-inner">
+          <div class="prc-expanded" id="exp-ponto<?= $id ?>" style="display:none;">
+            <div class="prc-expanded-inner">
 
-            <!-- GALERIA DE FOTOS -->
-            <div class="prc-gallery">
-              <div class="gallery-main" id="gal-main-1">
-                <div class="gallery-placeholder">
-                  <span>🏭</span>
-                  <p>Ecoponto Centro</p>
-                  <small>Foto da fachada</small>
-                </div>
-              </div>
-              <div class="gallery-thumbs">
-                <div class="gal-thumb active" onclick="selectPhoto(1,0)">🏭 Fachada</div>
-                <div class="gal-thumb" onclick="selectPhoto(1,1)">📦 Interior</div>
-                <div class="gal-thumb" onclick="selectPhoto(1,2)">🔋 Contêineres</div>
-              </div>
-            </div>
-
-            <div class="prc-details-grid">
-
-              <!-- HORÁRIOS COMPLETOS -->
-              <div class="prc-detail-section">
-                <h4>🕐 Horários de Funcionamento</h4>
-                <table class="horario-table">
-                  <tbody>
-                    <tr class="hoje-row"><td>Segunda</td><td><strong>08h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr class="hoje-row"><td>Terça</td><td><strong>08h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr class="hoje-row"><td>Quarta</td><td><strong>08h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr class="hoje-row"><td>Quinta</td><td><strong>08h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr class="hoje-row"><td>Sexta</td><td><strong>08h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr><td>Sábado</td><td><strong>08h – 12h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                    <tr><td>Domingo</td><td><strong>–</strong></td><td><span class="hst fechado">Fechado</span></td></tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <!-- MATERIAIS ACEITOS -->
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito"><span>🔋</span> Pilhas e Baterias</div>
-                  <div class="ma-item aceito"><span>📱</span> Celulares</div>
-                  <div class="ma-item aceito"><span>💻</span> Notebooks/Tablets</div>
-                  <div class="ma-item aceito"><span>🖨️</span> Cartuchos de tinta</div>
-                  <div class="ma-item aceito"><span>📺</span> Monitores</div>
-                  <div class="ma-item nao-aceito"><span>🍎</span> Lixo orgânico</div>
-                  <div class="ma-item nao-aceito"><span>🧴</span> Plástico comum</div>
+              <div class="prc-gallery">
+                <div class="gallery-main">
+                  <div class="gallery-placeholder">
+                    <span><?= $p['icone'] ?></span>
+                    <p><?= htmlspecialchars($p['nome']) ?></p>
+                    <?php if (!empty($p['fotos'][0]['legenda'])): ?>
+                      <small><?= htmlspecialchars($p['fotos'][0]['legenda']) ?></small>
+                    <?php endif; ?>
+                  </div>
                 </div>
               </div>
 
-              <!-- CONTATO E INFORMAÇÕES -->
-              <div class="prc-detail-section">
-                <h4>📞 Contato & Informações</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-1001</div>
-                  <div class="ct-item"><span>📧</span> ecoponto@muriae.mg.gov.br</div>
-                  <div class="ct-item"><span>♿</span> Acessível para PCD</div>
-                  <div class="ct-item"><span>🅿️</span> Estacionamento disponível</div>
+              <?php if (!empty($p['observacao'])): ?>
+                <div class="alert-box info-alert">ℹ️ <?= htmlspecialchars($p['observacao']) ?></div>
+              <?php endif; ?>
+
+              <div class="prc-details-grid">
+
+                <div class="prc-detail-section">
+                  <h4>🕐 Horários de Funcionamento</h4>
+                  <table class="horario-table">
+                    <tbody>
+                      <?php foreach (($p['horarios'] ?? []) as $h): ?>
+                        <?php $ehHoje = (int) $h['dia_semana'] === $hojeBanco; ?>
+                        <tr<?= $ehHoje ? ' class="hoje-row"' : '' ?>>
+                          <td><?= nomeDiaSemana((int) $h['dia_semana']) ?></td>
+                          <td><strong><?= $h['fechado'] ? '–' : formataHora($h['horario_inicio']) . ' – ' . formataHora($h['horario_fim']) ?></strong></td>
+                          <td><span class="hst <?= $h['fechado'] ? 'fechado' : 'aberto' ?>"><?= $h['fechado'] ? 'Fechado' : 'Aberto' ?></span></td>
+                        </tr>
+                      <?php endforeach; ?>
+                    </tbody>
+                  </table>
                 </div>
-                <div class="prc-avaliacao">
-                  <span>⭐ 4.7</span>
-                  <span class="av-count">(38 avaliações)</span>
+
+                <div class="prc-detail-section">
+                  <h4>✅ Materiais Aceitos</h4>
+                  <div class="materiais-aceitos-list">
+                    <?php foreach ($materiais as $mat): ?>
+                      <div class="ma-item aceito"><span><?= $iconeMaterial[$mat] ?? '♻️' ?></span> <?= htmlspecialchars($mat) ?></div>
+                    <?php endforeach; ?>
+                  </div>
                 </div>
-                <div class="prc-action-btns">
-                  <a href="https://wa.me/5532999990001" target="_blank" class="act-btn whatsapp">💬 WhatsApp</a>
-                  <button class="act-btn compartilhar" onclick="compartilhar('Ecoponto Centro', 'Rua das Flores, 123')">🔗 Compartilhar</button>
+
+                <div class="prc-detail-section">
+                  <h4>📞 Contato &amp; Informações</h4>
+                  <div class="contato-list">
+                    <?php if (!empty($p['telefone'])): ?>
+                      <div class="ct-item"><span>📞</span> <?= htmlspecialchars($p['telefone']) ?></div>
+                    <?php endif; ?>
+                    <?php if (!empty($p['email'])): ?>
+                      <div class="ct-item"><span>📧</span> <?= htmlspecialchars($p['email']) ?></div>
+                    <?php endif; ?>
+                    <?php if ($p['acessivel_pcd']): ?>
+                      <div class="ct-item"><span>♿</span> Acessível para PCD</div>
+                    <?php endif; ?>
+                    <?php if ($p['tem_estacionamento']): ?>
+                      <div class="ct-item"><span>🅿️</span> Estacionamento disponível</div>
+                    <?php endif; ?>
+                  </div>
+                  <?php if ($p['avaliacao_media'] !== null): ?>
+                    <div class="prc-avaliacao">
+                      <span>⭐ <?= number_format((float) $p['avaliacao_media'], 1, ',', '') ?></span>
+                      <span class="av-count">(<?= (int) $p['avaliacao_total'] ?> avaliações)</span>
+                    </div>
+                  <?php endif; ?>
+                  <div class="prc-action-btns">
+                    <?php if (!empty($p['whatsapp'])): ?>
+                      <a href="https://wa.me/<?= htmlspecialchars($p['whatsapp']) ?>" target="_blank" class="act-btn whatsapp">💬 WhatsApp</a>
+                    <?php endif; ?>
+                    <button class="act-btn compartilhar" onclick="compartilhar('<?= htmlspecialchars($p['nome'], ENT_QUOTES) ?>', '<?= htmlspecialchars($p['endereco'], ENT_QUOTES) ?>')">🔗 Compartilhar</button>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="prc-map-section">
+                <div class="prc-map-header">
+                  <h4>🗺️ Localização</h4>
+                  <a href="https://www.google.com/maps/search/<?= $enderecoMaps ?>" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                </div>
+                <div class="prc-map-embed">
+                  <iframe src="https://maps.google.com/maps?q=<?= $enderecoMaps ?>&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
+                </div>
+                <div class="prc-como-chegar">
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>" target="_blank" class="como-chegar-btn">🧭 Como chegar de carro</a>
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
                 </div>
               </div>
 
-            </div>
-
-            <!-- MAPA GOOGLE -->
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+das+Flores+123+Muriae+MG" target="_blank" class="open-maps-btn">
-                  Abrir no Google Maps ↗
-                </a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe
-                  src="https://maps.google.com/maps?q=Rua+das+Flores+123+Muriae+MG&output=embed&z=16"
-                  width="100%" height="300" style="border:0;border-radius:12px;"
-                  allowfullscreen="" loading="lazy"
-                  referrerpolicy="no-referrer-when-downgrade">
-                </iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG" target="_blank" class="como-chegar-btn">
-                  🧭 Como chegar de carro
-                </a>
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">
-                  🚌 Como chegar de ônibus
-                </a>
-                <a href="https://www.google.com/maps/dir//Rua+das+Flores+123+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">
-                  🚶 Ir a pé
-                </a>
-              </div>
-            </div>
-
-          </div>
-        </div>
-      </div>
-
-      <!-- PONTO 2 – FARMÁCIA -->
-      <div class="ponto-rich-card" id="ponto2"
-           data-nome="farmacia saude total" data-material="medicamentos pilhas remédios"
-           data-status="aberto" data-lat="-21.1358" data-lng="-42.3721"
-           data-endereco="Av. Brasil, 456 – Bairro Novo">
-
-        <div class="prc-header" onclick="togglePonto('ponto2')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-azul"><span>💊</span></div>
-            <span class="prc-status-dot aberto"></span>
-          </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>Farmácia Saúde Total</h3>
-              <span class="prc-status aberto">🟢 Aberto</span>
-            </div>
-            <p class="prc-endereco">📍 Av. Brasil, 456 – Bairro Novo</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip">💊 Medicamentos</span>
-              <span class="mat-chip">🔋 Pilhas</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Hoje</span>
-            <span class="prc-hoje-hora">07h – 22h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto2">▼</button>
-        </div>
-
-        <div class="prc-expanded" id="exp-ponto2" style="display:none;">
-          <div class="prc-expanded-inner">
-            <div class="prc-gallery">
-              <div class="gallery-main">
-                <div class="gallery-placeholder" style="background:linear-gradient(135deg,#eff6ff,#dbeafe)">
-                  <span>💊</span><p>Farmácia Saúde Total</p><small>Ponto de coleta na entrada</small>
-                </div>
-              </div>
-              <div class="gallery-thumbs">
-                <div class="gal-thumb active">💊 Fachada</div>
-                <div class="gal-thumb">📦 Coletor</div>
-              </div>
-            </div>
-            <div class="prc-details-grid">
-              <div class="prc-detail-section">
-                <h4>🕐 Horários</h4>
-                <table class="horario-table">
-                  <tr><td>Segunda a Sábado</td><td><strong>07h – 22h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Domingo e Feriados</td><td><strong>08h – 20h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                </table>
-              </div>
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito"><span>💊</span> Remédios vencidos</div>
-                  <div class="ma-item aceito"><span>🔋</span> Pilhas e baterias</div>
-                  <div class="ma-item aceito"><span>💉</span> Seringas (com tampa)</div>
-                  <div class="ma-item nao-aceito"><span>🧴</span> Frascos de plástico</div>
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>📞 Contato</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-2002</div>
-                  <div class="ct-item"><span>♿</span> Acessível para PCD</div>
-                </div>
-                <div class="prc-avaliacao"><span>⭐ 4.5</span><span class="av-count">(24 avaliações)</span></div>
-                <div class="prc-action-btns">
-                  <button class="act-btn compartilhar" onclick="compartilhar('Farmácia Saúde Total', 'Av. Brasil, 456')">🔗 Compartilhar</button>
-                </div>
-              </div>
-            </div>
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Av+Brasil+456+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Av+Brasil+456+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Como chegar de carro</a>
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Av+Brasil+456+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
-              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <!-- PONTO 3 – SUPERMERCADO -->
-      <div class="ponto-rich-card" id="ponto3"
-           data-nome="supermercado boa compra" data-material="oleo cozinha pilhas plastico"
-           data-status="aberto" data-lat="-21.1251" data-lng="-42.3598"
-           data-endereco="Rua Dom Pedro, 789 – Vila Nova">
-
-        <div class="prc-header" onclick="togglePonto('ponto3')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-laranja"><span>🛒</span></div>
-            <span class="prc-status-dot aberto"></span>
-          </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>Supermercado Boa Compra</h3>
-              <span class="prc-status aberto">🟢 Aberto</span>
-            </div>
-            <p class="prc-endereco">📍 Rua Dom Pedro, 789 – Vila Nova</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip">🫙 Óleo usado</span>
-              <span class="mat-chip">🔋 Pilhas</span>
-              <span class="mat-chip">🛍️ Sacolas plásticas</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Hoje</span>
-            <span class="prc-hoje-hora">07h – 21h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto3">▼</button>
-        </div>
-
-        <div class="prc-expanded" id="exp-ponto3" style="display:none;">
-          <div class="prc-expanded-inner">
-            <div class="prc-gallery">
-              <div class="gallery-main">
-                <div class="gallery-placeholder" style="background:linear-gradient(135deg,#fff7ed,#fed7aa)">
-                  <span>🛒</span><p>Supermercado Boa Compra</p><small>Coletores na entrada do mercado</small>
-                </div>
-              </div>
-            </div>
-            <div class="prc-details-grid">
-              <div class="prc-detail-section">
-                <h4>🕐 Horários</h4>
-                <table class="horario-table">
-                  <tr><td>Segunda a Sábado</td><td><strong>07h – 21h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Domingo</td><td><strong>08h – 14h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                </table>
-                <div class="info-extra-box">
-                  ℹ️ O coletor de óleo fica na entrada lateral (portão 2)
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito"><span>🫙</span> Óleo de cozinha usado</div>
-                  <div class="ma-item aceito"><span>🔋</span> Pilhas domésticas</div>
-                  <div class="ma-item aceito"><span>🛍️</span> Sacolas plásticas</div>
-                  <div class="ma-item aceito"><span>🥤</span> Garrafas PET</div>
-                  <div class="ma-item nao-aceito"><span>🍎</span> Lixo orgânico</div>
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>📞 Contato</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-3003</div>
-                  <div class="ct-item"><span>🅿️</span> Estacionamento gratuito</div>
-                  <div class="ct-item"><span>♿</span> Acessível para PCD</div>
-                </div>
-                <div class="prc-avaliacao"><span>⭐ 4.2</span><span class="av-count">(19 avaliações)</span></div>
-                <div class="prc-action-btns">
-                  <button class="act-btn compartilhar" onclick="compartilhar('Supermercado Boa Compra', 'Rua Dom Pedro, 789')">🔗 Compartilhar</button>
-                </div>
-              </div>
-            </div>
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+Dom+Pedro+789+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+Dom+Pedro+789+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+Dom+Pedro+789+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PONTO 4 – UBS -->
-      <div class="ponto-rich-card" id="ponto4"
-           data-nome="ubs posto saude central" data-material="seringas medicamentos perfurocortantes"
-           data-status="aberto" data-lat="-21.1289" data-lng="-42.3627"
-           data-endereco="Rua da Saúde, 10 – Centro">
-
-        <div class="prc-header" onclick="togglePonto('ponto4')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-vermelho"><span>🏥</span></div>
-            <span class="prc-status-dot aberto"></span>
-          </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>UBS – Posto de Saúde Central</h3>
-              <span class="prc-status aberto">🟢 Aberto</span>
-            </div>
-            <p class="prc-endereco">📍 Rua da Saúde, 10 – Centro</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip danger">💉 Seringas</span>
-              <span class="mat-chip danger">💊 Medicamentos</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Hoje</span>
-            <span class="prc-hoje-hora">07h – 17h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto4">▼</button>
-        </div>
-
-        <div class="prc-expanded" id="exp-ponto4" style="display:none;">
-          <div class="prc-expanded-inner">
-            <div class="prc-gallery">
-              <div class="gallery-main">
-                <div class="gallery-placeholder" style="background:linear-gradient(135deg,#fff1f2,#fecdd3)">
-                  <span>🏥</span><p>UBS Central</p><small>Coletor de perfurocortantes na recepção</small>
-                </div>
-              </div>
-            </div>
-            <div class="alert-box danger-alert">
-              🔴 <strong>Atenção:</strong> Seringas e materiais perfurocortantes devem ser entregues na recepção com caixa coletora própria. Não descarte em sacos plásticos comuns!
-            </div>
-            <div class="prc-details-grid">
-              <div class="prc-detail-section">
-                <h4>🕐 Horários</h4>
-                <table class="horario-table">
-                  <tr><td>Segunda a Sexta</td><td><strong>07h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Sábado</td><td><strong>07h – 12h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Domingo/Feriado</td><td><strong>–</strong></td><td><span class="hst fechado">Fechado</span></td></tr>
-                </table>
-              </div>
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito danger-item"><span>💉</span> Seringas/agulhas (caixa coletora)</div>
-                  <div class="ma-item aceito danger-item"><span>🩹</span> Materiais perfurocortantes</div>
-                  <div class="ma-item aceito"><span>💊</span> Medicamentos vencidos</div>
-                  <div class="ma-item aceito"><span>🩺</span> Resíduos de saúde domiciliar</div>
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>📞 Contato</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-4004</div>
-                  <div class="ct-item"><span>♿</span> Acessível para PCD</div>
-                  <div class="ct-item"><span>🅿️</span> Sem estacionamento</div>
-                </div>
-                <div class="prc-avaliacao"><span>⭐ 4.8</span><span class="av-count">(51 avaliações)</span></div>
-              </div>
-            </div>
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+da+Saude+10+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+da+Saude+10+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Saude+10+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PONTO 5 – PONTO RECICLE -->
-      <div class="ponto-rich-card" id="ponto5"
-           data-nome="ponto recicle jardim america" data-material="papel plastico metal vidro papelao"
-           data-status="fechado" data-lat="-21.1402" data-lng="-42.3589"
-           data-endereco="Praça da Amizade – Jardim América">
-
-        <div class="prc-header" onclick="togglePonto('ponto5')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-verde"><span>♻️</span></div>
-            <span class="prc-status-dot fechado"></span>
-          </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>Ponto Recicle – Jardim América</h3>
-              <span class="prc-status fechado">🔴 Fechado agora</span>
-            </div>
-            <p class="prc-endereco">📍 Praça da Amizade – Jardim América</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip">📄 Papel</span>
-              <span class="mat-chip">🧴 Plástico</span>
-              <span class="mat-chip">🥫 Metal</span>
-              <span class="mat-chip">🍶 Vidro</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Próx. abertura</span>
-            <span class="prc-hoje-hora">Ter 08h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto5">▼</button>
-        </div>
-
-        <div class="prc-expanded" id="exp-ponto5" style="display:none;">
-          <div class="prc-expanded-inner">
-            <div class="alert-box info-alert">
-              ℹ️ Este ponto funciona apenas às <strong>terças, quintas e sábados</strong>. Próxima abertura: <strong>amanhã às 08h</strong>.
-            </div>
-            <div class="prc-details-grid">
-              <div class="prc-detail-section">
-                <h4>🕐 Horários</h4>
-                <table class="horario-table">
-                  <tr><td>Terça-feira</td><td><strong>08h – 14h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Quinta-feira</td><td><strong>08h – 14h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Sábado</td><td><strong>08h – 14h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Outros dias</td><td><strong>–</strong></td><td><span class="hst fechado">Fechado</span></td></tr>
-                </table>
-              </div>
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito"><span>📄</span> Papel e papelão</div>
-                  <div class="ma-item aceito"><span>🧴</span> Embalagens plásticas</div>
-                  <div class="ma-item aceito"><span>🥫</span> Latas de metal</div>
-                  <div class="ma-item aceito"><span>🍶</span> Vidros e garrafas</div>
-                  <div class="ma-item nao-aceito"><span>🍎</span> Orgânicos</div>
-                  <div class="ma-item nao-aceito"><span>🔋</span> Pilhas e eletrônicos</div>
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>📞 Contato</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-5005</div>
-                  <div class="ct-item"><span>🌳</span> Área ao ar livre</div>
-                </div>
-                <div class="prc-avaliacao"><span>⭐ 4.3</span><span class="av-count">(16 avaliações)</span></div>
-                <div class="prc-action-btns">
-                  <button class="act-btn compartilhar" onclick="compartilhar('Ponto Recicle', 'Praça da Amizade')">🔗 Compartilhar</button>
-                </div>
-              </div>
-            </div>
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Praca+da+Amizade+Jardim+America+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Jardim+America+Muriae+MG&output=embed&z=15" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Jardim+America+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Jardim+America+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- PONTO 6 – ESCOLA -->
-      <div class="ponto-rich-card" id="ponto6"
-           data-nome="escola municipal professor souza" data-material="papel livros papelao"
-           data-status="aberto" data-lat="-21.1223" data-lng="-42.3702"
-           data-endereco="Rua da Educação, 55 – Bairro Escolar">
-
-        <div class="prc-header" onclick="togglePonto('ponto6')">
-          <div class="prc-foto-wrap">
-            <div class="prc-foto prc-foto-roxo"><span>🏫</span></div>
-            <span class="prc-status-dot aberto"></span>
-          </div>
-          <div class="prc-info">
-            <div class="prc-title-row">
-              <h3>E.M. Prof. Souza</h3>
-              <span class="prc-status aberto">🟢 Aberto</span>
-            </div>
-            <p class="prc-endereco">📍 Rua da Educação, 55 – Bairro Escolar</p>
-            <div class="prc-materiais-preview">
-              <span class="mat-chip">📄 Papel</span>
-              <span class="mat-chip">📚 Livros</span>
-              <span class="mat-chip">📦 Papelão</span>
-            </div>
-          </div>
-          <div class="prc-horario-resumo">
-            <span class="prc-hoje-label">Hoje</span>
-            <span class="prc-hoje-hora">07h – 17h</span>
-          </div>
-          <button class="prc-toggle-btn" id="btn-ponto6">▼</button>
-        </div>
-
-        <div class="prc-expanded" id="exp-ponto6" style="display:none;">
-          <div class="prc-expanded-inner">
-            <div class="alert-box info-alert">ℹ️ Apenas em período letivo (fev–nov). Férias de julho: fechado.</div>
-            <div class="prc-details-grid">
-              <div class="prc-detail-section">
-                <h4>🕐 Horários</h4>
-                <table class="horario-table">
-                  <tr><td>Seg a Sex (letivo)</td><td><strong>07h – 17h</strong></td><td><span class="hst aberto">Aberto</span></td></tr>
-                  <tr><td>Férias/Feriados</td><td><strong>–</strong></td><td><span class="hst fechado">Fechado</span></td></tr>
-                </table>
-              </div>
-              <div class="prc-detail-section">
-                <h4>✅ Materiais Aceitos</h4>
-                <div class="materiais-aceitos-list">
-                  <div class="ma-item aceito"><span>📄</span> Papel limpo e seco</div>
-                  <div class="ma-item aceito"><span>📚</span> Livros e revistas</div>
-                  <div class="ma-item aceito"><span>📦</span> Caixas de papelão</div>
-                  <div class="ma-item nao-aceito"><span>🧴</span> Plástico</div>
-                  <div class="ma-item nao-aceito"><span>🥫</span> Metal</div>
-                </div>
-              </div>
-              <div class="prc-detail-section">
-                <h4>📞 Contato</h4>
-                <div class="contato-list">
-                  <div class="ct-item"><span>📞</span> (32) 3333-6006</div>
-                  <div class="ct-item"><span>♿</span> Acessível para PCD</div>
-                </div>
-                <div class="prc-avaliacao"><span>⭐ 4.6</span><span class="av-count">(12 avaliações)</span></div>
-              </div>
-            </div>
-            <div class="prc-map-section">
-              <div class="prc-map-header">
-                <h4>🗺️ Localização</h4>
-                <a href="https://www.google.com/maps/search/Rua+da+Educacao+55+Muriae+MG" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
-              </div>
-              <div class="prc-map-embed">
-                <iframe src="https://maps.google.com/maps?q=Rua+da+Educacao+55+Muriae+MG&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
-              </div>
-              <div class="prc-como-chegar">
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG" target="_blank" class="como-chegar-btn">🧭 Carro</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                <a href="https://www.google.com/maps/dir//Rua+da+Educacao+55+Muriae+MG&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <?php endforeach; ?>
+      <?php /* FIM_LOOP_PONTOS */ ?>
 
     </div><!-- fim grid -->
 

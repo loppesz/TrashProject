@@ -81,6 +81,16 @@ CREATE TABLE ponto_descarte (
   endereco VARCHAR(200) NOT NULL,
   horario_funcionamento VARCHAR(150) NULL,
   status_funcionamento ENUM('ABERTO','FECHADO') NOT NULL DEFAULT 'ABERTO',
+  telefone VARCHAR(20) NULL,
+  email VARCHAR(150) NULL,
+  whatsapp VARCHAR(20) NULL,
+  acessivel_pcd BOOLEAN NOT NULL DEFAULT FALSE,
+  tem_estacionamento BOOLEAN NOT NULL DEFAULT FALSE,
+  avaliacao_media DECIMAL(2,1) NULL,
+  avaliacao_total INT UNSIGNED NOT NULL DEFAULT 0,
+  icone VARCHAR(8) NULL,
+  cor VARCHAR(20) NULL,
+  observacao VARCHAR(300) NULL,
   latitude DECIMAL(10,7) NULL,
   longitude DECIMAL(10,7) NULL,
   ativo BOOLEAN NOT NULL DEFAULT TRUE,
@@ -88,6 +98,19 @@ CREATE TABLE ponto_descarte (
   atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   FOREIGN KEY (id_bairro) REFERENCES bairro(id_bairro),
   INDEX idx_ponto_bairro_status (id_bairro,ativo,status_funcionamento)
+) ENGINE=InnoDB;
+
+-- Horario de funcionamento por dia da semana. 1=domingo, ... 7=sabado.
+CREATE TABLE ponto_horario (
+  id_ponto_horario BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  id_ponto INT UNSIGNED NOT NULL,
+  dia_semana TINYINT UNSIGNED NOT NULL,
+  horario_inicio TIME NULL,
+  horario_fim TIME NULL,
+  fechado BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (id_ponto) REFERENCES ponto_descarte(id_ponto) ON DELETE CASCADE,
+  CONSTRAINT ck_ponto_horario_dia CHECK (dia_semana BETWEEN 1 AND 7),
+  UNIQUE KEY uk_ponto_horario (id_ponto, dia_semana)
 ) ENGINE=InnoDB;
 
 CREATE TABLE ponto_material (

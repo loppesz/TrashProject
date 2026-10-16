@@ -72,3 +72,34 @@ function themeHeadScript(): string
 {
     return "<script>(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>";
 }
+
+/**
+ * Nome do dia da semana a partir do codigo usado no banco
+ * (1=domingo, 2=segunda, ... 7=sabado).
+ */
+function nomeDiaSemana(int $dia): string
+{
+    $dias = [
+        1 => 'Domingo',
+        2 => 'Segunda',
+        3 => 'Terça',
+        4 => 'Quarta',
+        5 => 'Quinta',
+        6 => 'Sexta',
+        7 => 'Sábado',
+    ];
+    return $dias[$dia] ?? '';
+}
+
+/**
+ * Formata um horario TIME ('08:00:00') para exibicao curta ('08h').
+ * Mantem minutos quando houver ('08:30:00' -> '08h30').
+ */
+function formataHora(?string $hora): string
+{
+    if (!$hora) {
+        return '–';
+    }
+    [$h, $m] = array_pad(explode(':', $hora), 2, '00');
+    return $m === '00' ? "{$h}h" : "{$h}h{$m}";
+}
