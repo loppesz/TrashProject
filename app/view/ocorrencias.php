@@ -48,12 +48,16 @@
             <div class="pontos-badge">+50 pts ao registrar</div>
           </div>
 
-          <form id="ocorrenciaForm" onsubmit="registrarOcorrencia(event)">
+          <?php if (!empty($erroRegistro)): ?>
+            <div class="login-error" role="alert" style="margin-bottom:16px;">⚠️ <?= htmlspecialchars($erroRegistro) ?></div>
+          <?php endif; ?>
+
+          <form id="ocorrenciaForm" method="POST" action="<?= baseUrl('ocorrencia/registrar') ?>">
 
             <div class="form-row-2">
               <div class="form-group">
                 <label>Tipo de ocorrência *</label>
-                <select id="tipoOcorrencia" required onchange="atualizarTipoInfo()">
+                <select id="tipoOcorrencia" name="tipo" required onchange="atualizarTipoInfo()">
                   <option value="">Selecione...</option>
                   <option value="descarte-irregular">🗑️ Descarte irregular de resíduos</option>
                   <option value="coleta-nao-realizada">🚛 Coleta não realizada no dia previsto</option>
@@ -67,7 +71,7 @@
               </div>
               <div class="form-group">
                 <label>Urgência</label>
-                <select id="urgencia">
+                <select id="urgencia" name="urgencia">
                   <option value="baixa">🟢 Baixa</option>
                   <option value="media" selected>🟡 Média</option>
                   <option value="alta">🔴 Alta</option>
@@ -79,7 +83,7 @@
               <label>Endereço da ocorrência *</label>
               <div class="input-icon-wrap">
                 <span>📍</span>
-                <input type="text" id="localOcorrencia" placeholder="Rua, número – Bairro" required>
+                <input type="text" id="localOcorrencia" name="endereco" placeholder="Rua, número – Bairro" required>
                 <button type="button" class="use-location-btn" onclick="usarLocalizacao()">📡 Usar minha localização</button>
               </div>
             </div>
@@ -87,7 +91,7 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label>Bairro *</label>
-                <select id="bairroOcorrencia" required>
+                <select id="bairroOcorrencia" name="bairro" required>
                   <option value="">Selecione...</option>
                   <option value="Centro">Centro</option>
                   <option value="Bairro Novo">Bairro Novo</option>
@@ -99,13 +103,13 @@
               </div>
               <div class="form-group">
                 <label>Data da ocorrência</label>
-                <input type="date" id="dataOcorrencia">
+                <input type="date" id="dataOcorrencia" name="data_ocorrencia">
               </div>
             </div>
 
             <div class="form-group">
               <label>Descrição detalhada *</label>
-              <textarea id="descricaoOcorrencia" rows="4" placeholder="Descreva o que aconteceu com o máximo de detalhes. Ex: 'Lixo hospitalar descartado na calçada da Rua X, próximo à escola. Material incluindo seringas expostas.'" required></textarea>
+              <textarea id="descricaoOcorrencia" name="descricao" rows="4" maxlength="500" placeholder="Descreva o que aconteceu com o máximo de detalhes. Ex: 'Lixo hospitalar descartado na calçada da Rua X, próximo à escola. Material incluindo seringas expostas.'" required></textarea>
               <span class="char-counter"><span id="charCount">0</span>/500 caracteres</span>
             </div>
 
@@ -128,22 +132,22 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label>Seu nome</label>
-                <input type="text" id="nomeContato" placeholder="Para receber atualizações">
+                <input type="text" id="nomeContato" name="nome_contato" placeholder="Para receber atualizações">
               </div>
               <div class="form-group">
                 <label>Telefone / WhatsApp</label>
-                <input type="tel" id="telContato" placeholder="(32) 9 0000-0000">
+                <input type="tel" id="telContato" name="telefone_contato" placeholder="(32) 9 0000-0000">
               </div>
             </div>
 
             <div class="form-group">
               <label>E-mail</label>
-              <input type="email" id="emailContato" placeholder="Para acompanhar via e-mail">
+              <input type="email" id="emailContato" name="email_contato" placeholder="Para acompanhar via e-mail">
             </div>
 
             <div class="form-group" style="margin-top:8px;">
               <label class="checkbox-label">
-                <input type="checkbox" id="anonimo">
+                <input type="checkbox" id="anonimo" name="anonima" value="1">
                 <span>Registrar anonimamente (não vincular dados pessoais)</span>
               </label>
             </div>
@@ -410,5 +414,53 @@
 
   <!-- TOAST -->
   <div id="ocToast" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:opacity .3s;"></div>
+
+  <?php
+  // --- Dados reais do historico publico, no formato esperado pelo ocorrencias.js ---
+  $statusJs = [
+      'NOVA' => 'nova', 'EM_ANALISE' => 'analise',
+      'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'resolvida',
+  ];
+  $tipoSlug = [
+      'DESCARTE_IRREGULAR' => 'descarte-irregular', 'COLETA_NAO_REALIZADA' => 'coleta',
+      'MATERIAL_NAO_RECOLHIDO' => 'material', 'PONTO_INADEQUADO' => 'ponto',
+      'ENTULHO' => 'entulho', 'LIXO_TOXICO' => 'toxico', 'OUTROS' => 'outros',
+  ];
+  $tipoLabel = [
+      'DESCARTE_IRREGULAR' => 'Descarte irregular', 'COLETA_NAO_REALIZADA' => 'Coleta não realizada',
+      'MATERIAL_NAO_RECOLHIDO' => 'Material deixado', 'PONTO_INADEQUADO' => 'Ponto inadequado',
+      'ENTULHO' => 'Entulho/Móveis', 'LIXO_TOXICO' => 'Lixo tóxico', 'OUTROS' => 'Outros',
+  ];
+  $historicoJs = [];
+  foreach (($historico ?? []) as $o) {
+      $historicoJs[] = [
+          'id'        => $o['protocolo'],
+          'tipo'      => $tipoSlug[$o['tipo']] ?? 'outros',
+          'tipoLabel' => $tipoLabel[$o['tipo']] ?? 'Ocorrência',
+          'bairro'    => $o['bairro'],
+          'local'     => $o['endereco_descricao'],
+          'urgencia'  => strtolower($o['urgencia']),
+          'status'    => $statusJs[$o['status']] ?? 'nova',
+          'data'      => date('d/m/Y', strtotime($o['criada_em'])),
+          'desc'      => $o['descricao'],
+      ];
+  }
+  ?>
+  <script>
+    // Histórico público vindo do banco (usado por ocorrencias.js)
+    window.HISTORICO_DB = <?= json_encode($historicoJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+  </script>
+
+  <?php if (!empty($protocoloCriado)): ?>
+  <script>
+    // Abre o modal de sucesso com o protocolo real gerado no servidor.
+    document.addEventListener('DOMContentLoaded', function () {
+      var el = document.getElementById('protocoloGerado');
+      if (el) el.textContent = <?= json_encode($protocoloCriado, JSON_UNESCAPED_UNICODE) ?>;
+      var modal = document.getElementById('modalSucesso');
+      if (modal) modal.style.display = 'flex';
+    });
+  </script>
+  <?php endif; ?>
 
 <?php require_once 'app/view/comuns/rodape.php'; ?>

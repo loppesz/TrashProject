@@ -38,170 +38,56 @@
     </div>
   </div>
 
-  <!-- LISTA DE MATERIAIS -->
+  <!-- LISTA DE MATERIAIS (gerada a partir do banco) -->
   <section class="container materiais-section">
     <div class="materiais-grid" id="materiaisGrid">
 
-      <div class="material-card" data-tipo="aceito">
-        <div class="material-header azul">
-          <span class="material-icon">📄</span>
-          <span class="material-status aceito">✅ Aceito</span>
-        </div>
-        <h3>Papel e Papelão</h3>
-        <p>Jornais, revistas, caixas, cadernos, papel de escritório.</p>
-        <div class="material-preparo">
-          <strong>Como preparar:</strong>
-          <ul>
-            <li>Retire grampos, clipes e fitas adesivas</li>
-            <li>Mantenha seco — papel molhado não é reciclável</li>
-            <li>Dobre caixas para economizar espaço</li>
-          </ul>
-        </div>
-        <div class="exemplos">
-          <span class="tag">📰 Jornal</span>
-          <span class="tag">📦 Caixa</span>
-          <span class="tag">📚 Revista</span>
-        </div>
-      </div>
+      <?php
+      $materiais = $materiais ?? [];
+      // status_coleta (banco) -> data-tipo e classe/label do status (tela)
+      $mapStatus = [
+          'ACEITO'     => ['tipo' => 'aceito',     'classe' => 'aceito',     'rotulo' => '✅ Aceito'],
+          'CUIDADO'    => ['tipo' => 'cuidado',    'classe' => 'cuidado',    'rotulo' => '⚠️ Cuidado'],
+          'NAO_ACEITO' => ['tipo' => 'nao-aceito', 'classe' => 'nao-aceito', 'rotulo' => '❌ Não Aceito'],
+      ];
+      ?>
 
-      <div class="material-card" data-tipo="aceito">
-        <div class="material-header vermelho">
-          <span class="material-icon">🧴</span>
-          <span class="material-status aceito">✅ Aceito</span>
+      <?php foreach ($materiais as $m): ?>
+        <?php
+        $st  = $mapStatus[$m['status_coleta']] ?? $mapStatus['ACEITO'];
+        $cor = $m['cor_card'] ?? 'azul';
+        // Regra fiel ao original: sem exemplos + com alerta => mostra alerta vermelho
+        $mostraAlerta = empty($m['exemplos']) && !empty($m['alerta_seguranca']);
+        ?>
+        <div class="material-card" data-tipo="<?= $st['tipo'] ?>">
+          <div class="material-header <?= htmlspecialchars($cor, ENT_QUOTES) ?>">
+            <span class="material-icon"><?= $m['icone'] ?></span>
+            <span class="material-status <?= $st['classe'] ?>"><?= $st['rotulo'] ?></span>
+          </div>
+          <h3><?= htmlspecialchars($m['nome']) ?></h3>
+          <p><?= htmlspecialchars($m['descricao']) ?></p>
+          <div class="material-preparo">
+            <strong><?= htmlspecialchars($m['preparo_label'] ?? 'Como preparar') ?>:</strong>
+            <ul>
+              <?php foreach ($m['instrucoes'] as $ins): ?>
+                <li><?= htmlspecialchars($ins['texto']) ?></li>
+              <?php endforeach; ?>
+            </ul>
+          </div>
+          <?php if ($mostraAlerta): ?>
+            <div class="alerta-vermelho">
+              🔴 <?= htmlspecialchars($m['alerta_seguranca']) ?>
+            </div>
+          <?php elseif (!empty($m['exemplos'])): ?>
+            <div class="exemplos">
+              <?php foreach ($m['exemplos'] as $ex): ?>
+                <span class="tag<?= $ex['negativo'] ? ' negativo' : '' ?>"><?= $ex['icone'] . ' ' . htmlspecialchars($ex['rotulo']) ?></span>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
         </div>
-        <h3>Plástico</h3>
-        <p>Garrafas PET, embalagens de produtos de limpeza, sacolas plásticas.</p>
-        <div class="material-preparo">
-          <strong>Como preparar:</strong>
-          <ul>
-            <li>Lave as embalagens com água</li>
-            <li>Amasse garrafas PET e retire tampas</li>
-            <li>Sacolas podem ser agrupadas em uma só</li>
-          </ul>
-        </div>
-        <div class="exemplos">
-          <span class="tag">🧴 Frasco</span>
-          <span class="tag">🍼 PET</span>
-          <span class="tag">🛍️ Sacola</span>
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="aceito">
-        <div class="material-header amarelo">
-          <span class="material-icon">🥫</span>
-          <span class="material-status aceito">✅ Aceito</span>
-        </div>
-        <h3>Metal</h3>
-        <p>Latas de alumínio, latas de aço, panelas velhas (sem cabo de madeira).</p>
-        <div class="material-preparo">
-          <strong>Como preparar:</strong>
-          <ul>
-            <li>Lave as latas antes de descartar</li>
-            <li>Amasse para economizar espaço</li>
-            <li>⚠️ Cuidado com bordas cortantes — use luvas</li>
-          </ul>
-        </div>
-        <div class="exemplos">
-          <span class="tag">🥤 Lata</span>
-          <span class="tag">🥫 Conserva</span>
-          <span class="tag">🔩 Metal</span>
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="cuidado">
-        <div class="material-header verde">
-          <span class="material-icon">🍶</span>
-          <span class="material-status cuidado">⚠️ Cuidado</span>
-        </div>
-        <h3>Vidro</h3>
-        <p>Garrafas, potes, frascos de perfume e vidros de conserva.</p>
-        <div class="material-preparo">
-          <strong>Como preparar:</strong>
-          <ul>
-            <li>Lave os vidros antes do descarte</li>
-            <li>Nunca misture vidros inteiros com quebrados</li>
-            <li>⚠️ Vidros quebrados: embrulhe em papel jornal e identifique "VIDRO QUEBRADO"</li>
-          </ul>
-        </div>
-        <div class="exemplos">
-          <span class="tag">🍷 Garrafa</span>
-          <span class="tag">🫙 Pote</span>
-          <span class="tag">🧪 Frasco</span>
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="nao-aceito">
-        <div class="material-header cinza">
-          <span class="material-icon">🍌</span>
-          <span class="material-status nao-aceito">❌ Não Aceito</span>
-        </div>
-        <h3>Lixo Orgânico</h3>
-        <p>Restos de comida, cascas de frutas, borra de café, alimentos em geral.</p>
-        <div class="material-preparo">
-          <strong>Alternativas:</strong>
-          <ul>
-            <li>Compostagem doméstica</li>
-            <li>Descarte no lixo comum (lixeira marrom)</li>
-          </ul>
-        </div>
-        <div class="exemplos">
-          <span class="tag negativo">🍎 Casca</span>
-          <span class="tag negativo">🍗 Restos</span>
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="nao-aceito">
-        <div class="material-header preto">
-          <span class="material-icon">💉</span>
-          <span class="material-status nao-aceito">❌ Não Aceito</span>
-        </div>
-        <h3>Materiais Perfurocortantes</h3>
-        <p>Seringas, agulhas, bisturis, lâminas de barbear.</p>
-        <div class="material-preparo">
-          <strong>Como descartar:</strong>
-          <ul>
-            <li>🔴 NUNCA coloque na coleta seletiva</li>
-            <li>Leve a uma farmácia ou unidade de saúde</li>
-            <li>Risco grave de acidente para os coletores</li>
-          </ul>
-        </div>
-        <div class="alerta-vermelho">
-          🔴 Risco de acidente grave para os profissionais da coleta!
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="nao-aceito">
-        <div class="material-header laranja">
-          <span class="material-icon">🔋</span>
-          <span class="material-status nao-aceito">❌ Não Aceito</span>
-        </div>
-        <h3>Pilhas e Baterias</h3>
-        <p>Pilhas AA, AAA, baterias de celular, bateria de carro.</p>
-        <div class="material-preparo">
-          <strong>Como descartar:</strong>
-          <ul>
-            <li>Procure pontos de coleta específicos em supermercados</li>
-            <li>Lojas de eletrônicos geralmente aceitam</li>
-            <li>Nunca jogue no lixo comum ou coleta seletiva</li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="material-card" data-tipo="nao-aceito">
-        <div class="material-header marrom">
-          <span class="material-icon">💊</span>
-          <span class="material-status nao-aceito">❌ Não Aceito</span>
-        </div>
-        <h3>Medicamentos</h3>
-        <p>Remédios vencidos ou sobras de medicamentos.</p>
-        <div class="material-preparo">
-          <strong>Como descartar:</strong>
-          <ul>
-            <li>Leve a uma farmácia com programa de descarte</li>
-            <li>Nunca jogue no vaso sanitário ou lixo comum</li>
-          </ul>
-        </div>
-      </div>
+      <?php endforeach; ?>
+      <?php /* FIM_LOOP_MATERIAIS */ ?>
 
     </div>
   </section>

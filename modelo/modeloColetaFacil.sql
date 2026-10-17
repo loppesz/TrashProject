@@ -58,12 +58,39 @@ CREATE TABLE material (
   nome VARCHAR(100) NOT NULL UNIQUE,
   descricao TEXT NOT NULL,
   aceito_coleta_seletiva BOOLEAN NOT NULL DEFAULT FALSE,
+  status_coleta ENUM('ACEITO','CUIDADO','NAO_ACEITO') NOT NULL DEFAULT 'ACEITO',
+  icone VARCHAR(8) NULL,
+  cor_card VARCHAR(20) NULL,
+  preparo_label VARCHAR(40) NULL,
   nivel_risco ENUM('BAIXO','MEDIO','ALTO','CRITICO') NOT NULL DEFAULT 'BAIXO',
   instrucao_preparo TEXT NULL,
   alerta_seguranca TEXT NULL,
   orientacao_descarte TEXT NULL,
   cor_lixeira VARCHAR(30) NULL,
   ativo BOOLEAN NOT NULL DEFAULT TRUE
+) ENGINE=InnoDB;
+
+-- Lista ordenada de instrucoes de preparo por material.
+CREATE TABLE material_instrucao (
+  id_material_instrucao BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  id_material INT UNSIGNED NOT NULL,
+  ordem TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  texto VARCHAR(300) NOT NULL,
+  perigo BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (id_material) REFERENCES material(id_material) ON DELETE CASCADE,
+  UNIQUE KEY uk_material_instrucao (id_material, ordem)
+) ENGINE=InnoDB;
+
+-- Exemplos (tags) exibidos no card do material.
+CREATE TABLE material_exemplo (
+  id_material_exemplo BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  id_material INT UNSIGNED NOT NULL,
+  ordem TINYINT UNSIGNED NOT NULL DEFAULT 1,
+  icone VARCHAR(8) NULL,
+  rotulo VARCHAR(60) NOT NULL,
+  negativo BOOLEAN NOT NULL DEFAULT FALSE,
+  FOREIGN KEY (id_material) REFERENCES material(id_material) ON DELETE CASCADE,
+  UNIQUE KEY uk_material_exemplo (id_material, ordem)
 ) ENGINE=InnoDB;
 
 CREATE TABLE coleta_material (

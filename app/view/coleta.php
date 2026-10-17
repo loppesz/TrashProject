@@ -246,70 +246,33 @@
             </tr>
           </thead>
           <tbody>
-            <tr data-bairro="centro">
-              <td><strong>Centro</strong></td>
-              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sex</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Centro')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="padre eustaquio">
-              <td><strong>Padre Eustáquio</strong></td>
-              <td><span class="dia-badge">Seg</span><span class="dia-badge">Qui</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico, Metal</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Padre Eustáquio')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="santa terezinha">
-              <td><strong>Santa Terezinha</strong></td>
-              <td><span class="dia-badge">Qua</span><span class="dia-badge">Sáb</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico, Vidro</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Santa Terezinha')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="nossa senhora fatima">
-              <td><strong>N. S. de Fátima</strong></td>
-              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sex</span></td>
-              <td>13h – 18h</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Nossa Senhora de Fátima')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="laranjeiras">
-              <td><strong>Laranjeiras</strong></td>
-              <td><span class="dia-badge">Seg</span><span class="dia-badge">Qui</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Laranjeiras')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="granjas betania">
-              <td><strong>Granjas Betânia</strong></td>
-              <td><span class="dia-badge">Qua</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico, Metal</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Granjas Betânia')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="dom silveiro">
-              <td><strong>Dom Silvério</strong></td>
-              <td><span class="dia-badge">Qui</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Dom Silvério')">Ver detalhes</button></td>
-            </tr>
-            <tr data-bairro="maua">
-              <td><strong>Mauá</strong></td>
-              <td><span class="dia-badge">Ter</span><span class="dia-badge">Sáb</span></td>
-              <td>06h – 11h</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>SAAE Muriaé</td>
-              <td><button class="btn-ver-coleta" onclick="simularConsulta('Mauá')">Ver detalhes</button></td>
-            </tr>
+            <?php
+            $bairros = $bairros ?? [];
+            // remove acentos para o data-bairro (usado pelo filtro JS)
+            $semAcento = static function (string $s): string {
+                $t = iconv('UTF-8', 'ASCII//TRANSLIT//IGNORE', $s);
+                return strtolower(trim((string) $t));
+            };
+            ?>
+            <?php foreach ($bairros as $b): ?>
+              <?php
+              $mats = $b['materiais'] ?? [];
+              // nomes curtos para a coluna de materiais (remove "e Papelão")
+              $matsCurto = array_map(static fn($m) => $m === 'Papel e Papelão' ? 'Papel' : $m, $mats);
+              ?>
+              <tr data-bairro="<?= htmlspecialchars($semAcento($b['nome']), ENT_QUOTES) ?>">
+                <td><strong><?= htmlspecialchars($b['nome']) ?></strong></td>
+                <td>
+                  <?php foreach ($b['dias'] as $d): ?>
+                    <span class="dia-badge"><?= abreviaDiaSemana((int) $d) ?></span>
+                  <?php endforeach; ?>
+                </td>
+                <td><?= formataHora($b['inicio']) ?> – <?= formataHora($b['fim']) ?></td>
+                <td><?= htmlspecialchars(implode(', ', $matsCurto)) ?></td>
+                <td><?= htmlspecialchars($b['equipe']) ?></td>
+                <td><button class="btn-ver-coleta" onclick="simularConsulta('<?= htmlspecialchars($b['nome'], ENT_QUOTES) ?>')">Ver detalhes</button></td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

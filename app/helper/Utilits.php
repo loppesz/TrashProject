@@ -103,3 +103,12 @@ function formataHora(?string $hora): string
     [$h, $m] = array_pad(explode(':', $hora), 2, '00');
     return $m === '00' ? "{$h}h" : "{$h}h{$m}";
 }
+
+/**
+ * Abreviacao do dia da semana (1=domingo..7=sabado) -> Dom, Seg, Ter...
+ */
+function abreviaDiaSemana(int $dia): string
+{
+    $abrev = [1 => 'Dom', 2 => 'Seg', 3 => 'Ter', 4 => 'Qua', 5 => 'Qui', 6 => 'Sex', 7 => 'Sáb'];
+    return $abrev[$dia] ?? '';
+}

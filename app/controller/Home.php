@@ -24,9 +24,12 @@ class Home extends BaseController
 
     public function materiais(): void
     {
+        $materiais = $this->model('Material')->listaCompleta();
+
         $this->view('materiais', [
             'tituloPagina' => 'Guia de Materiais – ColetaFácil',
             'menu'         => 'materiais',
+            'materiais'    => $materiais,
         ]);
     }
 

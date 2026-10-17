@@ -258,7 +258,12 @@ function renderMinhasOcorrencias() {
 // =============================================
 // HISTÓRICO PÚBLICO
 // =============================================
-let historicoFiltrado = [...HISTORICO_FAKE];
+// Usa os dados reais do banco (window.HISTORICO_DB) quando disponiveis;
+// caso contrario, recai nos dados de exemplo.
+const HISTORICO_BASE = (Array.isArray(window.HISTORICO_DB) && window.HISTORICO_DB.length)
+  ? window.HISTORICO_DB
+  : HISTORICO_FAKE;
+let historicoFiltrado = [...HISTORICO_BASE];
 
 function renderHistorico() {
   const lista = document.getElementById('historicoLista');
@@ -307,7 +312,7 @@ function filtrarHistorico() {
   const tipo    = document.getElementById('filtroTipoH')?.value || '';
   const bairro  = document.getElementById('filtroBairroH')?.value || '';
 
-  historicoFiltrado = HISTORICO_FAKE.filter(oc => {
+  historicoFiltrado = HISTORICO_BASE.filter(oc => {
     const txt = (oc.bairro + oc.local + oc.tipoLabel + oc.desc).toLowerCase();
     return (!busca  || txt.includes(busca))
         && (!status || oc.status === status)

@@ -28,6 +28,8 @@ TRUNCATE TABLE ponto_material;
 TRUNCATE TABLE ponto_descarte;
 TRUNCATE TABLE coleta_material;
 TRUNCATE TABLE coleta;
+TRUNCATE TABLE material_exemplo;
+TRUNCATE TABLE material_instrucao;
 TRUNCATE TABLE material;
 TRUNCATE TABLE recompensa;
 TRUNCATE TABLE sessao_usuario;
@@ -62,15 +64,44 @@ INSERT INTO bairro (id_bairro, nome, ativo) VALUES
 -- ---------------------------------------------------------------------
 -- MATERIAIS (guia de materiais)
 -- ---------------------------------------------------------------------
-INSERT INTO material (id_material, nome, descricao, aceito_coleta_seletiva, nivel_risco, instrucao_preparo, alerta_seguranca, cor_lixeira, ativo) VALUES
-(1, 'Papel e Papelão', 'Jornais, revistas, caixas, cadernos, papel de escritório.', TRUE,  'BAIXO',   'Retire grampos, clipes e fitas adesivas. Mantenha seco. Dobre caixas.', NULL, 'Azul', TRUE),
-(2, 'Plástico',        'Garrafas PET, embalagens de produtos de limpeza, sacolas plásticas.', TRUE, 'BAIXO', 'Lave as embalagens. Amasse garrafas PET e retire tampas.', NULL, 'Vermelho', TRUE),
-(3, 'Metal',           'Latas de alumínio, latas de aço, panelas velhas.', TRUE, 'MEDIO', 'Lave as latas. Amasse para economizar espaço.', 'Cuidado com bordas cortantes — use luvas.', 'Amarelo', TRUE),
-(4, 'Vidro',           'Garrafas, potes, frascos de perfume e vidros de conserva.', TRUE, 'ALTO', 'Lave os vidros. Nunca misture inteiros com quebrados.', 'Vidros quebrados: embrulhe em jornal e identifique "VIDRO QUEBRADO".', 'Verde', TRUE),
-(5, 'Lixo Orgânico',   'Restos de comida, cascas de frutas, borra de café.', FALSE, 'BAIXO', 'Compostagem doméstica ou lixo comum (lixeira marrom).', NULL, 'Marrom', TRUE),
-(6, 'Materiais Perfurocortantes', 'Seringas, agulhas, bisturis, lâminas de barbear.', FALSE, 'CRITICO', 'Leve a uma farmácia ou unidade de saúde.', 'NUNCA coloque na coleta seletiva. Risco grave de acidente para os coletores.', NULL, TRUE),
-(7, 'Pilhas e Baterias', 'Pilhas AA, AAA, baterias de celular, bateria de carro.', FALSE, 'ALTO', 'Procure pontos de coleta em supermercados ou lojas de eletrônicos.', 'Nunca jogue no lixo comum ou coleta seletiva.', NULL, TRUE),
-(8, 'Medicamentos',    'Remédios vencidos ou sobras de medicamentos.', FALSE, 'MEDIO', 'Leve a uma farmácia com programa de descarte.', 'Nunca jogue no vaso sanitário ou lixo comum.', NULL, TRUE);
+INSERT INTO material
+  (id_material, nome, descricao, aceito_coleta_seletiva, status_coleta, icone, cor_card, preparo_label,
+   nivel_risco, instrucao_preparo, alerta_seguranca, cor_lixeira, ativo) VALUES
+(1, 'Papel e Papelão', 'Jornais, revistas, caixas, cadernos, papel de escritório.', TRUE,  'ACEITO',     '📄', 'azul',     'Como preparar',  'BAIXO',   'Retire grampos, clipes e fitas adesivas. Mantenha seco. Dobre caixas.', NULL, 'Azul', TRUE),
+(2, 'Plástico',        'Garrafas PET, embalagens de produtos de limpeza, sacolas plásticas.', TRUE, 'ACEITO',  '🧴', 'vermelho', 'Como preparar',  'BAIXO',   'Lave as embalagens. Amasse garrafas PET e retire tampas.', NULL, 'Vermelho', TRUE),
+(3, 'Metal',           'Latas de alumínio, latas de aço, panelas velhas (sem cabo de madeira).', TRUE, 'ACEITO', '🥫', 'amarelo', 'Como preparar',  'MEDIO',   'Lave as latas. Amasse para economizar espaço.', 'Cuidado com bordas cortantes — use luvas.', 'Amarelo', TRUE),
+(4, 'Vidro',           'Garrafas, potes, frascos de perfume e vidros de conserva.', TRUE, 'CUIDADO',       '🍶', 'verde',    'Como preparar',  'ALTO',    'Lave os vidros. Nunca misture inteiros com quebrados.', 'Vidros quebrados: embrulhe em jornal e identifique "VIDRO QUEBRADO".', 'Verde', TRUE),
+(5, 'Lixo Orgânico',   'Restos de comida, cascas de frutas, borra de café, alimentos em geral.', FALSE, 'NAO_ACEITO', '🍌', 'cinza', 'Alternativas',   'BAIXO',   'Compostagem doméstica ou lixo comum (lixeira marrom).', NULL, 'Marrom', TRUE),
+(6, 'Materiais Perfurocortantes', 'Seringas, agulhas, bisturis, lâminas de barbear.', FALSE, 'NAO_ACEITO', '💉', 'preto',  'Como descartar', 'CRITICO', 'Leve a uma farmácia ou unidade de saúde.', 'NUNCA coloque na coleta seletiva. Risco grave de acidente para os coletores.', NULL, TRUE),
+(7, 'Pilhas e Baterias', 'Pilhas AA, AAA, baterias de celular, bateria de carro.', FALSE, 'NAO_ACEITO',    '🔋', 'laranja',  'Como descartar', 'ALTO',    'Procure pontos de coleta em supermercados ou lojas de eletrônicos.', 'Nunca jogue no lixo comum ou coleta seletiva.', NULL, TRUE),
+(8, 'Medicamentos',    'Remédios vencidos ou sobras de medicamentos.', FALSE, 'NAO_ACEITO',             '💊', 'marrom',   'Como descartar', 'MEDIO',   'Leve a uma farmácia com programa de descarte.', 'Nunca jogue no vaso sanitário ou lixo comum.', NULL, TRUE);
+
+-- Instrucoes de preparo por material (ordem + flag de perigo)
+INSERT INTO material_instrucao (id_material, ordem, texto, perigo) VALUES
+-- Papel
+(1,1,'Retire grampos, clipes e fitas adesivas',FALSE),(1,2,'Mantenha seco — papel molhado não é reciclável',FALSE),(1,3,'Dobre caixas para economizar espaço',FALSE),
+-- Plástico
+(2,1,'Lave as embalagens com água',FALSE),(2,2,'Amasse garrafas PET e retire tampas',FALSE),(2,3,'Sacolas podem ser agrupadas em uma só',FALSE),
+-- Metal
+(3,1,'Lave as latas antes de descartar',FALSE),(3,2,'Amasse para economizar espaço',FALSE),(3,3,'⚠️ Cuidado com bordas cortantes — use luvas',TRUE),
+-- Vidro
+(4,1,'Lave os vidros antes do descarte',FALSE),(4,2,'Nunca misture vidros inteiros com quebrados',FALSE),(4,3,'⚠️ Vidros quebrados: embrulhe em papel jornal e identifique "VIDRO QUEBRADO"',TRUE),
+-- Organico
+(5,1,'Compostagem doméstica',FALSE),(5,2,'Descarte no lixo comum (lixeira marrom)',FALSE),
+-- Perfurocortantes
+(6,1,'🔴 NUNCA coloque na coleta seletiva',TRUE),(6,2,'Leve a uma farmácia ou unidade de saúde',FALSE),(6,3,'Risco grave de acidente para os coletores',TRUE),
+-- Pilhas
+(7,1,'Procure pontos de coleta específicos em supermercados',FALSE),(7,2,'Lojas de eletrônicos geralmente aceitam',FALSE),(7,3,'Nunca jogue no lixo comum ou coleta seletiva',FALSE),
+-- Medicamentos
+(8,1,'Leve a uma farmácia com programa de descarte',FALSE),(8,2,'Nunca jogue no vaso sanitário ou lixo comum',FALSE);
+
+-- Exemplos (tags) por material; negativo=TRUE usa o estilo vermelho
+INSERT INTO material_exemplo (id_material, ordem, icone, rotulo, negativo) VALUES
+(1,1,'📰','Jornal',FALSE),(1,2,'📦','Caixa',FALSE),(1,3,'📚','Revista',FALSE),
+(2,1,'🧴','Frasco',FALSE),(2,2,'🍼','PET',FALSE),(2,3,'🛍️','Sacola',FALSE),
+(3,1,'🥤','Lata',FALSE),(3,2,'🥫','Conserva',FALSE),(3,3,'🔩','Metal',FALSE),
+(4,1,'🍷','Garrafa',FALSE),(4,2,'🫙','Pote',FALSE),(4,3,'🧪','Frasco',FALSE),
+(5,1,'🍎','Casca',TRUE),(5,2,'🍗','Restos',TRUE);
 
 -- ---------------------------------------------------------------------
 -- COLETA (horarios por bairro — dados da tabela geral da pagina Coleta)
@@ -176,4 +207,23 @@ INSERT INTO ocorrencia (id_ocorrencia, protocolo, id_usuario, id_bairro, tipo, u
 (2, '2026002', NULL, 9,  'COLETA_NAO_REALIZADA',    'MEDIA', 'Av. Brasil, 200',              'Coleta seletiva não passou no dia previsto.',      TRUE,  TRUE, 'RESOLVIDA',    '2026-08-18 10:30:00'),
 (3, '2026003', NULL, 10, 'DESCARTE_IRREGULAR',      'MEDIA', 'Rua do Comércio, 15',          'Lixo acumulado em terreno baldio.',                TRUE,  TRUE, 'NOVA',         '2026-08-21 08:15:00'),
 (4, '2026004', NULL, 11, 'MATERIAL_NAO_RECOLHIDO',  'BAIXA', 'Praça da Amizade',             'Material reciclável deixado e não recolhido.',     TRUE,  TRUE, 'EM_ANALISE',   '2026-08-21 14:45:00'),
-(5, '2026005', NULL, 1,  'PONTO_INADEQUADO',        'BAIXA', 'Rua da Saúde, 10',             'Ponto de descarte em local inadequado.',           TRUE,  TRUE, 'RESOLVIDA',    '2026-08-17 16:20:00');
+(5, '2026005', NULL, 1,  'PONTO_INADEQUADO',        'BAIXA', 'Rua da Saúde, 10',             'Ponto de descarte em local inadequado.',           TRUE,  TRUE, 'RESOLVIDA',    '2026-08-17 16:20:00'),
+(6, '2026006', 2,    10, 'ENTULHO',                 'ALTA',  'Rua Dom Pedro, 400',           'Entulho de obra descartado na esquina há dias.',   FALSE, TRUE, 'NOVA',         '2026-08-22 07:40:00'),
+(7, '2026007', NULL, 8,  'LIXO_TOXICO',             'ALTA',  'Rua do Comércio, 88 – Mauá',   'Latas de tinta e solvente abandonadas na via.',    TRUE,  TRUE, 'EM_ANALISE',   '2026-08-22 11:10:00'),
+(8, '2026008', 2,    1,  'DESCARTE_IRREGULAR',      'MEDIA', 'Praça Central',                'Sacos de lixo fora do horário da coleta.',         FALSE, TRUE, 'EM_ANDAMENTO', '2026-08-19 18:05:00'),
+(9, '2026009', NULL, 11, 'COLETA_NAO_REALIZADA',    'MEDIA', 'Rua das Acácias, 30',          'Coleta atrasada há dois dias no bairro.',          TRUE,  TRUE, 'RESOLVIDA',    '2026-08-15 09:25:00'),
+(10,'2026010', 2,    12, 'OUTROS',                  'BAIXA', 'Av. da Educação, 120',         'Lixeira pública danificada e transbordando.',      FALSE, TRUE, 'NOVA',         '2026-08-23 08:00:00');
+
+-- Observacao do admin + responsavel em ocorrencias ja tratadas (para o painel)
+UPDATE ocorrencia SET id_administrador_responsavel = 1,
+  observacao_admin = 'Equipe acionada; coleta extra agendada.',
+  resolvida_em = '2026-08-18 15:00:00'
+  WHERE protocolo = '2026002';
+UPDATE ocorrencia SET id_administrador_responsavel = 1,
+  observacao_admin = 'Local vistoriado e regularizado.',
+  resolvida_em = '2026-08-17 17:30:00'
+  WHERE protocolo = '2026005';
+UPDATE ocorrencia SET id_administrador_responsavel = 1,
+  observacao_admin = 'Coleta normalizada após contato com a equipe.',
+  resolvida_em = '2026-08-16 10:00:00'
+  WHERE protocolo = '2026009';
