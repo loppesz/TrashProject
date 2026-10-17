@@ -3,10 +3,19 @@
 /**
  * Configuracoes globais da aplicacao ColetaFacil.
  *
- * BASEURL usa caminho absoluto a partir da raiz do dominio ("/"), o que
- * funciona tanto no VirtualHost coletaseletiva/ quanto em coletafacil/ sem
- * precisablr reconfigurar nada ao trocar o host.
+ * BASEURL e detectada automaticamente, funcionando tanto em subpasta
+ * (http://localhost/TrashProject/) quanto na raiz de um VirtualHost.
+ *
+ * Credenciais sensiveis (senha do banco) ficam em config.local.php,
+ * que NAO e versionado. Veja config.local.exemplo.php.
  */
+
+// Carrega as credenciais locais (senha do banco, etc.), se existirem.
+$configLocal = [];
+$arquivoLocal = __DIR__ . '/config.local.php';
+if (file_exists($arquivoLocal)) {
+    $configLocal = require $arquivoLocal;
+}
 
 // URL base da aplicacao, detectada automaticamente.
 // Funciona tanto em subpasta (http://localhost/TrashProject/) quanto na raiz
@@ -25,7 +34,7 @@ define('DB_CONF_CONEXAO', [
     'porta'    => '3306',
     'banco'    => 'coletafacil',
     'usuario'  => 'root',
-    'senha'    => '',
+    'senha'    => $configLocal['db_senha'] ?? '',
     'charset'  => 'utf8mb4',
 ]);
 

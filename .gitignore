@@ -9,6 +9,8 @@ scratch_slides.txt
 # Ambiente e credenciais
 .env
 *.local
+# Credenciais locais (senha do banco) – cada dev tem a sua
+app/config/config.local.php
 
 # Logs e cache
 *.log
