@@ -23,78 +23,40 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>📄 Papel e Papelão</td>
-              <td><span class="status-badge resolvida">✅ Sim</span></td>
-              <td><span class="status-badge analise">Baixo</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Papel e Papelão')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>🧴 Plástico</td>
-              <td><span class="status-badge resolvida">✅ Sim</span></td>
-              <td><span class="status-badge analise">Baixo</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Plástico')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>🥫 Metal</td>
-              <td><span class="status-badge resolvida">✅ Sim</span></td>
-              <td><span class="status-badge andamento">Médio</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Metal')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>🍶 Vidro</td>
-              <td><span class="status-badge resolvida">✅ Sim</span></td>
-              <td><span class="status-badge nova">Alto</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Vidro')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>🍌 Lixo Orgânico</td>
-              <td><span class="status-badge nova">❌ Não</span></td>
-              <td><span class="status-badge analise">Baixo</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Lixo Orgânico')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>💉 Perfurocortantes</td>
-              <td><span class="status-badge nova">❌ Não</span></td>
-              <td><span class="status-badge nova">Crítico</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Perfurocortantes')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>🔋 Pilhas e Baterias</td>
-              <td><span class="status-badge nova">❌ Não</span></td>
-              <td><span class="status-badge nova">Alto</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Pilhas e Baterias')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>💊 Medicamentos</td>
-              <td><span class="status-badge nova">❌ Não</span></td>
-              <td><span class="status-badge andamento">Médio</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarMaterial('Medicamentos')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
+            <?php
+            $materiais = $materiais ?? [];
+            // nivel_risco -> [classe de badge, rotulo]
+            $riscoMap = [
+                'BAIXO'   => ['analise',   'Baixo'],
+                'MEDIO'   => ['andamento', 'Médio'],
+                'ALTO'    => ['nova',      'Alto'],
+                'CRITICO' => ['nova',      'Crítico'],
+            ];
+            // status_coleta -> data-tipo do filtro
+            $tipoMap = ['ACEITO' => 'aceito', 'CUIDADO' => 'cuidado', 'NAO_ACEITO' => 'nao-aceito'];
+            ?>
+            <?php foreach ($materiais as $m): ?>
+              <?php
+              $risco = $riscoMap[$m['nivel_risco']] ?? ['analise', $m['nivel_risco']];
+              $aceito = (int) $m['aceito_coleta_seletiva'] === 1;
+              $dataTipo = $tipoMap[$m['status_coleta']] ?? 'aceito';
+              ?>
+              <tr data-tipo="<?= $dataTipo ?>" data-busca="<?= htmlspecialchars(strtolower($m['nome']), ENT_QUOTES) ?>">
+                <td><?= $m['icone'] ?> <?= htmlspecialchars($m['nome']) ?></td>
+                <td>
+                  <?php if ($aceito): ?>
+                    <span class="status-badge resolvida">✅ Sim</span>
+                  <?php else: ?>
+                    <span class="status-badge nova">❌ Não</span>
+                  <?php endif; ?>
+                </td>
+                <td><span class="status-badge <?= $risco[0] ?>"><?= $risco[1] ?></span></td>
+                <td>
+                  <button class="btn-acao editar" onclick="editarMaterial('<?= htmlspecialchars($m['nome'], ENT_QUOTES) ?>')">✏️ Editar</button>
+                  <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

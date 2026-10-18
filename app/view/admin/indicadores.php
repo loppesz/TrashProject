@@ -5,28 +5,28 @@
         <div class="metric-card">
           <div class="metric-icon laranja">🚨</div>
           <div class="metric-info">
-            <span class="metric-value">24</span>
+            <span class="metric-value"><?= (int) ($totalOc ?? 0) ?></span>
             <span class="metric-label">Total de Ocorrências</span>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon verde">✅</div>
           <div class="metric-info">
-            <span class="metric-value">18</span>
+            <span class="metric-value"><?= (int) ($resolvidas ?? 0) ?></span>
             <span class="metric-label">Ocorrências Resolvidas</span>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon azul">⏳</div>
           <div class="metric-info">
-            <span class="metric-value">6</span>
+            <span class="metric-value"><?= (int) ($emAndamento ?? 0) ?></span>
             <span class="metric-label">Em Andamento</span>
           </div>
         </div>
         <div class="metric-card">
           <div class="metric-icon roxo">📊</div>
           <div class="metric-info">
-            <span class="metric-value">75%</span>
+            <span class="metric-value"><?= (int) ($taxa ?? 0) ?>%</span>
             <span class="metric-label">Taxa de Resolução</span>
           </div>
         </div>
@@ -40,41 +40,25 @@
             <h2>📍 Bairros com Mais Ocorrências</h2>
           </div>
           <div class="bairro-list">
-            <div class="bairro-item">
-              <span class="bairro-nome">Centro</span>
-              <div class="bairro-bar-wrap">
-                <div class="bairro-bar" style="width: 80%; background: #ef4444;"></div>
+            <?php
+            $porBairro = $porBairro ?? [];
+            $maxB = 0;
+            foreach ($porBairro as $b) { $maxB = max($maxB, (int) $b['total']); }
+            $cores = ['#ef4444', '#f97316', '#eab308', '#22c55e', '#22c55e', '#3b82f6'];
+            ?>
+            <?php foreach (array_slice($porBairro, 0, 6) as $i => $b): ?>
+              <?php $pct = $maxB > 0 ? (int) round(((int) $b['total'] / $maxB) * 100) : 0; ?>
+              <div class="bairro-item">
+                <span class="bairro-nome"><?= htmlspecialchars($b['bairro']) ?></span>
+                <div class="bairro-bar-wrap">
+                  <div class="bairro-bar" style="width: <?= $pct ?>%; background: <?= $cores[$i] ?? '#22c55e' ?>;"></div>
+                </div>
+                <span class="bairro-count"><?= (int) $b['total'] ?></span>
               </div>
-              <span class="bairro-count">8</span>
-            </div>
-            <div class="bairro-item">
-              <span class="bairro-nome">Vila Nova</span>
-              <div class="bairro-bar-wrap">
-                <div class="bairro-bar" style="width: 60%; background: #f97316;"></div>
-              </div>
-              <span class="bairro-count">6</span>
-            </div>
-            <div class="bairro-item">
-              <span class="bairro-nome">Bairro Novo</span>
-              <div class="bairro-bar-wrap">
-                <div class="bairro-bar" style="width: 40%; background: #eab308;"></div>
-              </div>
-              <span class="bairro-count">4</span>
-            </div>
-            <div class="bairro-item">
-              <span class="bairro-nome">Jardim América</span>
-              <div class="bairro-bar-wrap">
-                <div class="bairro-bar" style="width: 30%; background: #22c55e;"></div>
-              </div>
-              <span class="bairro-count">3</span>
-            </div>
-            <div class="bairro-item">
-              <span class="bairro-nome">Bairro Escolar</span>
-              <div class="bairro-bar-wrap">
-                <div class="bairro-bar" style="width: 30%; background: #22c55e;"></div>
-              </div>
-              <span class="bairro-count">3</span>
-            </div>
+            <?php endforeach; ?>
+            <?php if (empty($porBairro)): ?>
+              <p style="color:#94a3b8;font-size:.85rem;">Sem dados ainda.</p>
+            <?php endif; ?>
           </div>
         </div>
 
@@ -84,22 +68,21 @@
             <h2>🗂️ Tipos Mais Frequentes</h2>
           </div>
           <div class="tipo-list">
-            <div class="tipo-item">
-              <span>🗑️ Descarte irregular</span>
-              <strong>12 (50%)</strong>
-            </div>
-            <div class="tipo-item">
-              <span>🚛 Coleta não realizada</span>
-              <strong>6 (25%)</strong>
-            </div>
-            <div class="tipo-item">
-              <span>📦 Material deixado</span>
-              <strong>4 (17%)</strong>
-            </div>
-            <div class="tipo-item">
-              <span>📍 Ponto inadequado</span>
-              <strong>2 (8%)</strong>
-            </div>
+            <?php
+            $porTipo = $porTipo ?? [];
+            $totalTipos = 0;
+            foreach ($porTipo as $t) { $totalTipos += (int) $t['total']; }
+            ?>
+            <?php foreach ($porTipo as $t): ?>
+              <?php $pctT = $totalTipos > 0 ? (int) round(((int) $t['total'] / $totalTipos) * 100) : 0; ?>
+              <div class="tipo-item">
+                <span><?= rotuloTipoOcorrencia($t['tipo']) ?></span>
+                <strong><?= (int) $t['total'] ?> (<?= $pctT ?>%)</strong>
+              </div>
+            <?php endforeach; ?>
+            <?php if (empty($porTipo)): ?>
+              <p style="color:#94a3b8;font-size:.85rem;">Sem dados ainda.</p>
+            <?php endif; ?>
           </div>
 
           <div class="card-header" style="margin-top:24px;">

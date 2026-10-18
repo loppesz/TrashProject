@@ -115,4 +115,85 @@ class OcorrenciaModel extends BaseModel
         );
         return !empty($r) ? (int) $r['id_bairro'] : null;
     }
+
+    // =================================================================
+    // Area administrativa
+    // =================================================================
+
+    /** Lista TODAS as ocorrencias (admin), mais recentes primeiro. */
+    public function listaAdmin(int $limite = 200): array
+    {
+        return $this->db->select(
+            'SELECT o.*, b.nome AS bairro
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             ORDER BY o.criada_em DESC
+             LIMIT ' . (int) $limite
+        );
+    }
+
+    /** Conta ocorrencias por status. Retorna [status => total]. */
+    public function contagemPorStatus(): array
+    {
+        $linhas = $this->db->select(
+            'SELECT status, COUNT(*) AS total FROM ocorrencia GROUP BY status'
+        );
+        $out = [];
+        foreach ($linhas as $l) {
+            $out[$l['status']] = (int) $l['total'];
+        }
+        return $out;
+    }
+
+    /** Total geral de ocorrencias. */
+    public function total(): int
+    {
+        $r = $this->db->select('SELECT COUNT(*) AS n FROM ocorrencia', [], 'single');
+        return (int) ($r['n'] ?? 0);
+    }
+
+    /** Contagem de ocorrencias agrupadas por bairro (para graficos). */
+    public function contagemPorBairro(): array
+    {
+        return $this->db->select(
+            'SELECT b.nome AS bairro, COUNT(*) AS total
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             GROUP BY b.id_bairro, b.nome
+             ORDER BY total DESC'
+        );
+    }
+
+    /** Contagem por tipo (para graficos). */
+    public function contagemPorTipo(): array
+    {
+        return $this->db->select(
+            'SELECT tipo, COUNT(*) AS total
+             FROM ocorrencia GROUP BY tipo ORDER BY total DESC'
+        );
+    }
+
+    /**
+     * Atualiza o status de uma ocorrencia (acao do admin).
+     * Grava tambem a observacao e o responsavel; preenche resolvida_em quando resolve.
+     *
+     * @return int linhas afetadas
+     */
+    public function atualizarStatus(int $id, string $status, ?string $observacao, int $idAdmin): int
+    {
+        $validos = ['NOVA', 'EM_ANALISE', 'EM_ANDAMENTO', 'RESOLVIDA', 'ARQUIVADA'];
+        if (!in_array($status, $validos, true)) {
+            return 0;
+        }
+
+        $resolvida = $status === 'RESOLVIDA' ? date('Y-m-d H:i:s') : null;
+
+        return $this->db->update(
+            'UPDATE ocorrencia
+             SET status = ?, observacao_admin = ?, id_administrador_responsavel = ?,
+                 resolvida_em = ?
+             WHERE id_ocorrencia = ?',
+            [$status, $observacao ?: null, $idAdmin, $resolvida, $id]
+        );
+    }
 }

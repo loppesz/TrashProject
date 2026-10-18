@@ -112,3 +112,50 @@ function abreviaDiaSemana(int $dia): string
     $abrev = [1 => 'Dom', 2 => 'Seg', 3 => 'Ter', 4 => 'Qua', 5 => 'Qui', 6 => 'Sex', 7 => 'Sáb'];
     return $abrev[$dia] ?? '';
 }
+
+/**
+ * Rotulo legivel do tipo de ocorrencia (ENUM do banco -> texto).
+ */
+function rotuloTipoOcorrencia(string $tipo): string
+{
+    $map = [
+        'DESCARTE_IRREGULAR'     => 'Descarte irregular',
+        'COLETA_NAO_REALIZADA'   => 'Coleta não realizada',
+        'MATERIAL_NAO_RECOLHIDO' => 'Material deixado',
+        'PONTO_INADEQUADO'       => 'Ponto inadequado',
+        'ENTULHO'                => 'Entulho/Móveis',
+        'LIXO_TOXICO'            => 'Lixo tóxico',
+        'OUTROS'                 => 'Outros',
+    ];
+    return $map[$tipo] ?? $tipo;
+}
+
+/**
+ * Rotulo legivel do status de ocorrencia (ENUM do banco -> texto).
+ */
+function rotuloStatusOcorrencia(string $status): string
+{
+    $map = [
+        'NOVA'         => 'Nova',
+        'EM_ANALISE'   => 'Em análise',
+        'EM_ANDAMENTO' => 'Em atendimento',
+        'RESOLVIDA'    => 'Resolvida',
+        'ARQUIVADA'    => 'Arquivada',
+    ];
+    return $map[$status] ?? $status;
+}
+
+/**
+ * Classe CSS do badge de status (reaproveita os estilos existentes).
+ */
+function classeStatusOcorrencia(string $status): string
+{
+    $map = [
+        'NOVA'         => 'nova',
+        'EM_ANALISE'   => 'analise',
+        'EM_ANDAMENTO' => 'andamento',
+        'RESOLVIDA'    => 'resolvida',
+        'ARQUIVADA'    => 'arquivada',
+    ];
+    return $map[$status] ?? 'nova';
+}

@@ -15,56 +15,28 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Centro</td>
-              <td>Terça e Sexta</td>
-              <td>07h – 12h</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>
-                <button class="btn-acao editar" onclick="editarColeta('Centro')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Bairro Novo</td>
-              <td>Segunda e Quinta</td>
-              <td>08h – 13h</td>
-              <td>Papel, Plástico, Metal</td>
-              <td>
-                <button class="btn-acao editar" onclick="editarColeta('Bairro Novo')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Vila Nova</td>
-              <td>Quarta e Sábado</td>
-              <td>07h – 11h</td>
-              <td>Papel, Plástico, Vidro</td>
-              <td>
-                <button class="btn-acao editar" onclick="editarColeta('Vila Nova')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Jardim América</td>
-              <td>Terça e Sexta</td>
-              <td>13h – 18h</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>
-                <button class="btn-acao editar" onclick="editarColeta('Jardim América')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Bairro Escolar</td>
-              <td>Quinta</td>
-              <td>07h – 12h</td>
-              <td>Papel, Plástico</td>
-              <td>
-                <button class="btn-acao editar" onclick="editarColeta('Bairro Escolar')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
+            <?php
+            $bairros = $bairros ?? [];
+            $nomesDias = [1 => 'Domingo', 2 => 'Segunda', 3 => 'Terça', 4 => 'Quarta', 5 => 'Quinta', 6 => 'Sexta', 7 => 'Sábado'];
+            ?>
+            <?php foreach ($bairros as $b): ?>
+              <?php
+              $diasNome = array_map(static fn($d) => $nomesDias[(int) $d] ?? '', $b['dias']);
+              // junta com " e " quando 2, ", " quando mais
+              $diasTxt = count($diasNome) <= 2 ? implode(' e ', $diasNome) : implode(', ', $diasNome);
+              $matsCurto = array_map(static fn($m) => $m === 'Papel e Papelão' ? 'Papel' : $m, $b['materiais'] ?? []);
+              ?>
+              <tr data-busca="<?= htmlspecialchars(strtolower($b['nome']), ENT_QUOTES) ?>">
+                <td><?= htmlspecialchars($b['nome']) ?></td>
+                <td><?= htmlspecialchars($diasTxt) ?></td>
+                <td><?= formataHora($b['inicio']) ?> – <?= formataHora($b['fim']) ?></td>
+                <td><?= htmlspecialchars(implode(', ', $matsCurto)) ?></td>
+                <td>
+                  <button class="btn-acao editar" onclick="editarColeta('<?= htmlspecialchars($b['nome'], ENT_QUOTES) ?>')">✏️ Editar</button>
+                  <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>

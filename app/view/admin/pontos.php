@@ -19,50 +19,26 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Ecoponto Centro</td>
-              <td>Rua das Flores, 123 – Centro</td>
-              <td>Pilhas, Eletrônicos, Cartuchos</td>
-              <td>Seg–Sex 08h–17h / Sáb 08h–12h</td>
-              <td><span class="status-badge resolvida">🟢 Aberto</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarPonto('Ecoponto Centro')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Farmácia Saúde Total</td>
-              <td>Av. Brasil, 456 – Bairro Novo</td>
-              <td>Medicamentos, Pilhas</td>
-              <td>Todos os dias 07h–22h</td>
-              <td><span class="status-badge resolvida">🟢 Aberto</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarPonto('Farmácia Saúde Total')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Supermercado Boa Compra</td>
-              <td>Rua Dom Pedro, 789 – Vila Nova</td>
-              <td>Óleo de cozinha, Pilhas</td>
-              <td>Seg–Sáb 07h–21h</td>
-              <td><span class="status-badge resolvida">🟢 Aberto</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarPonto('Supermercado')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
-            <tr>
-              <td>Ponto Recicle – Jd. América</td>
-              <td>Praça da Amizade – Jardim América</td>
-              <td>Papel, Plástico, Metal, Vidro</td>
-              <td>Ter, Qui, Sáb 08h–14h</td>
-              <td><span class="status-badge nova">🔴 Fechado</span></td>
-              <td>
-                <button class="btn-acao editar" onclick="editarPonto('Ponto Recicle')">✏️ Editar</button>
-                <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
-              </td>
-            </tr>
+            <?php foreach (($pontos ?? []) as $p): ?>
+              <?php $aberto = $p['status_funcionamento'] === 'ABERTO'; ?>
+              <tr data-busca="<?= htmlspecialchars(strtolower($p['nome'] . ' ' . $p['bairro']), ENT_QUOTES) ?>">
+                <td><?= htmlspecialchars($p['nome']) ?></td>
+                <td><?= htmlspecialchars($p['endereco']) ?></td>
+                <td><?= htmlspecialchars(implode(', ', $p['materiais'] ?? [])) ?></td>
+                <td><?= htmlspecialchars((string) $p['horario_funcionamento']) ?></td>
+                <td>
+                  <?php if ($aberto): ?>
+                    <span class="status-badge resolvida">🟢 Aberto</span>
+                  <?php else: ?>
+                    <span class="status-badge nova">🔴 Fechado</span>
+                  <?php endif; ?>
+                </td>
+                <td>
+                  <button class="btn-acao editar" onclick="editarPonto('<?= htmlspecialchars($p['nome'], ENT_QUOTES) ?>')">✏️ Editar</button>
+                  <button class="btn-acao excluir" onclick="excluirItem(this)">🗑️ Excluir</button>
+                </td>
+              </tr>
+            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
