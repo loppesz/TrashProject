@@ -76,12 +76,14 @@
                 <td>
                   <button class="btn-acao ver"
                     onclick="verOcorrencia(this)"
+                    data-id="<?= (int) $o['id_ocorrencia'] ?>"
                     data-protocolo="<?= htmlspecialchars($o['protocolo'], ENT_QUOTES) ?>"
                     data-tipo="<?= htmlspecialchars(rotuloTipoOcorrencia($o['tipo']), ENT_QUOTES) ?>"
                     data-local="<?= htmlspecialchars($o['endereco_descricao'], ENT_QUOTES) ?>"
                     data-bairro="<?= htmlspecialchars($o['bairro'], ENT_QUOTES) ?>"
                     data-urgencia="<?= htmlspecialchars($o['urgencia'], ENT_QUOTES) ?>"
                     data-descricao="<?= htmlspecialchars($o['descricao'], ENT_QUOTES) ?>"
+                    data-status="<?= htmlspecialchars($o['status'], ENT_QUOTES) ?>"
                     data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>">👁 Ver</button>
                 </td>
               </tr>
@@ -93,32 +95,60 @@
         </table>
       </div>
 
-  <!-- MODAL DE DETALHES -->
+  <!-- MODAL DE DETALHES / GESTÃO -->
   <div id="modalOcorrencia" class="modal" style="display:none;">
     <div class="modal-content modal-large">
       <div class="modal-top">
         <h3>Detalhes da Ocorrência</h3>
         <button class="modal-close" onclick="fecharModalAdmin()">✕</button>
       </div>
+
+      <!-- Dados do relato (somente leitura) -->
       <div id="modalOcBody"></div>
+
+      <!-- Gestão: status + observação do administrador (editável, grava no banco) -->
+      <form method="POST" action="<?= baseUrl('admin/atualizarStatus') ?>">
+        <input type="hidden" name="id_ocorrencia" id="modalIdOc" value="">
+        <div class="form-group">
+          <label>Status</label>
+          <select name="status" id="modalStatus">
+            <?php foreach ($statusOpcoes as $op): ?>
+              <option value="<?= $op ?>"><?= rotuloStatusOcorrencia($op) ?></option>
+            <?php endforeach; ?>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Observação do Administrador</label>
+          <textarea name="observacao" id="modalObs" rows="3" placeholder="Adicione uma observação sobre esta ocorrência..."></textarea>
+        </div>
+        <div class="modal-actions">
+          <button type="submit" class="btn-primary">Salvar</button>
+          <button type="button" class="btn-secondary" onclick="fecharModalAdmin()">Fechar</button>
+        </div>
+      </form>
     </div>
   </div>
 
   <script>
-    // Preenche o modal de detalhes a partir dos data-* do botao (dados do banco).
+    // Preenche o modal a partir dos data-* do botao (dados do banco).
     function verOcorrencia(btn) {
       var d = btn.dataset;
       var html =
-        '<div class="sr-info-grid" style="display:grid;gap:12px;margin-bottom:16px;">' +
+        '<div class="sr-info-grid" style="display:grid;gap:10px;margin-bottom:16px;">' +
         '<p><strong>Protocolo:</strong> #' + d.protocolo + '</p>' +
         '<p><strong>Tipo:</strong> ' + d.tipo + '</p>' +
         '<p><strong>Local:</strong> ' + d.local + '</p>' +
         '<p><strong>Bairro:</strong> ' + d.bairro + '</p>' +
         '<p><strong>Urgência:</strong> ' + d.urgencia + '</p>' +
         '<p><strong>Descrição:</strong> ' + d.descricao + '</p>' +
-        (d.obs ? '<p><strong>Observação do admin:</strong> ' + d.obs + '</p>' : '') +
         '</div>';
       document.getElementById('modalOcBody').innerHTML = html;
+
+      // Pre-carrega o form de gestao com os valores atuais
+      document.getElementById('modalIdOc').value  = d.id;
+      document.getElementById('modalStatus').value = d.status;
+      document.getElementById('modalObs').value    = d.obs || '';
+
       document.getElementById('modalOcorrencia').style.display = 'flex';
     }
     function fecharModalAdmin() {

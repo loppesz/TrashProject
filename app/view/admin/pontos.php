@@ -41,6 +41,9 @@
             <?php endforeach; ?>
           </tbody>
         </table>
+        <div class="admin-add-bar">
+          <button class="btn-primary btn-add" onclick="abrirModalPonto()">➕ Adicionar Ponto de Descarte</button>
+        </div>
       </div>
 
   <!-- MODAL CADASTRAR/EDITAR PONTO -->

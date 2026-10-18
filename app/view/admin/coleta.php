@@ -39,6 +39,9 @@
             <?php endforeach; ?>
           </tbody>
         </table>
+        <div class="admin-add-bar">
+          <button class="btn-primary btn-add" onclick="abrirModalColeta()">➕ Adicionar Horário de Coleta</button>
+        </div>
       </div>
 
   <!-- MODAL CADASTRAR/EDITAR COLETA -->

@@ -1,35 +1,35 @@
 <?php require_once 'app/view/comuns/admin_cabecalho.php'; ?>
 
-      <!-- CARDS DE MÉTRICAS -->
+      <!-- CARDS DE MÉTRICAS (clicáveis) -->
       <div class="metrics-grid">
-        <div class="metric-card">
+        <a href="<?= baseUrl('admin/ocorrencias') ?>" class="metric-card metric-card-link">
           <div class="metric-icon laranja">🚨</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalOc ?? 0) ?></span>
             <span class="metric-label">Ocorrências Registradas</span>
           </div>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="<?= baseUrl('admin/ocorrencias') ?>" class="metric-card metric-card-link">
           <div class="metric-icon verde">✅</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($resolvidas ?? 0) ?></span>
             <span class="metric-label">Ocorrências Resolvidas</span>
           </div>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="<?= baseUrl('admin/materiais') ?>" class="metric-card metric-card-link">
           <div class="metric-icon azul">📦</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalMat ?? 0) ?></span>
             <span class="metric-label">Materiais Cadastrados</span>
           </div>
-        </div>
-        <div class="metric-card">
+        </a>
+        <a href="<?= baseUrl('admin/pontos') ?>" class="metric-card metric-card-link">
           <div class="metric-icon roxo">📍</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalPontos ?? 0) ?></span>
             <span class="metric-label">Pontos de Descarte</span>
           </div>
-        </div>
+        </a>
       </div>
 
       <!-- LINHA: TABELA + GRÁFICO SIMPLES -->

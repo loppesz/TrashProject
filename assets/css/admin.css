@@ -166,6 +166,19 @@
   border: 1px solid #e2e8f0;
 }
 
+/* Card de metrica clicavel (dashboard) */
+.metric-card-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s;
+}
+.metric-card-link:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.10);
+  border-color: #16a34a;
+}
+
 .metric-icon {
   width: 48px;
   height: 48px;
@@ -505,4 +518,23 @@
   .admin-content {
     padding: 16px;
   }
+}
+
+/* =============================================
+   BARRA DE ADICIONAR (abaixo das tabelas admin)
+   ============================================= */
+.admin-add-bar {
+  display: block;
+  width: 100%;
+  text-align: right;
+  padding: 16px 4px 4px;
+  margin-top: 8px;
+  border-top: 1px solid #e2e8f0;
+}
+
+.btn-add {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
 }
