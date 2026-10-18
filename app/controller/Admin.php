@@ -74,31 +74,227 @@ class Admin extends BaseController
         exit;
     }
 
+    // =================================================================
+    // MATERIAIS (CRUD)
+    // =================================================================
+
     public function materiais(): void
     {
         $this->view('admin/materiais', [
             'tituloPagina' => 'Materiais',
             'adminMenu'    => 'materiais',
             'materiais'    => $this->model('Material')->listaCompleta(),
+            'msg'          => $_GET['msg'] ?? '',
+            'erro'         => $_GET['erro'] ?? '',
         ]);
     }
+
+    public function salvarMaterial(): void
+    {
+        if (!$this->request->isPost()) {
+            header('Location: ' . baseUrl('admin/materiais'));
+            exit;
+        }
+
+        $model = $this->model('Material');
+        $id    = (int) $this->request->post('id_material');
+
+        $dados = [
+            'nome'             => trim((string) $this->request->post('nome')),
+            'descricao'        => trim((string) $this->request->post('descricao')),
+            'status_coleta'    => (string) $this->request->post('status_coleta', 'ACEITO'),
+            'nivel_risco'      => (string) $this->request->post('nivel_risco', 'BAIXO'),
+            'icone'            => trim((string) $this->request->post('icone')),
+            'cor_card'         => trim((string) $this->request->post('cor_card')),
+            'preparo_label'    => trim((string) $this->request->post('preparo_label')),
+            'alerta_seguranca' => trim((string) $this->request->post('alerta_seguranca')),
+        ];
+
+        if ($dados['nome'] === '') {
+            header('Location: ' . baseUrl('admin/materiais') . '?erro=' . rawurlencode('Informe o nome do material.'));
+            exit;
+        }
+
+        if ($id > 0) {
+            $model->atualiza($id, $dados);
+        } else {
+            $model->cria($dados);
+        }
+
+        header('Location: ' . baseUrl('admin/materiais') . '?msg=' . rawurlencode('Material salvo com sucesso.'));
+        exit;
+    }
+
+    public function excluirMaterial(): void
+    {
+        if ($this->request->isPost()) {
+            $id = (int) $this->request->post('id_material');
+            if ($id > 0) {
+                $ok = $this->model('Material')->exclui($id);
+                $q = $ok > 0
+                    ? '?msg=' . rawurlencode('Material excluído.')
+                    : '?erro=' . rawurlencode('Material em uso; não pode ser excluído.');
+                header('Location: ' . baseUrl('admin/materiais') . $q);
+                exit;
+            }
+        }
+        header('Location: ' . baseUrl('admin/materiais'));
+        exit;
+    }
+
+    // =================================================================
+    // COLETA (CRUD por bairro)
+    // =================================================================
 
     public function coleta(): void
     {
+        $coletaModel = $this->model('Coleta');
+        $bairros = $coletaModel->porBairro();
+        // anexa ids de materiais de cada bairro (para marcar checkboxes na edicao)
+        $matModel = $this->model('Material');
+        $mapaMat = [];
+        foreach ($matModel->lista() as $m) {
+            $mapaMat[$m['nome']] = (int) $m['id_material'];
+        }
+        foreach ($bairros as &$b) {
+            $ids = [];
+            foreach (($b['materiais'] ?? []) as $nome) {
+                if (isset($mapaMat[$nome])) {
+                    $ids[] = $mapaMat[$nome];
+                }
+            }
+            $b['materiais_ids'] = $ids;
+        }
+        unset($b);
+
         $this->view('admin/coleta', [
-            'tituloPagina' => 'Coleta',
-            'adminMenu'    => 'coleta',
-            'bairros'      => $this->model('Coleta')->porBairro(),
+            'tituloPagina'  => 'Coleta',
+            'adminMenu'     => 'coleta',
+            'bairros'       => $bairros,
+            'listaBairros'  => $this->model('Bairro')->listaAtivos(),
+            'materiaisTodos' => $matModel->lista(),
+            'msg'           => $_GET['msg'] ?? '',
+            'erro'          => $_GET['erro'] ?? '',
         ]);
     }
 
+    public function salvarColeta(): void
+    {
+        if (!$this->request->isPost()) {
+            header('Location: ' . baseUrl('admin/coleta'));
+            exit;
+        }
+
+        $idBairro  = (int) $this->request->post('id_bairro');
+        $dias      = (array) $this->request->post('dias', []);
+        $inicio    = (string) $this->request->post('inicio', '07:00');
+        $fim       = (string) $this->request->post('fim', '12:00');
+        $equipe    = trim((string) $this->request->post('equipe'));
+        $materiais = (array) $this->request->post('materiais', []);
+
+        if ($idBairro <= 0 || empty($dias)) {
+            header('Location: ' . baseUrl('admin/coleta') . '?erro=' . rawurlencode('Selecione o bairro e ao menos um dia.'));
+            exit;
+        }
+
+        $this->model('Coleta')->salvaPorBairro([
+            'id_bairro' => $idBairro,
+            'dias'      => $dias,
+            'inicio'    => $inicio,
+            'fim'       => $fim,
+            'equipe'    => $equipe,
+            'materiais' => $materiais,
+        ]);
+
+        header('Location: ' . baseUrl('admin/coleta') . '?msg=' . rawurlencode('Coleta salva com sucesso.'));
+        exit;
+    }
+
+    public function excluirColeta(): void
+    {
+        if ($this->request->isPost()) {
+            $idBairro = (int) $this->request->post('id_bairro');
+            if ($idBairro > 0) {
+                $this->model('Coleta')->removePorBairro($idBairro);
+                header('Location: ' . baseUrl('admin/coleta') . '?msg=' . rawurlencode('Coleta removida.'));
+                exit;
+            }
+        }
+        header('Location: ' . baseUrl('admin/coleta'));
+        exit;
+    }
+
+    // =================================================================
+    // PONTOS (CRUD)
+    // =================================================================
+
     public function pontos(): void
     {
+        $pontoModel = $this->model('Ponto');
+        $pontos = $pontoModel->listaCompleta();
+        // anexa os ids dos materiais de cada ponto (para marcar os checkboxes na edicao)
+        foreach ($pontos as &$p) {
+            $p['materiais_ids'] = $pontoModel->idsMateriais((int) $p['id_ponto']);
+        }
+        unset($p);
+
         $this->view('admin/pontos', [
-            'tituloPagina' => 'Pontos de Descarte',
-            'adminMenu'    => 'pontos',
-            'pontos'       => $this->model('Ponto')->listaCompleta(),
+            'tituloPagina'   => 'Pontos de Descarte',
+            'adminMenu'      => 'pontos',
+            'pontos'         => $pontos,
+            'listaBairros'   => $this->model('Bairro')->listaAtivos(),
+            'materiaisTodos' => $this->model('Material')->lista(),
+            'msg'            => $_GET['msg'] ?? '',
+            'erro'           => $_GET['erro'] ?? '',
         ]);
+    }
+
+    public function salvarPonto(): void
+    {
+        if (!$this->request->isPost()) {
+            header('Location: ' . baseUrl('admin/pontos'));
+            exit;
+        }
+
+        $model = $this->model('Ponto');
+        $id    = (int) $this->request->post('id_ponto');
+
+        $dados = [
+            'id_bairro'             => (int) $this->request->post('id_bairro'),
+            'nome'                  => trim((string) $this->request->post('nome')),
+            'endereco'              => trim((string) $this->request->post('endereco')),
+            'horario_funcionamento' => trim((string) $this->request->post('horario_funcionamento')),
+            'status_funcionamento'  => (string) $this->request->post('status_funcionamento', 'ABERTO'),
+            'materiais'             => (array) $this->request->post('materiais', []),
+        ];
+
+        if ($dados['nome'] === '' || $dados['endereco'] === '' || $dados['id_bairro'] <= 0) {
+            header('Location: ' . baseUrl('admin/pontos') . '?erro=' . rawurlencode('Preencha nome, endereço e bairro.'));
+            exit;
+        }
+
+        if ($id > 0) {
+            $model->atualiza($id, $dados);
+        } else {
+            $model->cria($dados);
+        }
+
+        header('Location: ' . baseUrl('admin/pontos') . '?msg=' . rawurlencode('Ponto salvo com sucesso.'));
+        exit;
+    }
+
+    public function excluirPonto(): void
+    {
+        if ($this->request->isPost()) {
+            $id = (int) $this->request->post('id_ponto');
+            if ($id > 0) {
+                $this->model('Ponto')->exclui($id);
+                header('Location: ' . baseUrl('admin/pontos') . '?msg=' . rawurlencode('Ponto excluído.'));
+                exit;
+            }
+        }
+        header('Location: ' . baseUrl('admin/pontos'));
+        exit;
     }
 
     public function indicadores(): void

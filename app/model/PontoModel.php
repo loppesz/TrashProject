@@ -76,4 +76,88 @@ class PontoModel extends BaseModel
             [$idPonto]
         );
     }
+
+    /** Ids dos materiais aceitos por um ponto. */
+    public function idsMateriais(int $idPonto): array
+    {
+        $linhas = $this->db->select(
+            'SELECT id_material FROM ponto_material WHERE id_ponto = ?',
+            [$idPonto]
+        );
+        return array_map(static fn($l) => (int) $l['id_material'], $linhas);
+    }
+
+    // =================================================================
+    // CRUD (area administrativa)
+    // =================================================================
+
+    /**
+     * Cria um ponto de descarte. $d: id_bairro, nome, endereco,
+     * horario_funcionamento, status_funcionamento, materiais (array de ids).
+     *
+     * @return int id gerado
+     */
+    public function cria(array $d): int
+    {
+        $id = $this->db->insert(
+            'INSERT INTO ponto_descarte
+               (id_bairro, nome, endereco, horario_funcionamento, status_funcionamento, ativo)
+             VALUES (?, ?, ?, ?, ?, 1)',
+            [
+                $d['id_bairro'],
+                $d['nome'],
+                $d['endereco'],
+                $d['horario_funcionamento'] ?: null,
+                $d['status_funcionamento'],
+            ]
+        );
+        $this->sincronizaMateriais($id, $d['materiais'] ?? []);
+        return $id;
+    }
+
+    /** Atualiza um ponto e seus materiais aceitos. */
+    public function atualiza(int $id, array $d): int
+    {
+        $n = $this->db->update(
+            'UPDATE ponto_descarte SET
+               id_bairro = ?, nome = ?, endereco = ?, horario_funcionamento = ?, status_funcionamento = ?
+             WHERE id_ponto = ?',
+            [
+                $d['id_bairro'],
+                $d['nome'],
+                $d['endereco'],
+                $d['horario_funcionamento'] ?: null,
+                $d['status_funcionamento'],
+                $id,
+            ]
+        );
+        $this->sincronizaMateriais($id, $d['materiais'] ?? []);
+        return $n;
+    }
+
+    /** Regrava a lista de materiais aceitos do ponto. */
+    private function sincronizaMateriais(int $idPonto, array $ids): void
+    {
+        $this->db->delete('DELETE FROM ponto_material WHERE id_ponto = ?', [$idPonto]);
+        foreach ($ids as $idMat) {
+            $idMat = (int) $idMat;
+            if ($idMat > 0) {
+                $this->db->insert(
+                    'INSERT INTO ponto_material (id_ponto, id_material) VALUES (?, ?)',
+                    [$idPonto, $idMat]
+                );
+            }
+        }
+    }
+
+    /** Exclui um ponto e seus vinculos (materiais, horarios, fotos). */
+    public function exclui(int $id): int
+    {
+        // ponto_material / ponto_horario / ponto_foto tem ON DELETE CASCADE,
+        // mas removemos explicitamente por clareza.
+        $this->db->delete('DELETE FROM ponto_material WHERE id_ponto = ?', [$id]);
+        $this->db->delete('DELETE FROM ponto_horario WHERE id_ponto = ?', [$id]);
+        $this->db->delete('DELETE FROM ponto_foto WHERE id_ponto = ?', [$id]);
+        return $this->db->delete('DELETE FROM ponto_descarte WHERE id_ponto = ?', [$id]);
+    }
 }

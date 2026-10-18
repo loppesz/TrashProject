@@ -49,4 +49,83 @@ class MaterialModel extends BaseModel
             [$idMaterial]
         );
     }
+
+    // =================================================================
+    // CRUD (area administrativa)
+    // =================================================================
+
+    /**
+     * Cria um material. $d: nome, status_coleta, nivel_risco, descricao,
+     * icone, cor_card, preparo_label, alerta_seguranca.
+     *
+     * @return int id gerado
+     */
+    public function cria(array $d): int
+    {
+        return $this->db->insert(
+            'INSERT INTO material
+               (nome, descricao, aceito_coleta_seletiva, status_coleta, icone, cor_card,
+                preparo_label, nivel_risco, alerta_seguranca, ativo)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)',
+            [
+                $d['nome'],
+                $d['descricao'] ?: '',
+                $d['status_coleta'] === 'NAO_ACEITO' ? 0 : 1,
+                $d['status_coleta'],
+                $d['icone'] ?: null,
+                $d['cor_card'] ?: null,
+                $d['preparo_label'] ?: 'Como preparar',
+                $d['nivel_risco'],
+                $d['alerta_seguranca'] ?: null,
+            ]
+        );
+    }
+
+    /** Atualiza um material pelos campos principais. */
+    public function atualiza(int $id, array $d): int
+    {
+        return $this->db->update(
+            'UPDATE material SET
+               nome = ?, descricao = ?, aceito_coleta_seletiva = ?, status_coleta = ?,
+               icone = ?, cor_card = ?, preparo_label = ?, nivel_risco = ?, alerta_seguranca = ?
+             WHERE id_material = ?',
+            [
+                $d['nome'],
+                $d['descricao'] ?: '',
+                $d['status_coleta'] === 'NAO_ACEITO' ? 0 : 1,
+                $d['status_coleta'],
+                $d['icone'] ?: null,
+                $d['cor_card'] ?: null,
+                $d['preparo_label'] ?: 'Como preparar',
+                $d['nivel_risco'],
+                $d['alerta_seguranca'] ?: null,
+                $id,
+            ]
+        );
+    }
+
+    /** True se o material estiver referenciado em pontos ou coletas. */
+    public function emUso(int $id): bool
+    {
+        $p = $this->db->select('SELECT 1 FROM ponto_material WHERE id_material = ? LIMIT 1', [$id], 'single');
+        if (!empty($p)) {
+            return true;
+        }
+        $c = $this->db->select('SELECT 1 FROM coleta_material WHERE id_material = ? LIMIT 1', [$id], 'single');
+        return !empty($c);
+    }
+
+    /**
+     * Exclui um material. Remove antes as instrucoes/exemplos (filhos).
+     * Nao exclui se estiver em uso (retorna 0).
+     */
+    public function exclui(int $id): int
+    {
+        if ($this->emUso($id)) {
+            return 0;
+        }
+        $this->db->delete('DELETE FROM material_instrucao WHERE id_material = ?', [$id]);
+        $this->db->delete('DELETE FROM material_exemplo WHERE id_material = ?', [$id]);
+        return $this->db->delete('DELETE FROM material WHERE id_material = ?', [$id]);
+    }
 }

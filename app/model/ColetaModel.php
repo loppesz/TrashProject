@@ -56,4 +56,56 @@ class ColetaModel extends BaseModel
 
         return $bairros;
     }
+
+    // =================================================================
+    // CRUD (area administrativa) — operacao por bairro
+    // =================================================================
+
+    /**
+     * Regrava a coleta de um bairro: remove as coletas atuais do bairro e
+     * recria uma linha por dia marcado, com os materiais recolhidos.
+     *
+     * $d: id_bairro, dias (array de int 1-7), inicio, fim, equipe,
+     *     materiais (array de ids).
+     */
+    public function salvaPorBairro(array $d): void
+    {
+        $idBairro = (int) $d['id_bairro'];
+        $this->removePorBairro($idBairro);
+
+        foreach ($d['dias'] as $dia) {
+            $dia = (int) $dia;
+            if ($dia < 1 || $dia > 7) {
+                continue;
+            }
+            $idColeta = $this->db->insert(
+                'INSERT INTO coleta
+                   (id_bairro, dia_semana, horario_inicio, horario_fim, equipe_responsavel, ativo)
+                 VALUES (?, ?, ?, ?, ?, 1)',
+                [$idBairro, $dia, $d['inicio'], $d['fim'], $d['equipe'] ?: null]
+            );
+            foreach (($d['materiais'] ?? []) as $idMat) {
+                $idMat = (int) $idMat;
+                if ($idMat > 0) {
+                    $this->db->insert(
+                        'INSERT INTO coleta_material (id_coleta, id_material) VALUES (?, ?)',
+                        [$idColeta, $idMat]
+                    );
+                }
+            }
+        }
+    }
+
+    /** Remove todas as coletas (e seus materiais) de um bairro. */
+    public function removePorBairro(int $idBairro): int
+    {
+        $ids = $this->db->select(
+            'SELECT id_coleta FROM coleta WHERE id_bairro = ?',
+            [$idBairro]
+        );
+        foreach ($ids as $row) {
+            $this->db->delete('DELETE FROM coleta_material WHERE id_coleta = ?', [(int) $row['id_coleta']]);
+        }
+        return $this->db->delete('DELETE FROM coleta WHERE id_bairro = ?', [$idBairro]);
+    }
 }
