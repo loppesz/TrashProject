@@ -1,0 +1,124 @@
+<?php
+
+/**
+ * Model do sistema de pontos (livro-razao lancamento_pontos).
+ *
+ * O saldo de um usuario e SUM(quantidade): creditos positivos,
+ * resgates/debitos negativos.
+ */
+class PontosModel extends BaseModel
+{
+    protected string $table = 'lancamento_pontos';
+    protected string $pk = 'id_lancamento';
+
+    /** Quanto cada tipo de acao vale (creditos). */
+    public const VALORES = [
+        'OCORRENCIA_REGISTRADA' => 50,
+        'FOTO_APROVADA'         => 20,
+        'OCORRENCIA_RESOLVIDA'  => 30,
+        'QUIZ_KIDS'             => 30,
+        'SEQUENCIA_ACESSO'      => 100,
+        'INDICACAO'             => 80,
+    ];
+
+    /** Saldo atual do usuario (SUM dos lancamentos). */
+    public function saldo(int $idUsuario): int
+    {
+        $r = $this->db->select(
+            'SELECT COALESCE(SUM(quantidade), 0) AS saldo
+             FROM lancamento_pontos WHERE id_usuario = ?',
+            [$idUsuario],
+            'single'
+        );
+        return (int) ($r['saldo'] ?? 0);
+    }
+
+    /**
+     * Registra um lancamento de pontos.
+     *
+     * @param int         $idUsuario
+     * @param string      $tipo        ENUM de lancamento_pontos
+     * @param int         $quantidade  assinado (+ credito, - debito)
+     * @param string|null $descricao
+     * @param array       $refs        ['id_ocorrencia'=>, 'id_resgate'=>, 'id_perfil_kids'=>]
+     * @return int id do lancamento
+     */
+    public function lancar(int $idUsuario, string $tipo, int $quantidade, ?string $descricao = null, array $refs = []): int
+    {
+        return $this->db->insert(
+            'INSERT INTO lancamento_pontos
+               (id_usuario, id_perfil_kids, id_ocorrencia, id_resgate, tipo, quantidade, descricao)
+             VALUES (?, ?, ?, ?, ?, ?, ?)',
+            [
+                $idUsuario,
+                $refs['id_perfil_kids'] ?? null,
+                $refs['id_ocorrencia'] ?? null,
+                $refs['id_resgate'] ?? null,
+                $tipo,
+                $quantidade,
+                $descricao,
+            ]
+        );
+    }
+
+    /**
+     * Credita pontos de uma acao padrao (usa a tabela VALORES).
+     * Retorna a quantidade creditada (0 se o tipo nao tiver valor).
+     */
+    public function creditarAcao(int $idUsuario, string $tipo, ?string $descricao = null, array $refs = []): int
+    {
+        $qtd = self::VALORES[$tipo] ?? 0;
+        if ($qtd > 0) {
+            $this->lancar($idUsuario, $tipo, $qtd, $descricao, $refs);
+        }
+        return $qtd;
+    }
+
+    /**
+     * Ranking dos usuarios por total de pontos (desc).
+     * Inclui a contagem de ocorrencias de cada um.
+     */
+    public function ranking(int $limite = 10): array
+    {
+        return $this->db->select(
+            'SELECT u.id_usuario, u.nome,
+                    COALESCE(SUM(lp.quantidade), 0) AS pontos,
+                    (SELECT COUNT(*) FROM ocorrencia o WHERE o.id_usuario = u.id_usuario) AS ocorrencias
+             FROM usuario u
+             JOIN lancamento_pontos lp ON lp.id_usuario = u.id_usuario
+             WHERE u.ativo = 1
+             GROUP BY u.id_usuario, u.nome
+             HAVING pontos > 0
+             ORDER BY pontos DESC
+             LIMIT ' . (int) $limite
+        );
+    }
+
+    /** Extrato (historico de lancamentos) de um usuario. */
+    public function extrato(int $idUsuario, int $limite = 50): array
+    {
+        return $this->db->select(
+            'SELECT tipo, quantidade, descricao, criada_em
+             FROM lancamento_pontos
+             WHERE id_usuario = ?
+             ORDER BY criada_em DESC
+             LIMIT ' . (int) $limite,
+            [$idUsuario]
+        );
+    }
+
+    /** Rotulo de nivel conforme o total de pontos. */
+    public static function nivel(int $pontos): array
+    {
+        if ($pontos >= 2000) {
+            return ['nome' => 'Ouro', 'icone' => '🏅', 'classe' => 'ouro'];
+        }
+        if ($pontos >= 1000) {
+            return ['nome' => 'Prata', 'icone' => '🥈', 'classe' => 'prata'];
+        }
+        if ($pontos >= 300) {
+            return ['nome' => 'Bronze', 'icone' => '🥉', 'classe' => 'bronze'];
+        }
+        return ['nome' => 'Iniciante', 'icone' => '🌱', 'classe' => 'iniciante'];
+    }
+}

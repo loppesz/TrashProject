@@ -179,33 +179,40 @@ function consultarProtocolo() {
   const prot = document.getElementById('protocoloInput').value.trim().toUpperCase();
   document.getElementById('statusResultado').style.display = 'none';
   document.getElementById('statusNotFound').style.display = 'none';
+  if (!prot) return;
 
-  // Verifica nas minhas ocorrências primeiro
-  const minhaOc = minhasOcorrenciasArr.find(o => o.id === prot);
-  const dadosOc = minhaOc || STATUS_DATA[prot];
+  // Consulta real no banco (endpoint JSON do servidor).
+  const base = (window.BASEURL || '/');
+  fetch(base + 'ocorrencia/consultarJson?protocolo=' + encodeURIComponent(prot))
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (!d || !d.ok) {
+        document.getElementById('statusNotFound').style.display = 'block';
+        return;
+      }
+      document.getElementById('srProtocolo').textContent = d.protocolo;
+      document.getElementById('srLocal').textContent  = d.local || '–';
+      document.getElementById('srTipo').textContent   = d.tipo || '–';
+      document.getElementById('srData').textContent   = d.data || '–';
+      document.getElementById('srEquipe').textContent = 'Equipe ReciclaVida';
 
-  if (!dadosOc) {
-    document.getElementById('statusNotFound').style.display = 'block';
-    return;
-  }
+      const badge = document.getElementById('srBadge');
+      const badgeMap = { nova:'🔴 Nova', analise:'🟡 Em análise', andamento:'🔵 Em atendimento', resolvida:'🟢 Resolvida' };
+      badge.textContent = badgeMap[d.status] || d.status;
+      badge.className   = 'sr-badge ' + d.status;
 
-  document.getElementById('srProtocolo').textContent = prot;
-  document.getElementById('srLocal').textContent    = dadosOc.local || '–';
-  document.getElementById('srTipo').textContent     = dadosOc.tipoLabel || dadosOc.tipo;
-  document.getElementById('srData').textContent     = dadosOc.data;
-  document.getElementById('srEquipe').textContent   = 'Equipe ReciclaVida';
+      renderTimeline(d.status);
+      document.getElementById('srObs').textContent = d.obs
+        ? d.obs
+        : (d.status === 'resolvida'
+            ? '✅ Esta ocorrência foi resolvida. Obrigado pela sua contribuição!'
+            : 'Nossa equipe está acompanhando esta ocorrência. Você será notificado de atualizações.');
 
-  const badge = document.getElementById('srBadge');
-  const badgeMap = { nova:'🔴 Nova', analise:'🟡 Em análise', andamento:'🔵 Em atendimento', resolvida:'🟢 Resolvida' };
-  badge.textContent  = badgeMap[dadosOc.status] || dadosOc.status;
-  badge.className    = 'sr-badge ' + dadosOc.status;
-
-  renderTimeline(dadosOc.status);
-  document.getElementById('srObs').textContent = dadosOc.status === 'resolvida'
-    ? '✅ Esta ocorrência foi resolvida. Obrigado pela sua contribuição!'
-    : 'Nossa equipe está acompanhando esta ocorrência. Você será notificado de atualizações.';
-
-  document.getElementById('statusResultado').style.display = 'block';
+      document.getElementById('statusResultado').style.display = 'block';
+    })
+    .catch(function () {
+      document.getElementById('statusNotFound').style.display = 'block';
+    });
 }
 
 function renderTimeline(status) {

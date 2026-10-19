@@ -52,7 +52,7 @@
             <div class="login-error" role="alert" style="margin-bottom:16px;">⚠️ <?= htmlspecialchars($erroRegistro) ?></div>
           <?php endif; ?>
 
-          <form id="ocorrenciaForm" method="POST" action="<?= baseUrl('ocorrencia/registrar') ?>">
+          <form id="ocorrenciaForm" method="POST" action="<?= baseUrl('ocorrencia/registrar') ?>" enctype="multipart/form-data">
 
             <div class="form-row-2">
               <div class="form-group">
@@ -119,7 +119,7 @@
                 <span class="foto-icon">📸</span>
                 <p>Clique para adicionar foto</p>
                 <small>JPG, PNG ou WEBP – máx. 10MB. Foto com evidência vale +20 pts!</small>
-                <input type="file" id="fotoInput" accept="image/*" style="display:none" onchange="previewFoto(this)">
+                <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this)">
               </div>
               <div id="fotoPreview" style="display:none;" class="foto-preview-wrap">
                 <img id="fotoImg" src="" alt="Preview">
@@ -447,7 +447,8 @@
   }
   ?>
   <script>
-    // Histórico público vindo do banco (usado por ocorrencias.js)
+    // Base URL e histórico público vindos do servidor (usados por ocorrencias.js)
+    window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;
     window.HISTORICO_DB = <?= json_encode($historicoJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
   </script>
 

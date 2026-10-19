@@ -40,9 +40,15 @@ SET FOREIGN_KEY_CHECKS = 1;
 -- ---------------------------------------------------------------------
 -- USUARIOS (admin + morador de teste)
 -- ---------------------------------------------------------------------
+-- Senha de todos os moradores de exemplo: morador123
 INSERT INTO usuario (id_usuario, nome, email, senha_hash, telefone, tipo, ativo) VALUES
 (1, 'Administrador', 'admin@coletafacil.com',   '$2y$10$qMzrIkEWwl.DqgbfNWdI7uEJnZy/wOIHgD30sSvt0ayv2ne54MZdC', NULL, 'ADMINISTRADOR', TRUE),
-(2, 'Morador Teste', 'morador@coletafacil.com', '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', '(32) 9 9999-0000', 'MORADOR', TRUE);
+(2, 'Morador Teste', 'morador@coletafacil.com', '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', '(32) 9 9999-0000', 'MORADOR', TRUE),
+(3, 'Maria Silva',   'maria@coletafacil.com',   '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE),
+(4, 'João Ferreira', 'joao@coletafacil.com',    '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE),
+(5, 'Ana Costa',     'ana@coletafacil.com',     '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE),
+(6, 'Carlos Moura',  'carlos@coletafacil.com',  '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE),
+(7, 'Paula Rocha',   'paula@coletafacil.com',   '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE);
 
 -- ---------------------------------------------------------------------
 -- BAIRROS (uniao dos bairros usados na coleta e nos pontos/admin)
@@ -227,3 +233,33 @@ UPDATE ocorrencia SET id_administrador_responsavel = 1,
   observacao_admin = 'Coleta normalizada após contato com a equipe.',
   resolvida_em = '2026-08-16 10:00:00'
   WHERE protocolo = '2026009';
+
+-- ---------------------------------------------------------------------
+-- LANCAMENTOS DE PONTOS (livro-razao; saldo = SUM(quantidade))
+-- Alimenta o ranking e o "meus pontos" da pagina de recompensas.
+-- ---------------------------------------------------------------------
+INSERT INTO lancamento_pontos (id_usuario, id_ocorrencia, tipo, quantidade, descricao, criada_em) VALUES
+-- Morador Teste (id 2): registrou as ocorrencias 6, 8, 10
+(2, 6,  'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026006', '2026-08-22 07:40:00'),
+(2, 8,  'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026008', '2026-08-19 18:05:00'),
+(2, 10, 'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026010', '2026-08-23 08:00:00'),
+(2, NULL,'FOTO_APROVADA',        20, 'Foto aprovada',       '2026-08-19 18:06:00'),
+-- Maria Silva (id 3) — topo do ranking
+(3, NULL,'OCORRENCIA_REGISTRADA', 50, 'Ajuste inicial', '2026-08-01 10:00:00'),
+(3, NULL,'SEQUENCIA_ACESSO',     100, 'Sequência de acesso', '2026-08-05 10:00:00'),
+(3, NULL,'AJUSTE',              2300, 'Pontuação acumulada', '2026-08-10 10:00:00'),
+-- João Ferreira (id 4)
+(4, NULL,'AJUSTE',              2190, 'Pontuação acumulada', '2026-08-10 10:00:00'),
+-- Ana Costa (id 5)
+(5, NULL,'AJUSTE',              1870, 'Pontuação acumulada', '2026-08-10 10:00:00'),
+-- Carlos Moura (id 6)
+(6, NULL,'AJUSTE',              1540, 'Pontuação acumulada', '2026-08-10 10:00:00'),
+-- Paula Rocha (id 7)
+(7, NULL,'AJUSTE',              1320, 'Pontuação acumulada', '2026-08-10 10:00:00');
+
+-- ---------------------------------------------------------------------
+-- PERFIL KIDS (exemplo; um usuario pode ter varios filhos)
+-- ---------------------------------------------------------------------
+INSERT INTO perfil_kids (id_usuario, apelido, pontos, jogos_concluidos) VALUES
+(2, 'Joãozinho', 120, 3),
+(2, 'Mariazinha', 80, 2);

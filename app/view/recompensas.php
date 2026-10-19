@@ -21,27 +21,42 @@
     </div>
   </section>
 
-  <!-- MEUS PONTOS (simulado) -->
+  <!-- MEUS PONTOS -->
   <section class="container my-points-section">
+    <?php
+    $usuario = $usuario ?? null;
+    $saldo   = (int) ($saldo ?? 0);
+    $nivel   = $nivel ?? ['nome' => 'Iniciante', 'icone' => '🌱', 'classe' => 'iniciante'];
+    // proximo nivel: 300 (bronze), 1000 (prata), 2000 (ouro)
+    $limiares = [300, 1000, 2000];
+    $proximo = 2000;
+    foreach ($limiares as $lim) { if ($saldo < $lim) { $proximo = $lim; break; } }
+    $pctNivel = $proximo > 0 ? min(100, (int) round(($saldo / $proximo) * 100)) : 100;
+    ?>
     <div class="my-points-card">
       <div class="points-left">
         <div class="points-avatar">👤</div>
         <div>
-          <p class="points-greeting">Olá, <strong>Visitante!</strong></p>
-          <p class="points-sub">Faça seu cadastro para acumular pontos</p>
+          <?php if ($usuario): ?>
+            <p class="points-greeting">Olá, <strong><?= htmlspecialchars($usuario['nome']) ?>!</strong></p>
+            <p class="points-sub">Continue contribuindo para subir de nível</p>
+          <?php else: ?>
+            <p class="points-greeting">Olá, <strong>Visitante!</strong></p>
+            <p class="points-sub"><a href="<?= baseUrl('usuario/login') ?>">Entre</a> para acumular e resgatar pontos</p>
+          <?php endif; ?>
         </div>
       </div>
       <div class="points-right">
         <div class="points-display">
-          <span class="points-value">0</span>
+          <span class="points-value"><?= number_format($saldo, 0, ',', '.') ?></span>
           <span class="points-unit">pontos</span>
         </div>
         <div class="points-level">
-          <span>🌱 Nível: Iniciante</span>
+          <span><?= $nivel['icone'] ?> Nível: <?= htmlspecialchars($nivel['nome']) ?></span>
           <div class="level-bar-wrap">
-            <div class="level-bar" style="width: 0%"></div>
+            <div class="level-bar" style="width: <?= $pctNivel ?>%"></div>
           </div>
-          <span class="level-next">0 / 500 pts para o próximo nível</span>
+          <span class="level-next"><?= number_format($saldo, 0, ',', '.') ?> / <?= number_format($proximo, 0, ',', '.') ?> pts para o próximo nível</span>
         </div>
       </div>
     </div>
@@ -56,50 +71,32 @@
     <div class="pontos-como-grid">
       <div class="pontos-como-item">
         <span class="pc-icon">🚨</span>
-        <div>
-          <h4>Reportar ocorrência</h4>
-          <p>Cada ocorrência registrada e validada</p>
-        </div>
+        <div><h4>Reportar ocorrência</h4><p>Cada ocorrência registrada e validada</p></div>
         <span class="pc-pts">+50 pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">📸</span>
-        <div>
-          <h4>Foto com evidência</h4>
-          <p>Ocorrência com foto aprovada</p>
-        </div>
+        <div><h4>Foto com evidência</h4><p>Ocorrência com foto aprovada</p></div>
         <span class="pc-pts">+20 pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">🔥</span>
-        <div>
-          <h4>Sequência de 7 dias</h4>
-          <p>Acessar a plataforma por 7 dias seguidos</p>
-        </div>
+        <div><h4>Sequência de 7 dias</h4><p>Acessar a plataforma por 7 dias seguidos</p></div>
         <span class="pc-pts">+100 pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">🧒</span>
-        <div>
-          <h4>Completar quiz kids</h4>
-          <p>Criança completar quiz na Área Kids</p>
-        </div>
+        <div><h4>Completar quiz kids</h4><p>Criança completar quiz na Área Kids</p></div>
         <span class="pc-pts">+30 pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">👥</span>
-        <div>
-          <h4>Indicar um amigo</h4>
-          <p>Quando o amigo se cadastrar</p>
-        </div>
+        <div><h4>Indicar um amigo</h4><p>Quando o amigo se cadastrar</p></div>
         <span class="pc-pts">+80 pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">✅</span>
-        <div>
-          <h4>Ocorrência resolvida</h4>
-          <p>Bônus quando o problema for resolvido</p>
-        </div>
+        <div><h4>Ocorrência resolvida</h4><p>Bônus quando o problema for resolvido</p></div>
         <span class="pc-pts">+30 pts</span>
       </div>
     </div>
@@ -110,76 +107,51 @@
     <div class="container">
       <div class="section-header">
         <h2>Troque seus pontos</h2>
-        <p>Recompensas pensadas para a sua comunidade</p>
+        <p>Recompensas pensadas para a sua comunidade<?php if ($usuario): ?> — você tem <strong><?= number_format($saldo, 0, ',', '.') ?> pts</strong><?php endif; ?></p>
       </div>
       <div class="recompensas-grid">
-
-        <div class="recompensa-card">
-          <div class="rc-badge disponivel">Disponível</div>
-          <div class="rc-icon">☕</div>
-          <h3>Café Grátis</h3>
-          <p>Parceiro: Padaria Central</p>
-          <div class="rc-cost">
-            <span>⭐ 200 pts</span>
+        <?php
+        $recompensas = $recompensas ?? [];
+        // icones por nome (fallback generico)
+        $iconeRec = [
+            'Café Grátis' => '☕', 'Desconto no Mercado' => '🛒', 'Kit de Mudas' => '🌱',
+            'Certificado Digital' => '🎓', 'Desconto Bicicletaria' => '🚲', 'Kit Escolar Eco' => '🎨',
+        ];
+        ?>
+        <?php foreach ($recompensas as $r): ?>
+          <?php
+          $disp  = (int) $r['disponivel'] === 1;
+          $custo = (int) $r['custo_pontos'];
+          $podeResgatar = $usuario && $disp && $saldo >= $custo;
+          $ic = $iconeRec[$r['nome']] ?? '🎁';
+          ?>
+          <div class="recompensa-card">
+            <div class="rc-badge <?= $disp ? 'disponivel' : 'em-breve' ?>"><?= $disp ? 'Disponível' : 'Em breve' ?></div>
+            <div class="rc-icon"><?= $ic ?></div>
+            <h3><?= htmlspecialchars($r['nome']) ?></h3>
+            <p>
+              <?php if (!empty($r['parceiro'])): ?>Parceiro: <?= htmlspecialchars($r['parceiro']) ?>
+              <?php elseif (!empty($r['descricao'])): ?><?= htmlspecialchars($r['descricao']) ?>
+              <?php endif; ?>
+            </p>
+            <div class="rc-cost"><span>⭐ <?= number_format($custo, 0, ',', '.') ?> pts</span></div>
+            <?php if (!$disp): ?>
+              <button class="btn-resgatar disabled" disabled>Em breve</button>
+            <?php elseif (!$usuario): ?>
+              <a href="<?= baseUrl('usuario/login') ?>" class="btn-resgatar" style="text-decoration:none;display:inline-block;">Entrar para resgatar</a>
+            <?php elseif ($saldo < $custo): ?>
+              <button class="btn-resgatar disabled" disabled>Faltam <?= number_format($custo - $saldo, 0, ',', '.') ?> pts</button>
+            <?php else: ?>
+              <form method="POST" action="<?= baseUrl('home/resgatar') ?>" onsubmit="return confirm('Resgatar &quot;<?= htmlspecialchars($r['nome'], ENT_QUOTES) ?>&quot; por <?= $custo ?> pts?');">
+                <input type="hidden" name="id_recompensa" value="<?= (int) $r['id_recompensa'] ?>">
+                <button type="submit" class="btn-resgatar">Resgatar</button>
+              </form>
+            <?php endif; ?>
           </div>
-          <button class="btn-resgatar" onclick="resgatar(this, 200)">Resgatar</button>
-        </div>
-
-        <div class="recompensa-card">
-          <div class="rc-badge disponivel">Disponível</div>
-          <div class="rc-icon">🛒</div>
-          <h3>Desconto no Mercado</h3>
-          <p>5% de desconto – Supermercado Boa Compra</p>
-          <div class="rc-cost">
-            <span>⭐ 500 pts</span>
-          </div>
-          <button class="btn-resgatar" onclick="resgatar(this, 500)">Resgatar</button>
-        </div>
-
-        <div class="recompensa-card">
-          <div class="rc-badge disponivel">Disponível</div>
-          <div class="rc-icon">🌱</div>
-          <h3>Kit de Mudas</h3>
-          <p>3 mudas de plantas para o seu jardim</p>
-          <div class="rc-cost">
-            <span>⭐ 300 pts</span>
-          </div>
-          <button class="btn-resgatar" onclick="resgatar(this, 300)">Resgatar</button>
-        </div>
-
-        <div class="recompensa-card">
-          <div class="rc-badge disponivel">Disponível</div>
-          <div class="rc-icon">🎓</div>
-          <h3>Certificado Digital</h3>
-          <p>Certificado de Agente Ambiental</p>
-          <div class="rc-cost">
-            <span>⭐ 1.000 pts</span>
-          </div>
-          <button class="btn-resgatar" onclick="resgatar(this, 1000)">Resgatar</button>
-        </div>
-
-        <div class="recompensa-card">
-          <div class="rc-badge em-breve">Em breve</div>
-          <div class="rc-icon">🚲</div>
-          <h3>Desconto Bicicletaria</h3>
-          <p>10% de desconto em serviços</p>
-          <div class="rc-cost">
-            <span>⭐ 800 pts</span>
-          </div>
-          <button class="btn-resgatar disabled" disabled>Em breve</button>
-        </div>
-
-        <div class="recompensa-card">
-          <div class="rc-badge em-breve">Em breve</div>
-          <div class="rc-icon">🎨</div>
-          <h3>Kit Escolar Eco</h3>
-          <p>Material escolar sustentável</p>
-          <div class="rc-cost">
-            <span>⭐ 600 pts</span>
-          </div>
-          <button class="btn-resgatar disabled" disabled>Em breve</button>
-        </div>
-
+        <?php endforeach; ?>
+        <?php if (empty($recompensas)): ?>
+          <p style="color:var(--text-muted);">Nenhuma recompensa cadastrada no momento.</p>
+        <?php endif; ?>
       </div>
     </div>
   </section>
@@ -188,92 +160,67 @@
   <section class="ranking-section">
     <div class="container">
       <div class="section-header light">
-        <h2>🏆 Ranking do Mês</h2>
+        <h2>🏆 Ranking de Pontos</h2>
         <p>Os maiores contribuidores da comunidade</p>
       </div>
       <div class="ranking-full-table">
         <div class="rt-header">
           <span>#</span>
           <span>Participante</span>
-          <span>Bairro</span>
           <span>Ocorrências</span>
           <span>Pontos</span>
           <span>Nível</span>
         </div>
-        <div class="rt-row gold-row">
-          <span>🥇 1</span>
-          <span>👩 Maria Silva</span>
-          <span>Centro</span>
-          <span>24</span>
-          <span><strong>2.450</strong></span>
-          <span class="nivel-badge ouro">🏅 Ouro</span>
-        </div>
-        <div class="rt-row silver-row">
-          <span>🥈 2</span>
-          <span>👨 João Ferreira</span>
-          <span>Vila Nova</span>
-          <span>18</span>
-          <span><strong>2.190</strong></span>
-          <span class="nivel-badge ouro">🏅 Ouro</span>
-        </div>
-        <div class="rt-row bronze-row">
-          <span>🥉 3</span>
-          <span>👧 Ana Costa</span>
-          <span>Bairro Novo</span>
-          <span>15</span>
-          <span><strong>1.870</strong></span>
-          <span class="nivel-badge prata">🥈 Prata</span>
-        </div>
-        <div class="rt-row">
-          <span>4</span>
-          <span>🧑 Carlos M.</span>
-          <span>Jardim América</span>
-          <span>12</span>
-          <span><strong>1.540</strong></span>
-          <span class="nivel-badge prata">🥈 Prata</span>
-        </div>
-        <div class="rt-row">
-          <span>5</span>
-          <span>👩 Paula R.</span>
-          <span>Centro</span>
-          <span>10</span>
-          <span><strong>1.320</strong></span>
-          <span class="nivel-badge bronze">🥉 Bronze</span>
-        </div>
-        <div class="rt-row">
-          <span>6</span>
-          <span>👨 Lucas T.</span>
-          <span>Bairro Escolar</span>
-          <span>8</span>
-          <span><strong>980</strong></span>
-          <span class="nivel-badge bronze">🥉 Bronze</span>
-        </div>
+        <?php
+        $ranking = $ranking ?? [];
+        $medalhas = ['🥇 1', '🥈 2', '🥉 3'];
+        $classeLinha = ['gold-row', 'silver-row', 'bronze-row'];
+        ?>
+        <?php foreach ($ranking as $i => $u): ?>
+          <?php
+          $pos = $i < 3 ? $medalhas[$i] : (string) ($i + 1);
+          $linha = $classeLinha[$i] ?? '';
+          $niv = PontosModel::nivel((int) $u['pontos']);
+          ?>
+          <div class="rt-row <?= $linha ?>">
+            <span><?= $pos ?></span>
+            <span>👤 <?= htmlspecialchars($u['nome']) ?></span>
+            <span><?= (int) $u['ocorrencias'] ?></span>
+            <span><strong><?= number_format((int) $u['pontos'], 0, ',', '.') ?></strong></span>
+            <span class="nivel-badge <?= $niv['classe'] ?>"><?= $niv['icone'] ?> <?= $niv['nome'] ?></span>
+          </div>
+        <?php endforeach; ?>
+        <?php if (empty($ranking)): ?>
+          <div class="rt-row"><span colspan="5" style="padding:16px;color:var(--text-muted);">Ainda não há pontuações registradas. Seja o primeiro!</span></div>
+        <?php endif; ?>
       </div>
     </div>
   </section>
 
-  <!-- MODAL RESGATE -->
-  <div id="modalResgate" class="modal" style="display:none;">
+  <!-- MODAL RESGATE (sucesso) -->
+  <?php if (($msgResgate ?? '') === 'ok' && !empty($codigoResgate)): ?>
+  <div id="modalResgate" class="modal" style="display:flex;">
     <div class="modal-content">
       <div class="modal-icon">🎉</div>
       <h3>Resgate Solicitado!</h3>
-      <p>Sua solicitação foi registrada.</p>
+      <p>Sua solicitação foi registrada e os pontos foram debitados.</p>
       <p>Apresente este código no parceiro:</p>
-      <div class="resgate-code" id="resgateCode"></div>
+      <div class="resgate-code"><?= htmlspecialchars($codigoResgate) ?></div>
       <p style="font-size:0.8rem; color:#6b7280; margin-top:8px;">Válido por 7 dias. Leve um documento com foto.</p>
-      <button class="btn-primary" onclick="fecharModalResgate()">Fechar</button>
+      <button class="btn-primary" onclick="document.getElementById('modalResgate').style.display='none'">Fechar</button>
     </div>
   </div>
+  <?php endif; ?>
 
-  <script>
-    function resgatar(btn, custo) {
-      const code = 'CF-' + Math.random().toString(36).substring(2,8).toUpperCase();
-      document.getElementById('resgateCode').textContent = code;
-      document.getElementById('modalResgate').style.display = 'flex';
-    }
-    function fecharModalResgate() {
-      document.getElementById('modalResgate').style.display = 'none';
-    }
-  </script>
+  <?php if (!empty($erroResgate)): ?>
+  <div id="modalResgateErro" class="modal" style="display:flex;">
+    <div class="modal-content">
+      <div class="modal-icon">⚠️</div>
+      <h3>Não foi possível resgatar</h3>
+      <p><?= htmlspecialchars($erroResgate) ?></p>
+      <button class="btn-primary" onclick="document.getElementById('modalResgateErro').style.display='none'">Entendi</button>
+    </div>
+  </div>
+  <?php endif; ?>
 
 <?php require_once 'app/view/comuns/rodape.php'; ?>

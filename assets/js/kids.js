@@ -22,11 +22,46 @@ let playerName  = localStorage.getItem('playerName')  || 'Eco Herói';
 let playerAvatar= localStorage.getItem('playerAvatar') || '🌱';
 let gamesPlayed = JSON.parse(localStorage.getItem('gamesPlayed') || '[]');
 
+// Perfil ativo no banco (quando o responsavel esta logado).
+let kidsPerfilId = null;
+
+// Se logado e ja houver um perfil no banco, usa-o como fonte (sobrepoe o localStorage).
+if (window.USUARIO_LOGADO && Array.isArray(window.PERFIS_KIDS) && window.PERFIS_KIDS.length) {
+  const p = window.PERFIS_KIDS[0]; // perfil padrao (primeiro filho)
+  kidsPerfilId = p.id;
+  kidsPoints   = p.pontos;
+  playerName   = p.apelido;
+}
+
+let _syncTimer = null;
+
 function save() {
   localStorage.setItem('kidsPoints', kidsPoints);
   localStorage.setItem('playerName', playerName);
   localStorage.setItem('playerAvatar', playerAvatar);
   localStorage.setItem('gamesPlayed', JSON.stringify(gamesPlayed));
+  sincronizarBanco();
+}
+
+// Persiste o progresso no banco quando o responsavel esta logado (com debounce).
+function sincronizarBanco() {
+  if (!window.USUARIO_LOGADO) return;
+  clearTimeout(_syncTimer);
+  _syncTimer = setTimeout(function () {
+    const dados = new URLSearchParams();
+    if (kidsPerfilId) dados.set('id_perfil', kidsPerfilId);
+    dados.set('apelido', playerName);
+    dados.set('pontos', kidsPoints);
+    dados.set('jogos', gamesPlayed.length);
+    fetch((window.BASEURL || '/') + 'home/kidsSalvar', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      body: dados.toString(),
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (d) { if (d && d.ok && d.id_perfil) kidsPerfilId = d.id_perfil; })
+      .catch(function () {});
+  }, 600);
 }
 
 function getNivel(pts) {

@@ -21,3 +21,7 @@ app/config/config.local.php
 Thumbs.db
 .idea/
 .vscode/
+
+# Uploads de usuarios (fotos de ocorrencias) - nao versionar os arquivos
+/assets/uploads/**
+!/assets/uploads/.gitkeep

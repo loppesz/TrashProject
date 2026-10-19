@@ -462,6 +462,19 @@
     <a href="<?= baseUrl() ?>" style="color:#4ade80;font-size:.85rem;">← Voltar ao site principal</a>
   </footer>
 
+  <script>
+    // Dados do servidor para o kids.js sincronizar com o banco quando logado.
+    window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;
+    window.USUARIO_LOGADO = <?= auth_user() ? 'true' : 'false' ?>;
+    window.PERFIS_KIDS = <?= json_encode(array_map(static function ($p) {
+        return [
+            'id'      => (int) $p['id_perfil_kids'],
+            'apelido' => $p['apelido'],
+            'pontos'  => (int) $p['pontos'],
+            'jogos'   => (int) $p['jogos_concluidos'],
+        ];
+    }, $perfisKids ?? []), JSON_UNESCAPED_UNICODE) ?>;
+  </script>
   <script src="<?= baseUrl('assets/js/script.js') ?>"></script>
   <script src="<?= baseUrl('assets/js/kids-data.js') ?>"></script>
   <script src="<?= baseUrl('assets/js/kids.js') ?>"></script>

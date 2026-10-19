@@ -41,6 +41,44 @@ class Ocorrencia extends BaseController
     }
 
     /**
+     * Consulta de ocorrencia por protocolo (retorno JSON, usado pela aba
+     * "Consultar Status" via fetch). Traz os dados reais do banco.
+     */
+    public function consultarJson(): void
+    {
+        header('Content-Type: application/json; charset=utf-8');
+
+        $protocolo = trim((string) $this->request->get('protocolo'));
+        if ($protocolo === '') {
+            echo json_encode(['ok' => false, 'motivo' => 'vazio']);
+            exit;
+        }
+
+        $o = $this->model('Ocorrencia')->porProtocolo($protocolo);
+        if (empty($o)) {
+            echo json_encode(['ok' => false, 'motivo' => 'nao_encontrado']);
+            exit;
+        }
+
+        $statusJs = [
+            'NOVA' => 'nova', 'EM_ANALISE' => 'analise',
+            'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'resolvida',
+        ];
+
+        echo json_encode([
+            'ok'        => true,
+            'protocolo' => $o['protocolo'],
+            'local'     => $o['endereco_descricao'],
+            'tipo'      => rotuloTipoOcorrencia($o['tipo']),
+            'bairro'    => $o['bairro'],
+            'data'      => date('d/m/Y', strtotime($o['criada_em'])),
+            'status'    => $statusJs[$o['status']] ?? 'nova',
+            'obs'       => $o['observacao_admin'] ?: '',
+        ], JSON_UNESCAPED_UNICODE);
+        exit;
+    }
+
+    /**
      * Processa o registro de uma nova ocorrencia (POST do formulario).
      */
     public function registrar(): void
@@ -88,8 +126,10 @@ class Ocorrencia extends BaseController
         // --- Persistencia ---
         try {
             $usuario = auth_user();
+            $idUsuario = $anonima ? null : ($usuario['id_usuario'] ?? null);
+
             $res = $model->registrar([
-                'id_usuario'       => $anonima ? null : ($usuario['id_usuario'] ?? null),
+                'id_usuario'       => $idUsuario,
                 'id_bairro'        => $idBairro,
                 'tipo'             => $tipo,
                 'urgencia'         => $urg,
@@ -101,11 +141,76 @@ class Ocorrencia extends BaseController
                 'telefone_contato' => $tel,
                 'email_contato'    => $email,
             ]);
+
+            // --- Upload de foto (opcional) ---
+            $temFoto = $this->salvarFoto((int) $res['id']);
+
+            // --- Pontos (so para usuario logado e ocorrencia nao anonima) ---
+            if ($idUsuario) {
+                $pontos = $this->model('Pontos');
+                $pontos->creditarAcao(
+                    (int) $idUsuario,
+                    'OCORRENCIA_REGISTRADA',
+                    'Ocorrência ' . $res['protocolo'],
+                    ['id_ocorrencia' => (int) $res['id']]
+                );
+                if ($temFoto) {
+                    $pontos->creditarAcao(
+                        (int) $idUsuario,
+                        'FOTO_APROVADA',
+                        'Foto na ocorrência ' . $res['protocolo'],
+                        ['id_ocorrencia' => (int) $res['id']]
+                    );
+                }
+            }
+
             header('Location: ' . baseUrl('ocorrencia') . '?protocolo=' . rawurlencode($res['protocolo']));
             exit;
         } catch (Throwable $e) {
             header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('Não foi possível registrar. Tente novamente.'));
             exit;
         }
+    }
+
+    /**
+     * Processa o upload da foto da ocorrencia (pendencia 2).
+     * Valida tipo e tamanho, move para assets/uploads/ocorrencias/ e grava em ocorrencia_foto.
+     *
+     * @return bool true se uma foto valida foi salva
+     */
+    private function salvarFoto(int $idOcorrencia): bool
+    {
+        if (empty($_FILES['foto']) || ($_FILES['foto']['error'] ?? UPLOAD_ERR_NO_FILE) !== UPLOAD_ERR_OK) {
+            return false;
+        }
+
+        $arquivo = $_FILES['foto'];
+        $permitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $mime = mime_content_type($arquivo['tmp_name']) ?: '';
+
+        // Valida tipo e tamanho (max 10MB).
+        if (!isset($permitidos[$mime]) || $arquivo['size'] > 10 * 1024 * 1024) {
+            return false;
+        }
+
+        $dir = __DIR__ . '/../../assets/uploads/ocorrencias';
+        if (!is_dir($dir)) {
+            @mkdir($dir, 0775, true);
+        }
+
+        $nomeArquivo = 'oc' . $idOcorrencia . '_' . bin2hex(random_bytes(4)) . '.' . $permitidos[$mime];
+        $destino = $dir . '/' . $nomeArquivo;
+
+        if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
+            return false;
+        }
+
+        $this->model('Ocorrencia')->adicionarFoto(
+            $idOcorrencia,
+            'assets/uploads/ocorrencias/' . $nomeArquivo,
+            $mime,
+            (int) $arquivo['size']
+        );
+        return true;
     }
 }

@@ -105,6 +105,16 @@ class OcorrenciaModel extends BaseModel
         return $proto;
     }
 
+    /** Grava uma foto de evidencia vinculada a ocorrencia. */
+    public function adicionarFoto(int $idOcorrencia, string $url, ?string $mime, ?int $tamanho): int
+    {
+        return $this->db->insert(
+            'INSERT INTO ocorrencia_foto (id_ocorrencia, url_arquivo, tipo_mime, tamanho_bytes)
+             VALUES (?, ?, ?, ?)',
+            [$idOcorrencia, $url, $mime, $tamanho]
+        );
+    }
+
     /** Resolve o id do bairro pelo nome (para o form que envia nome). */
     public function idBairroPorNome(string $nome): ?int
     {
