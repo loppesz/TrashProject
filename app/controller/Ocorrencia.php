@@ -65,6 +65,17 @@ class Ocorrencia extends BaseController
             'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'resolvida',
         ];
 
+        // Historico real de status (timeline da consulta).
+        $historico = $this->model('Ocorrencia')->historicoStatus((int) $o['id_ocorrencia']);
+        $timeline = [];
+        foreach ($historico as $h) {
+            $timeline[] = [
+                'status' => $statusJs[$h['status']] ?? 'nova',
+                'obs'    => $h['observacao'] ?: '',
+                'data'   => date('d/m/Y H:i', strtotime($h['criada_em'])),
+            ];
+        }
+
         echo json_encode([
             'ok'        => true,
             'protocolo' => $o['protocolo'],
@@ -74,6 +85,7 @@ class Ocorrencia extends BaseController
             'data'      => date('d/m/Y', strtotime($o['criada_em'])),
             'status'    => $statusJs[$o['status']] ?? 'nova',
             'obs'       => $o['observacao_admin'] ?: '',
+            'timeline'  => $timeline,
         ], JSON_UNESCAPED_UNICODE);
         exit;
     }

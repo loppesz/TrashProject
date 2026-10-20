@@ -57,6 +57,79 @@ class ColetaModel extends BaseModel
         return $bairros;
     }
 
+    /**
+     * Detalhe da coleta de UM bairro (consulta publica por bairro).
+     * Retorna null se o bairro nao tiver coleta cadastrada.
+     *
+     * @return array|null [
+     *   'id_bairro', 'nome', 'dias'[], 'inicio', 'fim', 'equipe',
+     *   'materiais'[] (recolhidos, com nome+icone+cor),
+     *   'nao_recolhidos'[] (nao aceitos na coleta seletiva, nome+icone)
+     * ]
+     */
+    public function detalheBairro(int $idBairro): ?array
+    {
+        $bairro = $this->db->select(
+            'SELECT id_bairro, nome FROM bairro WHERE id_bairro = ? LIMIT 1',
+            [$idBairro],
+            'single'
+        );
+        if (empty($bairro)) {
+            return null;
+        }
+
+        $linhas = $this->db->select(
+            'SELECT dia_semana, horario_inicio, horario_fim, equipe_responsavel
+             FROM coleta WHERE id_bairro = ? AND ativo = 1
+             ORDER BY dia_semana',
+            [$idBairro]
+        );
+        if (empty($linhas)) {
+            return null;
+        }
+
+        $mats = $this->db->select(
+            'SELECT DISTINCT m.id_material, m.nome, m.icone, m.cor_lixeira
+             FROM coleta c
+             JOIN coleta_material cm ON cm.id_coleta = c.id_coleta
+             JOIN material m ON m.id_material = cm.id_material
+             WHERE c.id_bairro = ? AND c.ativo = 1
+             ORDER BY m.id_material',
+            [$idBairro]
+        );
+
+        // Materiais NAO recolhidos na coleta seletiva (nao aceitos).
+        $naoRecolhidos = $this->db->select(
+            'SELECT id_material, nome, icone
+             FROM material
+             WHERE aceito_coleta_seletiva = 0 AND ativo = 1
+             ORDER BY id_material'
+        );
+
+        return [
+            'id_bairro'      => (int) $bairro['id_bairro'],
+            'nome'           => $bairro['nome'],
+            'dias'           => array_map(static fn($l) => (int) $l['dia_semana'], $linhas),
+            'inicio'         => $linhas[0]['horario_inicio'] ?? null,
+            'fim'            => $linhas[0]['horario_fim'] ?? null,
+            'equipe'         => $linhas[0]['equipe_responsavel'] ?? '',
+            'materiais'      => $mats,
+            'nao_recolhidos' => $naoRecolhidos,
+        ];
+    }
+
+    /** Lista simples de bairros com coleta ativa (para o select da consulta). */
+    public function bairrosComColeta(): array
+    {
+        return $this->db->select(
+            'SELECT DISTINCT b.id_bairro, b.nome
+             FROM coleta c
+             JOIN bairro b ON b.id_bairro = c.id_bairro
+             WHERE c.ativo = 1
+             ORDER BY b.nome'
+        );
+    }
+
     // =================================================================
     // CRUD (area administrativa) — operacao por bairro
     // =================================================================

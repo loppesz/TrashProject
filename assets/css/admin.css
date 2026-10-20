@@ -194,6 +194,7 @@
 .metric-icon.verde   { background: #f0fdf4; }
 .metric-icon.azul    { background: #eff6ff; }
 .metric-icon.roxo    { background: #faf5ff; }
+.metric-icon.amarelo { background: #fefce8; }
 
 .metric-info {
   display: flex;

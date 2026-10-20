@@ -93,22 +93,6 @@ document.addEventListener('keydown', e => {
 });
 
 // =============================================
-// HOME – REDIRECIONA PARA PÁGINA DE COLETA
-// =============================================
-function irParaColeta(event) {
-  if (event) event.preventDefault();
-  const endereco = document.getElementById('enderecoInput')?.value.trim();
-  if (!endereco) return;
-  window.location.href = 'coleta.php?q=' + encodeURIComponent(endereco);
-}
-
-// Mantido para compatibilidade
-function consultarColeta(event) {
-  if (event) event.preventDefault();
-  irParaColeta(event);
-}
-
-// =============================================
 // BUSCA GLOBAL (NAVBAR / HOME)
 // =============================================
 function irParaBusca(event) {

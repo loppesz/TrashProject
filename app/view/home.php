@@ -23,9 +23,10 @@
           Descubra quando a coleta seletiva passa na sua rua, aprenda a descartar corretamente e ajude a proteger os coletores. Juntos fazemos a diferença.
         </p>
         <div class="hero-v2-actions animate-in delay-3">
-          <form class="search-form-v2" onsubmit="irParaColeta(event)">
+          <form class="search-form-v2" action="<?= baseUrl('coleta') ?>" method="get">
             <span class="search-icon">📍</span>
-            <input type="text" id="enderecoInput" placeholder="Digite seu endereço em Muriaé-MG..." required>
+            <input type="text" id="enderecoInput" placeholder="Veja a coleta do seu bairro em Muriaé-MG..." readonly
+                   onclick="window.location.href='<?= baseUrl('coleta') ?>'" style="cursor:pointer;">
             <button type="submit">Consultar coleta</button>
           </form>
         </div>

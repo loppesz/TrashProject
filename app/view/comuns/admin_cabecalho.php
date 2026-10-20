@@ -16,6 +16,7 @@ $aSidebar = [
     'materiais'   => ['admin/materiais',    '📦', 'Materiais'],
     'coleta'      => ['admin/coleta',       '🗓️', 'Coleta'],
     'pontos'      => ['admin/pontos',       '📍', 'Pontos de Descarte'],
+    'sugestoes'   => ['admin/sugestoes',    '💡', 'Sugestões'],
     'indicadores' => ['admin/indicadores',  '📈', 'Indicadores'],
 ];
 ?>

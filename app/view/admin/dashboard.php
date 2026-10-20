@@ -30,6 +30,13 @@
             <span class="metric-label">Pontos de Descarte</span>
           </div>
         </a>
+        <a href="<?= baseUrl('admin/sugestoes') ?>" class="metric-card metric-card-link">
+          <div class="metric-icon amarelo">💡</div>
+          <div class="metric-info">
+            <span class="metric-value"><?= (int) ($sugestoesPendentes ?? 0) ?></span>
+            <span class="metric-label">Sugestões Pendentes</span>
+          </div>
+        </a>
       </div>
 
       <!-- LINHA: TABELA + GRÁFICO SIMPLES -->

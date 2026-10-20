@@ -137,11 +137,7 @@ function copiarTexto(txt) {
 function abrirModalSugira() {
   document.getElementById('modalSugira').style.display = 'flex';
 }
-
-function enviarSugestao() {
-  document.getElementById('modalSugira').style.display = 'none';
-  showToast('✅ Sugestão enviada! Obrigado pela contribuição.');
-}
+// O envio da sugestao agora e um POST real do formulario (ponto/sugerir).
 
 // =============================================
 // TOAST

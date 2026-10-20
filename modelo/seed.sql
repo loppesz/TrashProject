@@ -235,6 +235,44 @@ UPDATE ocorrencia SET id_administrador_responsavel = 1,
   WHERE protocolo = '2026009';
 
 -- ---------------------------------------------------------------------
+-- HISTORICO DE STATUS (timeline real da consulta por protocolo)
+-- Reconstroi a trajetoria de cada ocorrencia ate o status atual.
+-- ---------------------------------------------------------------------
+INSERT INTO ocorrencia_historico_status (id_ocorrencia, status, observacao, id_usuario_responsavel, criada_em) VALUES
+-- 1 (EM_ANDAMENTO)
+(1, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-20 09:00:00'),
+(1, 'EM_ANALISE',    'Encaminhada para triagem.',                     1,    '2026-08-20 11:00:00'),
+(1, 'EM_ANDAMENTO',  'Equipe de limpeza acionada.',                   1,    '2026-08-21 08:00:00'),
+-- 2 (RESOLVIDA)
+(2, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-18 10:30:00'),
+(2, 'EM_ANALISE',    'Verificação do calendário de coleta.',          1,    '2026-08-18 12:00:00'),
+(2, 'RESOLVIDA',     'Equipe acionada; coleta extra agendada.',       1,    '2026-08-18 15:00:00'),
+-- 3 (NOVA)
+(3, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-21 08:15:00'),
+-- 4 (EM_ANALISE)
+(4, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-21 14:45:00'),
+(4, 'EM_ANALISE',    'Em avaliação pela equipe.',                     1,    '2026-08-21 16:00:00'),
+-- 5 (RESOLVIDA)
+(5, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-17 16:20:00'),
+(5, 'EM_ANALISE',    'Vistoria agendada.',                            1,    '2026-08-17 16:45:00'),
+(5, 'RESOLVIDA',     'Local vistoriado e regularizado.',              1,    '2026-08-17 17:30:00'),
+-- 6 (NOVA)
+(6, 'NOVA',          'Ocorrência registrada',                         2,    '2026-08-22 07:40:00'),
+-- 7 (EM_ANALISE)
+(7, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-22 11:10:00'),
+(7, 'EM_ANALISE',    'Material tóxico — análise prioritária.',        1,    '2026-08-22 12:00:00'),
+-- 8 (EM_ANDAMENTO)
+(8, 'NOVA',          'Ocorrência registrada',                         2,    '2026-08-19 18:05:00'),
+(8, 'EM_ANALISE',    'Triagem concluída.',                            1,    '2026-08-19 19:00:00'),
+(8, 'EM_ANDAMENTO',  'Coleta de reforço em andamento.',               1,    '2026-08-20 08:00:00'),
+-- 9 (RESOLVIDA)
+(9, 'NOVA',          'Ocorrência registrada',                         NULL, '2026-08-15 09:25:00'),
+(9, 'EM_ANALISE',    'Contato com a equipe de coleta.',               1,    '2026-08-15 10:30:00'),
+(9, 'RESOLVIDA',     'Coleta normalizada após contato com a equipe.', 1,    '2026-08-16 10:00:00'),
+-- 10 (NOVA)
+(10,'NOVA',          'Ocorrência registrada',                         2,    '2026-08-23 08:00:00');
+
+-- ---------------------------------------------------------------------
 -- LANCAMENTOS DE PONTOS (livro-razao; saldo = SUM(quantidade))
 -- Alimenta o ranking e o "meus pontos" da pagina de recompensas.
 -- ---------------------------------------------------------------------

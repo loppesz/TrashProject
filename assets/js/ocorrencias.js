@@ -201,7 +201,7 @@ function consultarProtocolo() {
       badge.textContent = badgeMap[d.status] || d.status;
       badge.className   = 'sr-badge ' + d.status;
 
-      renderTimeline(d.status);
+      renderTimeline(d.status, d.timeline);
       document.getElementById('srObs').textContent = d.obs
         ? d.obs
         : (d.status === 'resolvida'
@@ -215,7 +215,34 @@ function consultarProtocolo() {
     });
 }
 
-function renderTimeline(status) {
+// Metadados de cada etapa da timeline.
+const ETAPA_META = {
+  nova:      { icon:'📋', label:'Registrada' },
+  analise:   { icon:'🔍', label:'Em análise' },
+  andamento: { icon:'🚛', label:'Em atendimento' },
+  resolvida: { icon:'✅', label:'Resolvida' },
+};
+
+function renderTimeline(status, historico) {
+  // Quando ha historico real do banco, mostra os eventos efetivamente ocorridos.
+  if (Array.isArray(historico) && historico.length) {
+    const html = historico.map((h, i) => {
+      const meta = ETAPA_META[h.status] || { icon:'📋', label:h.status };
+      const atual = i === historico.length - 1;
+      const detalhe = h.obs ? h.obs : (atual ? 'Status atual' : 'Concluído');
+      return `<div class="str-item">
+        <div class="str-dot ${atual ? 'active' : 'done'}">${meta.icon}</div>
+        <div class="str-content">
+          <strong>${meta.label}</strong>
+          <span>${h.data || ''}${h.data && detalhe ? ' • ' : ''}${detalhe}</span>
+        </div>
+      </div>`;
+    }).join('');
+    document.getElementById('srTimeline').innerHTML = html;
+    return;
+  }
+
+  // Fallback: timeline derivada apenas do status atual.
   const etapas = [
     { key:'nova',      icon:'📋', label:'Registrada',       done:true },
     { key:'analise',   icon:'🔍', label:'Em análise',       done:['analise','andamento','resolvida'].includes(status) },

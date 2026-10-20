@@ -252,7 +252,16 @@
   </section>
 
   <!-- SUGIRA UM PONTO -->
-  <section class="container sugira-section">
+  <section class="container sugira-section" id="sugira">
+    <?php if (!empty($sugestaoOk)): ?>
+      <div style="background:#dcfce7;color:#166534;border:1px solid #86efac;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-weight:600;">
+        ✅ Sugestão enviada! Nossa equipe vai verificar o local. Obrigado pela contribuição.
+      </div>
+    <?php elseif (!empty($sugestaoErro)): ?>
+      <div style="background:#fee2e2;color:#991b1b;border:1px solid #fca5a5;border-radius:12px;padding:14px 18px;margin-bottom:16px;font-weight:600;">
+        ⚠️ <?= htmlspecialchars($sugestaoErro) ?>
+      </div>
+    <?php endif; ?>
     <div class="sugira-card">
       <div class="sugira-text">
         <h3>Conhece um ponto de descarte que não está aqui?</h3>
@@ -267,17 +276,19 @@
     <div class="modal-content" style="text-align:left; max-width:500px;">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;">
         <h3>📍 Sugerir novo ponto</h3>
-        <button onclick="document.getElementById('modalSugira').style.display='none'" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button>
+        <button type="button" onclick="document.getElementById('modalSugira').style.display='none'" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button>
       </div>
-      <div class="form-group"><label>Nome do local *</label><input type="text" placeholder="Ex: Ecoponto Vila Rica"></div>
-      <div class="form-group"><label>Endereço *</label><input type="text" placeholder="Rua, número – Bairro"></div>
-      <div class="form-group"><label>Materiais aceitos</label><input type="text" placeholder="Ex: Pilhas, eletrônicos, papel..."></div>
-      <div class="form-group"><label>Horário de funcionamento</label><input type="text" placeholder="Ex: Seg-Sex 08h-17h"></div>
-      <div class="form-group"><label>Observações</label><textarea rows="3" placeholder="Qualquer informação adicional..."></textarea></div>
-      <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
-        <button class="btn-primary" onclick="enviarSugestao()">Enviar sugestão</button>
-        <button class="btn-secondary" onclick="document.getElementById('modalSugira').style.display='none'">Cancelar</button>
-      </div>
+      <form method="post" action="<?= baseUrl('ponto/sugerir') ?>">
+        <div class="form-group"><label>Nome do local *</label><input type="text" name="nome_local" placeholder="Ex: Ecoponto Vila Rica" required></div>
+        <div class="form-group"><label>Endereço *</label><input type="text" name="endereco" placeholder="Rua, número – Bairro" required></div>
+        <div class="form-group"><label>Materiais aceitos</label><input type="text" name="materiais" placeholder="Ex: Pilhas, eletrônicos, papel..."></div>
+        <div class="form-group"><label>Horário de funcionamento</label><input type="text" name="horario" placeholder="Ex: Seg-Sex 08h-17h"></div>
+        <div class="form-group"><label>Observações</label><textarea name="observacao" rows="3" placeholder="Qualquer informação adicional..."></textarea></div>
+        <div style="display:flex;gap:10px;justify-content:flex-end;margin-top:16px;">
+          <button type="submit" class="btn-primary">Enviar sugestão</button>
+          <button type="button" class="btn-secondary" onclick="document.getElementById('modalSugira').style.display='none'">Cancelar</button>
+        </div>
+      </form>
     </div>
   </div>
 

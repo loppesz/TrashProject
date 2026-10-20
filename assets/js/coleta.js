@@ -1,13 +1,10 @@
 // =============================================
-// DADOS DE COLETA POR BAIRRO
+// MAPEAMENTO DE CORES DA LIXEIRA -> CLASSE CSS
+// (usado para pintar os materiais recolhidos no resultado)
 // =============================================
-const COLETA_DATA = {
-  'centro':         { nome: 'Centro',          dias: [2, 5],    horario: '07h às 12h', equipe: 'ReciclaVida', tel: '(32) 3333-7700', materiais: ['Papel', 'Plástico', 'Metal', 'Vidro'] },
-  'bairro-novo':    { nome: 'Bairro Novo',      dias: [1, 4],    horario: '08h às 13h', equipe: 'ReciclaVida', tel: '(32) 3333-7700', materiais: ['Papel', 'Plástico', 'Metal'] },
-  'vila-nova':      { nome: 'Vila Nova',         dias: [3, 6],    horario: '07h às 11h', equipe: 'EcoMais',    tel: '(32) 3333-8800', materiais: ['Papel', 'Plástico', 'Vidro'] },
-  'jardim-america': { nome: 'Jardim América',    dias: [2, 5],    horario: '13h às 18h', equipe: 'ReciclaVida', tel: '(32) 3333-7700', materiais: ['Papel', 'Plástico', 'Metal', 'Vidro'] },
-  'bairro-escolar': { nome: 'Bairro Escolar',    dias: [4],       horario: '07h às 12h', equipe: 'EcoMais',    tel: '(32) 3333-8800', materiais: ['Papel', 'Plástico'] },
-  'outros':         { nome: 'Sua Região',        dias: [3, 6],    horario: '07h às 12h', equipe: 'ReciclaVida', tel: '(32) 3333-7700', materiais: ['Papel', 'Plástico', 'Metal', 'Vidro'] },
+const COR_LIXEIRA_CLS = {
+  'azul': 'azul', 'vermelho': 'vermelho', 'amarelo': 'amarelo',
+  'verde': 'verde', 'marrom': 'marrom', 'preto': 'cinza', 'laranja': 'laranja',
 };
 
 const DIAS_NOMES = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
@@ -17,59 +14,89 @@ const MESES_NOMES = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julh
 let calAno, calMes, diasColetaAtivos = [];
 
 // =============================================
-// CONSULTA PRINCIPAL
+// CONSULTA PRINCIPAL (por bairro, lê do banco)
 // =============================================
 function consultarColeta(event) {
   if (event) event.preventDefault();
+  const idBairro = parseInt(document.getElementById('bairroSelect')?.value || '0', 10);
+  if (!idBairro) return;
+  consultarBairro(idBairro);
+}
 
-  const endereco = document.getElementById('enderecoInput')?.value || '';
-  const bairroSel = document.getElementById('bairroSelect')?.value || 'centro';
-  const chave = bairroSel || detectarBairroPorEndereco(endereco);
-  const dados = COLETA_DATA[chave] || COLETA_DATA['centro'];
+// Busca os dados reais do bairro no servidor e exibe o resultado.
+function consultarBairro(idBairro) {
+  const sel = document.getElementById('bairroSelect');
+  if (sel) sel.value = String(idBairro);
 
-  // Simula loading
   const btnText = document.getElementById('btnText');
   const btnLoad = document.getElementById('btnLoad');
   if (btnText) btnText.style.display = 'none';
   if (btnLoad) btnLoad.style.display = 'inline';
 
-  setTimeout(() => {
-    if (btnText) btnText.style.display = 'inline';
-    if (btnLoad) btnLoad.style.display = 'none';
-    mostrarResultado(dados, endereco || dados.nome);
-  }, 800);
-}
+  // Monta a URL do endpoint garantindo exatamente uma barra entre a base e a rota.
+  const base = (window.BASEURL || '/').replace(/\/+$/, '');
+  const url = base + '/coleta/consultarJson?id_bairro=' + encodeURIComponent(idBairro);
 
-function detectarBairroPorEndereco(endereco) {
-  const e = endereco.toLowerCase();
-  if (e.includes('centro')) return 'centro';
-  if (e.includes('novo')) return 'bairro-novo';
-  if (e.includes('nova')) return 'vila-nova';
-  if (e.includes('jardim') || e.includes('america')) return 'jardim-america';
-  if (e.includes('escolar')) return 'bairro-escolar';
-  return 'centro';
+  fetch(url, { headers: { 'Accept': 'application/json' } })
+    .then(function (r) { return r.text(); })
+    .then(function (texto) {
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoad) btnLoad.style.display = 'none';
+
+      let d;
+      try {
+        d = JSON.parse(texto);
+      } catch (e) {
+        console.error('Resposta não-JSON de consultarJson:', texto);
+        alert('Não foi possível consultar agora. Tente novamente.');
+        return;
+      }
+
+      if (!d || !d.ok) {
+        alert('Ainda não há coleta cadastrada para este bairro.');
+        return;
+      }
+      // Converte dias do banco (1=dom..7=sab) para o padrao JS (0=dom..6=sab).
+      d.diasJs = (d.dias || []).map(function (x) { return x - 1; });
+      mostrarResultado(d);
+    })
+    .catch(function (err) {
+      if (btnText) btnText.style.display = 'inline';
+      if (btnLoad) btnLoad.style.display = 'none';
+      console.error('Falha ao consultar coleta:', err);
+      alert('Não foi possível consultar agora. Tente novamente.');
+    });
 }
 
 // =============================================
-// MOSTRAR RESULTADO
+// MOSTRAR RESULTADO (dados reais vindos do servidor)
 // =============================================
-function mostrarResultado(dados, enderecoTexto) {
+function mostrarResultado(dados) {
   const section = document.getElementById('resultadoSection');
   if (!section) return;
   section.style.display = 'block';
   section.scrollIntoView({ behavior: 'smooth', block: 'start' });
 
+  const diasJs = dados.diasJs || [];
+
+  // Helper: escreve textContent só se o elemento existir (evita quebrar tudo).
+  const setTxt = (id, valor) => { const el = document.getElementById(id); if (el) el.textContent = valor; };
+
   // Títulos
-  document.getElementById('resultadoBairroTitulo').textContent = dados.nome;
-  document.getElementById('resultadoEndereco').textContent = enderecoTexto;
-  document.getElementById('horarioInfo').textContent = dados.horario;
+  setTxt('resultadoBairroTitulo', dados.nome);
+  setTxt('resultadoEndereco', 'Bairro ' + dados.nome + ' – Muriaé-MG');
+  setTxt('horarioInfo', dados.horario);
+
+  // Equipe responsável
+  const equipeEl = document.querySelector('#diasSemana')?.closest('.resultado-card-rich')?.querySelector('.hr-item:nth-child(2) p');
+  if (equipeEl && dados.equipe) equipeEl.textContent = dados.equipe;
 
   // Próxima coleta
   const hoje = new Date();
   const diaHoje = hoje.getDay();
   let proxDia = null, diasAte = 99;
 
-  dados.dias.forEach(d => {
+  diasJs.forEach(d => {
     let diff = d - diaHoje;
     if (diff <= 0) diff += 7;
     if (diff < diasAte) { diasAte = diff; proxDia = d; }
@@ -78,14 +105,17 @@ function mostrarResultado(dados, enderecoTexto) {
   const proxData = new Date(hoje);
   proxData.setDate(hoje.getDate() + diasAte);
 
-  document.getElementById('proximaDia').textContent = DIAS_NOMES[proxDia] || '–';
-  document.getElementById('proximaData').textContent = proxData.toLocaleDateString('pt-BR');
-  document.getElementById('cdValue').textContent = diasAte === 0 ? 'Hoje' : diasAte;
-  document.getElementById('cdUnit').textContent = diasAte === 1 ? 'dia' : diasAte === 0 ? '!' : 'dias';
+  setTxt('proximaDia', DIAS_NOMES[proxDia] || '–');
+  setTxt('proximaData', proxData.toLocaleDateString('pt-BR'));
+  setTxt('cdValue', diasAte === 0 ? 'Hoje' : diasAte);
+  setTxt('cdUnit', diasAte === 1 ? 'dia' : diasAte === 0 ? '!' : 'dias');
 
   // Dias da semana visual
-  diasColetaAtivos = dados.dias;
-  renderDiasSemana(dados.dias);
+  diasColetaAtivos = diasJs;
+  renderDiasSemana(diasJs);
+
+  // Materiais recolhidos (dinâmico, a partir do banco)
+  renderMateriais(dados.materiais || [], dados.nao_recolhidos || []);
 
   // Calendário
   const agora = new Date();
@@ -93,14 +123,39 @@ function mostrarResultado(dados, enderecoTexto) {
   calMes = agora.getMonth();
   renderCalendario();
 
-  // Mapa
-  const enc = encodeURIComponent(enderecoTexto + ' Juiz de Fora MG');
-  document.getElementById('mapaResultado').innerHTML = `
+  // Mapa (busca pelo bairro + cidade)
+  const enc = encodeURIComponent(dados.nome + ', Muriaé - MG');
+  const mapaEl = document.getElementById('mapaResultado');
+  if (mapaEl) {
+    mapaEl.innerHTML = `
     <iframe src="https://maps.google.com/maps?q=${enc}&output=embed&z=15"
       width="100%" height="300" style="border:0;border-radius:12px;" loading="lazy"></iframe>
   `;
+  }
   const linkMapa = document.getElementById('linkMapaEndereco');
   if (linkMapa) linkMapa.href = `https://www.google.com/maps/search/${enc}`;
+}
+
+// =============================================
+// MATERIAIS RECOLHIDOS / NÃO RECOLHIDOS
+// =============================================
+function renderMateriais(recolhidos, naoRecolhidos) {
+  const cont = document.getElementById('materiaisRecolhidos');
+  if (cont) {
+    cont.innerHTML = recolhidos.length
+      ? recolhidos.map(m => {
+          const cls = COR_LIXEIRA_CLS[m.cor] || 'cinza';
+          return `<div class="mr-item aceito"><div class="mr-cor ${cls}"></div><span>${m.icone || '♻️'} ${m.nome}</span></div>`;
+        }).join('')
+      : '<div class="mr-item">Nenhum material cadastrado para este bairro.</div>';
+  }
+
+  const chips = document.querySelector('.nao-recolhidos .nr-chips');
+  if (chips) {
+    chips.innerHTML = naoRecolhidos
+      .map(m => `<span>${m.icone || '❌'} ${m.nome}</span>`)
+      .join('');
+  }
 }
 
 // =============================================
@@ -194,30 +249,6 @@ function navegarMes(dir) {
 }
 
 // =============================================
-// SIMULAR CONSULTA (BOTÃO DA TABELA)
-// =============================================
-function simularConsulta(nomeStr) {
-  // Mapeia nome para chave
-  const mapa = {
-    'Centro':          'centro',
-    'Bairro Novo':     'bairro-novo',
-    'Vila Nova':       'vila-nova',
-    'Jardim América':  'jardim-america',
-    'Bairro Escolar':  'bairro-escolar',
-    'Zona Industrial': 'outros',
-  };
-  const chave = mapa[nomeStr] || 'centro';
-  const dados = COLETA_DATA[chave];
-
-  const input = document.getElementById('enderecoInput');
-  const sel   = document.getElementById('bairroSelect');
-  if (input) input.value = dados.nome;
-  if (sel)   sel.value   = chave;
-
-  mostrarResultado(dados, dados.nome);
-}
-
-// =============================================
 // FILTRAR TABELA DE BAIRROS
 // =============================================
 function filtrarBairros() {
@@ -242,24 +273,12 @@ document.addEventListener('click', e => {
 });
 
 // =============================================
-// AUTO-DETECTAR PELO HASH OU QUERY STRING
+// AUTO-CONSULTA POR QUERY STRING (?id_bairro=)
 // =============================================
 window.addEventListener('DOMContentLoaded', () => {
   const params = new URLSearchParams(window.location.search);
-  const bairro = params.get('bairro');
-  const q      = params.get('q');
-
-  if (q) {
-    // Veio da busca da home
-    const input = document.getElementById('enderecoInput');
-    if (input) input.value = decodeURIComponent(q);
-    const chave = detectarBairroPorEndereco(decodeURIComponent(q));
-    const dados = COLETA_DATA[chave] || COLETA_DATA['centro'];
-    setTimeout(() => mostrarResultado(dados, decodeURIComponent(q)), 400);
-  } else if (bairro) {
-    const sel = document.getElementById('bairroSelect');
-    if (sel) sel.value = bairro;
-    const dados = COLETA_DATA[bairro] || COLETA_DATA['centro'];
-    setTimeout(() => mostrarResultado(dados, dados.nome), 400);
+  const idBairro = parseInt(params.get('id_bairro') || '0', 10);
+  if (idBairro) {
+    setTimeout(() => consultarBairro(idBairro), 300);
   }
 });

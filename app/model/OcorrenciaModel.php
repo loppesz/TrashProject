@@ -87,6 +87,9 @@ class OcorrenciaModel extends BaseModel
             ]
         );
 
+        // Primeiro registro do historico (status inicial NOVA).
+        $this->registrarHistorico((int) $id, 'NOVA', 'Ocorrência registrada', $d['id_usuario'] ?? null);
+
         return ['id' => $id, 'protocolo' => $protocolo];
     }
 
@@ -198,12 +201,44 @@ class OcorrenciaModel extends BaseModel
 
         $resolvida = $status === 'RESOLVIDA' ? date('Y-m-d H:i:s') : null;
 
-        return $this->db->update(
+        $n = $this->db->update(
             'UPDATE ocorrencia
              SET status = ?, observacao_admin = ?, id_administrador_responsavel = ?,
                  resolvida_em = ?
              WHERE id_ocorrencia = ?',
             [$status, $observacao ?: null, $idAdmin, $resolvida, $id]
+        );
+
+        // Registra a mudanca no historico/auditoria.
+        $this->registrarHistorico($id, $status, $observacao, $idAdmin);
+
+        return $n;
+    }
+
+    /**
+     * Grava um registro no historico de status de uma ocorrencia.
+     */
+    public function registrarHistorico(int $idOcorrencia, string $status, ?string $observacao = null, ?int $idUsuario = null): int
+    {
+        return $this->db->insert(
+            'INSERT INTO ocorrencia_historico_status
+               (id_ocorrencia, status, observacao, id_usuario_responsavel)
+             VALUES (?, ?, ?, ?)',
+            [$idOcorrencia, $status, $observacao ?: null, $idUsuario]
+        );
+    }
+
+    /**
+     * Retorna o historico de status de uma ocorrencia (ordem cronologica).
+     */
+    public function historicoStatus(int $idOcorrencia): array
+    {
+        return $this->db->select(
+            'SELECT status, observacao, criada_em
+             FROM ocorrencia_historico_status
+             WHERE id_ocorrencia = ?
+             ORDER BY criada_em, id_historico',
+            [$idOcorrencia]
         );
     }
 }

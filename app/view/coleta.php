@@ -18,26 +18,16 @@
           <h3>Consultar minha coleta</h3>
           <form onsubmit="consultarColeta(event)">
             <div class="form-group">
-              <label>Endereço completo</label>
+              <label>Selecione o seu bairro</label>
               <div class="input-with-icon">
                 <span>📍</span>
-                <input type="text" id="enderecoInput" placeholder="Ex: Rua das Flores, 123 – Centro" required>
+                <select id="bairroSelect" required>
+                  <option value="">Escolha o bairro...</option>
+                  <?php foreach (($bairrosSelect ?? []) as $b): ?>
+                    <option value="<?= (int) $b['id_bairro'] ?>"><?= htmlspecialchars($b['nome']) ?></option>
+                  <?php endforeach; ?>
+                </select>
               </div>
-            </div>
-            <div class="form-group">
-              <label>Bairro (opcional)</label>
-              <select id="bairroSelect">
-                <option value="">Selecione o bairro...</option>
-                <option value="centro">Centro</option>
-                <option value="padre-eustaquio">Padre Eustáquio</option>
-                <option value="santa-terezinha">Santa Terezinha</option>
-                <option value="nossa-senhora-fatima">Nossa Senhora de Fátima</option>
-                <option value="laranjeiras">Laranjeiras</option>
-                <option value="granjas-betania">Granjas Betânia</option>
-                <option value="dom-silveiro">Dom Silvério</option>
-                <option value="maua">Mauá</option>
-                <option value="outros">Outro (consultar SAAE)</option>
-              </select>
             </div>
             <button type="submit" class="btn-consultar" id="btnConsultar">
               <span id="btnText">🔍 Consultar coleta</span>
@@ -70,7 +60,7 @@
         <div class="rhr-countdown" id="countdown">
           <span class="cd-label">Faltam</span>
           <span class="cd-value" id="cdValue">2</span>
-          <span class="cd-unit">dias</span>
+          <span class="cd-unit" id="cdUnit">dias</span>
         </div>
         <button class="share-coleta-btn" onclick="compartilharColeta()" title="Compartilhar">🔗 Compartilhar</button>
       </div>
@@ -270,7 +260,7 @@
                 <td><?= formataHora($b['inicio']) ?> – <?= formataHora($b['fim']) ?></td>
                 <td><?= htmlspecialchars(implode(', ', $matsCurto)) ?></td>
                 <td><?= htmlspecialchars($b['equipe']) ?></td>
-                <td><button class="btn-ver-coleta" onclick="simularConsulta('<?= htmlspecialchars($b['nome'], ENT_QUOTES) ?>')">Ver detalhes</button></td>
+                <td><button class="btn-ver-coleta" onclick="consultarBairro(<?= (int) $b['id_bairro'] ?>)">Ver detalhes</button></td>
               </tr>
             <?php endforeach; ?>
           </tbody>
@@ -278,5 +268,10 @@
       </div>
     </div>
   </section>
+
+  <script>
+    // Base URL do servidor (usada por coleta.js para a consulta real por bairro).
+    window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;
+  </script>
 
 <?php require_once 'app/view/comuns/rodape.php'; ?>

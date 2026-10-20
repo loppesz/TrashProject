@@ -24,6 +24,7 @@ class Admin extends BaseController
         $resolvidas  = $contagens['RESOLVIDA'] ?? 0;
         $totalMat    = count($this->model('Material')->lista());
         $totalPontos = count($this->model('Ponto')->lista());
+        $sugestoesPendentes = $this->model('Sugestao')->totalPendentes();
 
         $this->view('admin/dashboard', [
             'tituloPagina'  => 'Dashboard',
@@ -32,6 +33,7 @@ class Admin extends BaseController
             'resolvidas'    => $resolvidas,
             'totalMat'      => $totalMat,
             'totalPontos'   => $totalPontos,
+            'sugestoesPendentes' => $sugestoesPendentes,
             'recentes'      => $recentes,
             'porBairro'     => $ocModel->contagemPorBairro(),
             'porTipo'       => $ocModel->contagemPorTipo(),
@@ -294,6 +296,49 @@ class Admin extends BaseController
             }
         }
         header('Location: ' . baseUrl('admin/pontos'));
+        exit;
+    }
+
+    // =================================================================
+    // SUGESTOES DE PONTOS (analise)
+    // =================================================================
+
+    public function sugestoes(): void
+    {
+        $model = $this->model('Sugestao');
+
+        $this->view('admin/sugestoes', [
+            'tituloPagina' => 'Sugestões de Pontos',
+            'adminMenu'    => 'sugestoes',
+            'sugestoes'    => $model->listaTodas(),
+            'contagens'    => $model->contagemPorStatus(),
+            'msg'          => $_GET['msg'] ?? '',
+            'erro'         => $_GET['erro'] ?? '',
+        ]);
+    }
+
+    /**
+     * Aprova ou recusa uma sugestao de ponto (POST).
+     */
+    public function atualizarSugestao(): void
+    {
+        if (!$this->request->isPost()) {
+            header('Location: ' . baseUrl('admin/sugestoes'));
+            exit;
+        }
+
+        $id     = (int) $this->request->post('id_sugestao');
+        $status = (string) $this->request->post('status');
+        $admin  = auth_user();
+
+        if ($id > 0 && $admin && in_array($status, ['EM_ANALISE', 'APROVADA', 'RECUSADA'], true)) {
+            $this->model('Sugestao')->atualizarStatus($id, $status, (int) $admin['id_usuario']);
+            $rotulo = ['EM_ANALISE' => 'marcada em análise', 'APROVADA' => 'aprovada', 'RECUSADA' => 'recusada'][$status];
+            header('Location: ' . baseUrl('admin/sugestoes') . '?msg=' . rawurlencode('Sugestão ' . $rotulo . '.'));
+            exit;
+        }
+
+        header('Location: ' . baseUrl('admin/sugestoes'));
         exit;
     }
 
