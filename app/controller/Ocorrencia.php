@@ -287,9 +287,9 @@ class Ocorrencia extends BaseController
     }
 
     /**
-     * Processa o upload da foto da ocorrencia (pendencia 2).
-     * Valida tipo e tamanho, remove metadados (EXIF/GPS) re-encodando a imagem,
-     * move para assets/uploads/ocorrencias/ e grava em ocorrencia_foto.
+     * Processa o upload da foto da ocorrencia.
+     * Valida tipo e tamanho, remove metadados (EXIF/GPS) re-encodando a imagem
+     * e grava os bytes no banco (ocorrencia_foto.conteudo).
      *
      * @return bool true se uma foto valida foi salva
      */
@@ -300,42 +300,65 @@ class Ocorrencia extends BaseController
         }
 
         $arquivo = $_FILES['foto'];
-        $permitidos = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
+        $permitidos = ['image/jpeg', 'image/png', 'image/webp'];
         $mime = $this->detectarMime($arquivo['tmp_name']);
 
         // Valida tipo e tamanho (max 10MB).
-        if (!isset($permitidos[$mime]) || $arquivo['size'] > 10 * 1024 * 1024) {
+        if (!in_array($mime, $permitidos, true) || $arquivo['size'] > 10 * 1024 * 1024) {
             return false;
         }
 
-        $dir = __DIR__ . '/../../assets/uploads/ocorrencias';
-        if (!is_dir($dir)) {
-            @mkdir($dir, 0775, true);
-        }
-
-        $ext = $permitidos[$mime];
-        $nomeArquivo = 'oc' . $idOcorrencia . '_' . bin2hex(random_bytes(4)) . '.' . $ext;
-        $destino = $dir . '/' . $nomeArquivo;
-
         // Privacidade (LGPD): re-encoda a imagem para DESCARTAR metadados
-        // (EXIF, incluindo coordenadas GPS do celular). A GD escreve apenas os
-        // pixels, sem copiar os metadados do arquivo original.
-        $salvou = $this->reencodarSemMetadados($arquivo['tmp_name'], $destino, $mime);
+        // (EXIF, incluindo coordenadas GPS do celular).
+        $conteudo = $this->reencodarSemMetadados($arquivo['tmp_name'], $mime);
 
-        if (!$salvou) {
-            // Fallback: se a GD nao estiver disponivel, move o arquivo original.
-            if (!move_uploaded_file($arquivo['tmp_name'], $destino)) {
+        if ($conteudo === null) {
+            // Fallback: sem GD, grava o arquivo original.
+            $conteudo = @file_get_contents($arquivo['tmp_name']);
+            if ($conteudo === false || $conteudo === '') {
                 return false;
             }
         }
 
-        $this->model('Ocorrencia')->adicionarFoto(
-            $idOcorrencia,
-            'assets/uploads/ocorrencias/' . $nomeArquivo,
-            $mime,
-            (int) (@filesize($destino) ?: $arquivo['size'])
-        );
+        $this->model('Ocorrencia')->adicionarFoto($idOcorrencia, $conteudo, $mime);
         return true;
+    }
+
+    /**
+     * Exibe uma foto de ocorrencia lida do banco (rota /ocorrencia/foto/{id}).
+     * Restrita ao administrador: a foto pode conter dados pessoais.
+     */
+    public function foto($id = ''): void
+    {
+        auth_require(true);
+
+        // /ocorrencia/foto/5 -> o "5" chega como action no Request.
+        $idFoto = (int) ($id !== '' ? $id : $this->request->getAction());
+        $f = $this->model('Ocorrencia')->foto($idFoto);
+        if (empty($f)) {
+            http_response_code(404);
+            exit;
+        }
+
+        // Fotos antigas, gravadas em disco antes da migracao 03.
+        if (empty($f['conteudo']) && !empty($f['url_arquivo'])) {
+            $caminho = __DIR__ . '/../../' . $f['url_arquivo'];
+            if (!is_file($caminho)) {
+                http_response_code(404);
+                exit;
+            }
+            $f['conteudo'] = file_get_contents($caminho);
+        }
+
+        if (ob_get_level() > 0) {
+            ob_end_clean();
+        }
+        header('Content-Type: ' . ($f['tipo_mime'] ?: 'image/jpeg'));
+        header('Content-Length: ' . strlen($f['conteudo']));
+        header('Cache-Control: private, max-age=86400');
+        header('X-Content-Type-Options: nosniff');
+        echo $f['conteudo'];
+        exit;
     }
 
     /**
@@ -367,42 +390,44 @@ class Ocorrencia extends BaseController
 
     /**
      * Re-encoda a imagem via GD, descartando metadados (EXIF/GPS/etc.).
-     * Retorna false se a extensao GD ou a funcao do formato nao existirem.
+     * Retorna os bytes da nova imagem, ou null se a GD nao estiver disponivel.
      */
-    private function reencodarSemMetadados(string $origem, string $destino, string $mime): bool
+    private function reencodarSemMetadados(string $origem, string $mime): ?string
     {
         if (!function_exists('imagecreatefromstring')) {
-            return false;
+            return null;
         }
 
         $dados = @file_get_contents($origem);
         if ($dados === false) {
-            return false;
+            return null;
         }
 
         $img = @imagecreatefromstring($dados);
         if ($img === false) {
-            return false;
+            return null;
         }
 
         // Preserva transparencia para PNG/WEBP.
         imagealphablending($img, false);
         imagesavealpha($img, true);
 
+        ob_start();
         $ok = false;
         switch ($mime) {
             case 'image/jpeg':
-                $ok = function_exists('imagejpeg') && imagejpeg($img, $destino, 85);
+                $ok = function_exists('imagejpeg') && imagejpeg($img, null, 85);
                 break;
             case 'image/png':
-                $ok = function_exists('imagepng') && imagepng($img, $destino, 6);
+                $ok = function_exists('imagepng') && imagepng($img, null, 6);
                 break;
             case 'image/webp':
-                $ok = function_exists('imagewebp') && imagewebp($img, $destino, 85);
+                $ok = function_exists('imagewebp') && imagewebp($img, null, 85);
                 break;
         }
-
+        $bytes = (string) ob_get_clean();
         imagedestroy($img);
-        return $ok;
+
+        return ($ok && $bytes !== '') ? $bytes : null;
     }
 }

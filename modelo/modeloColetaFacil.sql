@@ -211,7 +211,8 @@ CREATE TABLE ocorrencia (
 CREATE TABLE ocorrencia_foto (
   id_ocorrencia_foto BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   id_ocorrencia BIGINT UNSIGNED NOT NULL,
-  url_arquivo VARCHAR(255) NOT NULL,
+  conteudo LONGBLOB NULL,          -- bytes da imagem (sem metadados EXIF/GPS)
+  url_arquivo VARCHAR(255) NULL,   -- legado: fotos antigas gravadas em disco
   tipo_mime VARCHAR(100) NULL,
   tamanho_bytes INT UNSIGNED NULL,
   criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
