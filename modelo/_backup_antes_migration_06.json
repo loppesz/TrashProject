@@ -1,0 +1,342 @@
+{
+    "gerado_em": "2026-10-21T20:21:46-03:00",
+    "coleta_create": "CREATE TABLE `coleta` (\n  `id_coleta` int unsigned NOT NULL AUTO_INCREMENT,\n  `id_bairro` int unsigned NOT NULL,\n  `dia_semana` tinyint unsigned NOT NULL,\n  `horario_inicio` time NOT NULL,\n  `horario_fim` time NOT NULL,\n  `equipe_responsavel` varchar(150) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `telefone_contato` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `observacao` varchar(500) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `ativo` tinyint(1) NOT NULL DEFAULT '1',\n  PRIMARY KEY (`id_coleta`),\n  UNIQUE KEY `uk_coleta_bairro_dia_hora` (`id_bairro`,`dia_semana`,`horario_inicio`),\n  KEY `idx_coleta_consulta` (`id_bairro`,`ativo`,`dia_semana`),\n  CONSTRAINT `coleta_ibfk_1` FOREIGN KEY (`id_bairro`) REFERENCES `bairro` (`id_bairro`),\n  CONSTRAINT `ck_coleta_dia` CHECK ((`dia_semana` between 1 and 7)),\n  CONSTRAINT `ck_coleta_horario` CHECK ((`horario_fim` > `horario_inicio`))\n) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+    "coleta": [
+        {
+            "id_coleta": 1,
+            "id_bairro": 1,
+            "dia_semana": 3,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 2,
+            "id_bairro": 1,
+            "dia_semana": 6,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 3,
+            "id_bairro": 2,
+            "dia_semana": 2,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 4,
+            "id_bairro": 2,
+            "dia_semana": 5,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 5,
+            "id_bairro": 3,
+            "dia_semana": 4,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 6,
+            "id_bairro": 3,
+            "dia_semana": 7,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 7,
+            "id_bairro": 4,
+            "dia_semana": 3,
+            "horario_inicio": "13:00:00",
+            "horario_fim": "18:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 8,
+            "id_bairro": 4,
+            "dia_semana": 6,
+            "horario_inicio": "13:00:00",
+            "horario_fim": "18:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 9,
+            "id_bairro": 5,
+            "dia_semana": 2,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 10,
+            "id_bairro": 5,
+            "dia_semana": 5,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 11,
+            "id_bairro": 6,
+            "dia_semana": 4,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 12,
+            "id_bairro": 7,
+            "dia_semana": 5,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 13,
+            "id_bairro": 8,
+            "dia_semana": 3,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        },
+        {
+            "id_coleta": 14,
+            "id_bairro": 8,
+            "dia_semana": 7,
+            "horario_inicio": "06:00:00",
+            "horario_fim": "11:00:00",
+            "equipe_responsavel": "SAAE Muriaé",
+            "telefone_contato": null,
+            "observacao": null,
+            "ativo": 1
+        }
+    ],
+    "coleta_material": [
+        {
+            "id_coleta": 1,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 2,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 3,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 4,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 5,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 6,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 7,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 8,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 9,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 10,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 11,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 12,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 13,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 14,
+            "id_material": 1
+        },
+        {
+            "id_coleta": 1,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 2,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 3,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 4,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 5,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 6,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 7,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 8,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 9,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 10,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 11,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 12,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 13,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 14,
+            "id_material": 2
+        },
+        {
+            "id_coleta": 1,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 2,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 3,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 4,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 7,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 8,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 11,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 13,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 14,
+            "id_material": 3
+        },
+        {
+            "id_coleta": 1,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 2,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 5,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 6,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 7,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 8,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 13,
+            "id_material": 4
+        },
+        {
+            "id_coleta": 14,
+            "id_material": 4
+        }
+    ]
+}

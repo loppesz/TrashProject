@@ -222,6 +222,8 @@ class Admin extends BaseController
             'tituloPagina'  => 'Coleta',
             'adminMenu'     => 'coleta',
             'bairros'       => $bairros,
+            'porTipo'       => $coletaModel->totalBairrosPorTipo(),
+            'fonteColeta'   => ColetaModel::FONTE,
             'listaBairros'  => $this->model('Bairro')->listaAtivos(),
             'materiaisTodos' => $matModel->lista(),
             'msg'           => $_GET['msg'] ?? '',
@@ -238,22 +240,33 @@ class Admin extends BaseController
 
         $idBairro  = (int) $this->request->post('id_bairro');
         $dias      = (array) $this->request->post('dias', []);
-        $inicio    = (string) $this->request->post('inicio', '07:00');
-        $fim       = (string) $this->request->post('fim', '12:00');
+        $inicio    = trim((string) $this->request->post('inicio', '07:00'));
+        $fim       = trim((string) $this->request->post('fim', ''));   // opcional: vazio = "a partir de"
         $equipe    = trim((string) $this->request->post('equipe'));
+        $trecho    = mb_substr(trim((string) $this->request->post('trecho', '')), 0, 80);
         $materiais = (array) $this->request->post('materiais', []);
 
-        if ($idBairro <= 0 || empty($dias)) {
-            header('Location: ' . baseUrl('admin/coleta') . '?erro=' . rawurlencode('Selecione o bairro e ao menos um dia.'));
+        $voltar = static function (string $erro): void {
+            header('Location: ' . baseUrl('admin/coleta') . '?erro=' . rawurlencode($erro));
             exit;
+        };
+        if ($idBairro <= 0 || empty($dias)) {
+            $voltar('Selecione o bairro e ao menos um dia.');
+        }
+        if (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $inicio)) {
+            $voltar('Informe um horário de início válido.');
+        }
+        if ($fim !== '' && (!preg_match('/^([01]\d|2[0-3]):[0-5]\d$/', $fim) || $fim <= $inicio)) {
+            $voltar('O horário de fim deve ser depois do início (ou deixe em branco).');
         }
 
         $this->model('Coleta')->salvaPorBairro([
             'id_bairro' => $idBairro,
             'dias'      => $dias,
             'inicio'    => $inicio,
-            'fim'       => $fim,
+            'fim'       => $fim !== '' ? $fim : null,
             'equipe'    => $equipe,
+            'trecho'    => $trecho,
             'materiais' => $materiais,
         ]);
 
