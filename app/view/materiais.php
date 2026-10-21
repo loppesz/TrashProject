@@ -14,7 +14,7 @@
   <!-- DESTAQUE: PROTEÇÃO DO COLETOR -->
   <div class="container">
     <div class="coletor-destaque">
-      <div class="coletor-destaque-img" style="background-image:url('<?= baseUrl('assets/img/hero-coletor.jpg') ?>')" role="img" aria-label="Coletor de resíduos sorrindo durante o trabalho"></div>
+      <div class="coletor-destaque-img" style="background-image:url('<?= baseUrl('assets/img/coleta-material-reciclavel-03.jpg') ?>')" role="img" aria-label="Materiais recicláveis separados: garrafas plásticas, latas e tampinhas coloridas"></div>
       <div class="coletor-destaque-text">
         <span class="coletor-tag">🧤 A sua atitude em casa salva vidas</span>
         <h2>Como você separa define a segurança de quem recolhe</h2>
