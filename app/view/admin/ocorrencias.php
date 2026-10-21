@@ -25,6 +25,10 @@
             <option value="material">Material deixado</option>
             <option value="ponto">Ponto inadequado</option>
           </select>
+          <label class="toggle-ocultas" title="Ocorrências já triadas (com status alterado) ficam ocultas">
+            <input type="checkbox" id="mostrarOcultas" onchange="filtrarOcAdmin()">
+            👁 Mostrar ocultas (<span id="contadorOcultas">0</span>)
+          </label>
         </div>
       </div>
 
@@ -38,6 +42,7 @@
           <thead>
             <tr>
               <th>Protocolo</th>
+              <th>Foto</th>
               <th>Tipo</th>
               <th>Local</th>
               <th>Bairro</th>
@@ -56,9 +61,22 @@
               $tipoBusca   = strtolower(rotuloTipoOcorrencia($o['tipo']));
               $statusBusca = classeStatusOcorrencia($o['status']);
               ?>
-              <tr data-status="<?= $statusBusca ?>" data-tipo="<?= htmlspecialchars($tipoBusca, ENT_QUOTES) ?>"
+              <tr data-id="<?= (int) $o['id_ocorrencia'] ?>" data-status="<?= $statusBusca ?>" data-tipo="<?= htmlspecialchars($tipoBusca, ENT_QUOTES) ?>"
                   data-busca="<?= htmlspecialchars(strtolower($o['protocolo'] . ' ' . $o['bairro']), ENT_QUOTES) ?>">
                 <td>#<?= htmlspecialchars($o['protocolo']) ?></td>
+                <td class="td-foto">
+                  <?php $ocFotos = $o['fotos'] ?? []; ?>
+                  <?php if (!empty($ocFotos)): ?>
+                    <button type="button" class="oc-thumb" onclick="verOcorrenciaDaLinha(this)" title="Ver foto(s) e autorizar">
+                      <img src="<?= htmlspecialchars(baseUrl($ocFotos[0]), ENT_QUOTES) ?>" alt="Evidência da ocorrência" loading="lazy">
+                      <?php if (count($ocFotos) > 1): ?>
+                        <span class="oc-thumb-badge">+<?= count($ocFotos) - 1 ?></span>
+                      <?php endif; ?>
+                    </button>
+                  <?php else: ?>
+                    <span class="oc-thumb oc-thumb-vazio" title="Sem foto enviada">📷</span>
+                  <?php endif; ?>
+                </td>
                 <td><?= rotuloTipoOcorrencia($o['tipo']) ?></td>
                 <td><?= htmlspecialchars($o['endereco_descricao']) ?></td>
                 <td><?= htmlspecialchars($o['bairro']) ?></td>
@@ -86,11 +104,12 @@
                     data-status="<?= htmlspecialchars($o['status'], ENT_QUOTES) ?>"
                     data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>"
                     data-fotos="<?= htmlspecialchars(json_encode(array_map(static fn($u) => baseUrl($u), $o['fotos'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">👁 Ver</button>
+                  <button type="button" class="btn-acao reexibir-btn" onclick="reexibirOc(this)" data-id="<?= (int) $o['id_ocorrencia'] ?>" title="Reexibir na lista">↩ Reexibir</button>
                 </td>
               </tr>
             <?php endforeach; ?>
             <?php if (empty($ocorrencias)): ?>
-              <tr><td colspan="7" style="text-align:center;padding:24px;color:#94a3b8;">Nenhuma ocorrência registrada.</td></tr>
+              <tr><td colspan="8" style="text-align:center;padding:24px;color:#94a3b8;">Nenhuma ocorrência registrada.</td></tr>
             <?php endif; ?>
           </tbody>
         </table>
@@ -130,59 +149,10 @@
     </div>
   </div>
 
-  <script>
-    // Preenche o modal a partir dos data-* do botao (dados do banco).
-    function verOcorrencia(btn) {
-      var d = btn.dataset;
-      var html =
-        '<div class="sr-info-grid" style="display:grid;gap:10px;margin-bottom:16px;">' +
-        '<p><strong>Protocolo:</strong> #' + d.protocolo + '</p>' +
-        '<p><strong>Tipo:</strong> ' + d.tipo + '</p>' +
-        '<p><strong>Local:</strong> ' + d.local + '</p>' +
-        '<p><strong>Bairro:</strong> ' + d.bairro + '</p>' +
-        '<p><strong>Urgência:</strong> ' + d.urgencia + '</p>' +
-        '<p><strong>Descrição:</strong> ' + d.descricao + '</p>' +
-        '</div>';
-
-      // Fotos de evidência enviadas pelo cidadão (abrem em tamanho real em nova aba).
-      var fotos = [];
-      try { fotos = JSON.parse(d.fotos || '[]'); } catch (e) { fotos = []; }
-      if (fotos.length) {
-        html += '<div class="oc-fotos-admin"><strong>📷 Fotos da ocorrência</strong><div class="oc-fotos-grid">';
-        html += fotos.map(function (url) {
-          return '<a href="' + url + '" target="_blank" rel="noopener" title="Abrir em tamanho real">'
-               + '<img src="' + url + '" alt="Foto da ocorrência" loading="lazy"></a>';
-        }).join('');
-        html += '</div></div>';
-      } else {
-        html += '<p style="color:#94a3b8;">📷 Nenhuma foto enviada para esta ocorrência.</p>';
-      }
-
-      document.getElementById('modalOcBody').innerHTML = html;
-
-      // Pre-carrega o form de gestao com os valores atuais
-      document.getElementById('modalIdOc').value  = d.id;
-      document.getElementById('modalStatus').value = d.status;
-      document.getElementById('modalObs').value    = d.obs || '';
-
-      document.getElementById('modalOcorrencia').style.display = 'flex';
-    }
-    function fecharModalAdmin() {
-      document.getElementById('modalOcorrencia').style.display = 'none';
-    }
-    // Filtro client-side sobre as linhas reais da tabela.
-    function filtrarOcAdmin() {
-      var busca  = (document.getElementById('buscaOc').value || '').toLowerCase();
-      var status = document.getElementById('filtroStatus').value;
-      var tipo   = document.getElementById('filtroTipo').value;
-      document.querySelectorAll('#tabelaOcorrencias tbody tr').forEach(function (tr) {
-        if (!tr.dataset.busca) return;
-        var okBusca  = !busca  || tr.dataset.busca.includes(busca);
-        var okStatus = !status || tr.dataset.status === status;
-        var okTipo   = !tipo   || tr.dataset.tipo.includes(tipo);
-        tr.style.display = (okBusca && okStatus && okTipo) ? '' : 'none';
-      });
-    }
-  </script>
+  <!--
+    As funções do modal e dos filtros desta página
+    (verOcorrencia, verOcorrenciaDaLinha, fecharModalAdmin, filtrarOcAdmin)
+    ficam em assets/js/admin.js — fonte única, para evitar definições duplicadas.
+  -->
 
 <?php require_once 'app/view/comuns/admin_rodape.php'; ?>

@@ -79,7 +79,12 @@ class Admin extends BaseController
             $this->model('Ocorrencia')->atualizarStatus($id, $status, $observacao, (int) $admin['id_usuario']);
         }
 
-        header('Location: ' . baseUrl('admin/ocorrencias') . '?ok=1');
+        // Passa o id alterado para o front ocultar essa ocorrencia da lista (triagem).
+        $destino = baseUrl('admin/ocorrencias') . '?ok=1';
+        if ($id > 0) {
+            $destino .= '&oc=' . $id;
+        }
+        header('Location: ' . $destino);
         exit;
     }
 
