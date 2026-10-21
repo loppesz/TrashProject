@@ -22,18 +22,29 @@ let playerName  = localStorage.getItem('playerName')  || 'Eco Herói';
 let playerAvatar= localStorage.getItem('playerAvatar') || '🌱';
 let gamesPlayed = JSON.parse(localStorage.getItem('gamesPlayed') || '[]');
 
-// Perfil ativo no banco (quando o responsavel esta logado).
-let kidsPerfilId = null;
+// =============================================
+// PERFIS KIDS
+// - Logado (responsavel): varios perfis (filhos) no banco; pode trocar/criar.
+// - Nao logado: uma "sessao temporaria" unica no localStorage (nome + pontos).
+// =============================================
+const KIDS_LOGADO = !!window.USUARIO_LOGADO;
+let kidsPerfis   = Array.isArray(window.PERFIS_KIDS) ? window.PERFIS_KIDS.slice() : [];
+let kidsPerfilId = null;        // id do perfil ativo no banco (logado)
+let modoNovoPerfil = false;     // controla o modal: criar novo x editar nome
 
-// Se logado e ja houver um perfil no banco, usa-o como fonte (sobrepoe o localStorage).
-if (window.USUARIO_LOGADO && Array.isArray(window.PERFIS_KIDS) && window.PERFIS_KIDS.length) {
-  const p = window.PERFIS_KIDS[0]; // perfil padrao (primeiro filho)
+// Se logado e houver ao menos um perfil, ativa o primeiro por padrao.
+if (KIDS_LOGADO && kidsPerfis.length) {
+  aplicarPerfil(kidsPerfis[0]);
+}
+
+let _syncTimer = null;
+
+// Carrega os dados de um perfil (do banco) como estado ativo do jogo.
+function aplicarPerfil(p) {
   kidsPerfilId = p.id;
   kidsPoints   = p.pontos;
   playerName   = p.apelido;
 }
-
-let _syncTimer = null;
 
 function save() {
   localStorage.setItem('kidsPoints', kidsPoints);
@@ -44,8 +55,9 @@ function save() {
 }
 
 // Persiste o progresso no banco quando o responsavel esta logado (com debounce).
+// Sem usuario logado, o estado fica apenas no localStorage (sessao temporaria).
 function sincronizarBanco() {
-  if (!window.USUARIO_LOGADO) return;
+  if (!KIDS_LOGADO) return;
   clearTimeout(_syncTimer);
   _syncTimer = setTimeout(function () {
     const dados = new URLSearchParams();
@@ -59,9 +71,72 @@ function sincronizarBanco() {
       body: dados.toString(),
     })
       .then(function (r) { return r.json(); })
-      .then(function (d) { if (d && d.ok && d.id_perfil) kidsPerfilId = d.id_perfil; })
+      .then(function (d) {
+        if (d && d.ok && d.id_perfil) {
+          kidsPerfilId = d.id_perfil;
+          // Mantem a lista local de perfis em sincronia (atualiza ou insere).
+          const existente = kidsPerfis.find(function (p) { return p.id === kidsPerfilId; });
+          if (existente) {
+            existente.apelido = playerName;
+            existente.pontos  = kidsPoints;
+            existente.jogos   = gamesPlayed.length;
+          } else {
+            kidsPerfis.push({ id: kidsPerfilId, apelido: playerName, pontos: kidsPoints, jogos: gamesPlayed.length });
+          }
+          renderPerfis();
+        }
+      })
       .catch(function () {});
   }, 600);
+}
+
+// =============================================
+// SELETOR DE PERFIS (logado)
+// =============================================
+function renderPerfis() {
+  const box = document.getElementById('kidsPerfis');
+  const row = document.getElementById('kidsPerfisRow');
+  if (!box || !row) return;
+
+  if (!KIDS_LOGADO) { box.style.display = 'none'; return; }
+  box.style.display = 'block';
+
+  let html = kidsPerfis.map(function (p) {
+    const ativo = p.id === kidsPerfilId ? ' ativo' : '';
+    return '<button type="button" class="kids-perfil-chip' + ativo + '" onclick="trocarPerfil(' + p.id + ')">'
+         + '👧 ' + escapeHtml(p.apelido) + ' <small>' + p.pontos + ' pts</small></button>';
+  }).join('');
+  html += '<button type="button" class="kids-perfil-chip novo" onclick="novoPerfil()">+ Novo perfil</button>';
+  row.innerHTML = html;
+}
+
+// Troca o perfil ativo (salva o atual antes para nao perder progresso).
+function trocarPerfil(id) {
+  if (id === kidsPerfilId) return;
+  const p = kidsPerfis.find(function (x) { return x.id === id; });
+  if (!p) return;
+  aplicarPerfil(p);
+  gamesPlayed = []; // progresso de jogos e por sessao/perfil
+  updateUI();
+  renderPerfis();
+  mascotFalar('Oi, ' + playerName + '! Pronto para jogar? 🎮');
+  showKidsToast('👧 Perfil de ' + playerName + ' selecionado!');
+}
+
+// Abre o modal em modo "criar novo filho".
+function novoPerfil() {
+  modoNovoPerfil = true;
+  const input = document.getElementById('nomeInput');
+  if (input) input.value = '';
+  const titulo = document.querySelector('#modalNome h3');
+  if (titulo) titulo.textContent = '🧒 Novo perfil';
+  document.getElementById('modalNome').style.display = 'flex';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, function (c) {
+    return { '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c];
+  });
 }
 
 function getNivel(pts) {
@@ -189,7 +264,10 @@ createBubbles();
 // PERFIL DO JOGADOR
 // =============================================
 function editarNome() {
+  modoNovoPerfil = false;
   document.getElementById('nomeInput').value = playerName;
+  const titulo = document.querySelector('#modalNome h3');
+  if (titulo) titulo.textContent = '✏️ Qual é o seu nome?';
   document.getElementById('modalNome').style.display = 'flex';
 }
 
@@ -201,8 +279,25 @@ function selectAvatar(el, emoji) {
 
 function salvarNome() {
   const v = document.getElementById('nomeInput').value.trim();
+
+  if (modoNovoPerfil && KIDS_LOGADO) {
+    // Cria um novo filho: zera o estado e deixa o sync gravar (sem id_perfil).
+    modoNovoPerfil = false;
+    kidsPerfilId = null;
+    playerName   = v || 'Eco Herói';
+    kidsPoints   = 0;
+    gamesPlayed  = [];
+    save(); updateUI();
+    document.getElementById('modalNome').style.display = 'none';
+    mascotFalar('Bem-vindo, ' + playerName + '! Vamos começar? 🚀');
+    showKidsToast('🧒 Novo perfil criado!');
+    return;
+  }
+
+  // Renomeia o perfil ativo (ou a sessao temporaria, se nao logado).
   if (v) playerName = v;
   save(); updateUI();
+  renderPerfis();
   document.getElementById('modalNome').style.display = 'none';
   mascotFalar('Prazer em te conhecer, ' + playerName + '! 🤝');
   showKidsToast('✅ Perfil salvo!');
@@ -999,11 +1094,17 @@ function checkTodosJogos() {
 // =============================================
 document.addEventListener('DOMContentLoaded', () => {
   updateUI();
+  renderPerfis();
   loadConquistas();
   checkConquistas();
 
-  // Pergunta nome se for primeira vez
-  if (!localStorage.getItem('playerName')) {
+  if (KIDS_LOGADO) {
+    // Responsavel logado sem nenhum filho cadastrado: cria o primeiro perfil.
+    if (!kidsPerfis.length) {
+      setTimeout(novoPerfil, 1200);
+    }
+  } else if (!localStorage.getItem('playerName')) {
+    // Visitante (sessao temporaria): pergunta o nome na primeira visita.
     setTimeout(() => document.getElementById('modalNome').style.display = 'flex', 1500);
   }
 

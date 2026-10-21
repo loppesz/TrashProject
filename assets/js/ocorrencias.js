@@ -92,28 +92,59 @@ document.getElementById('descricaoOcorrencia')?.addEventListener('input', functi
 // =============================================
 function usarLocalizacao() {
   const btn = document.querySelector('.use-location-btn');
-  if (btn) { btn.textContent = '📡 Buscando...'; btn.disabled = true; }
+  const resetBtn = () => { if (btn) { btn.textContent = '📡 Usar minha localização'; btn.disabled = false; } };
 
-  if (!navigator.geolocation) {
-    showOcToast('Geolocalização não disponível neste navegador.');
-    if (btn) { btn.textContent = '📡 Usar minha localização'; btn.disabled = false; }
+  // A API de geolocalização só funciona em contexto seguro (HTTPS ou localhost).
+  // Em http://host (ex.: VirtualHost), o navegador bloqueia e o botão "não funciona".
+  if (!navigator.geolocation || (typeof isSecureContext !== 'undefined' && !isSecureContext)) {
+    showOcToast('📍 A localização automática exige HTTPS. Digite o endereço manualmente.');
+    resetBtn();
     return;
   }
 
+  if (btn) { btn.textContent = '📡 Buscando...'; btn.disabled = true; }
+
   navigator.geolocation.getCurrentPosition(
     (pos) => {
+      // Privacidade: a coordenada vai para campos ocultos (uso interno da
+      // equipe) e NUNCA é colada no endereço, que é exibido publicamente.
       const lat = pos.coords.latitude.toFixed(6);
       const lng = pos.coords.longitude.toFixed(6);
-      const input = document.getElementById('localOcorrencia');
-      if (input) input.value = `Lat: ${lat}, Lng: ${lng} (localização atual)`;
-      if (btn) { btn.textContent = '✅ Localização obtida'; btn.disabled = false; }
-      showOcToast('📍 Localização detectada!');
+      const latEl = document.getElementById('latOcorrencia');
+      const lngEl = document.getElementById('lngOcorrencia');
+      if (latEl) latEl.value = lat;
+      if (lngEl) lngEl.value = lng;
+      const aviso = document.getElementById('gpsAviso');
+      if (aviso) aviso.style.display = 'block';
+      if (btn) { btn.textContent = '✅ Localização anexada'; btn.disabled = false; }
+      showOcToast('📍 Localização anexada (uso interno).');
     },
-    () => {
-      if (btn) { btn.textContent = '📡 Usar minha localização'; btn.disabled = false; }
-      showOcToast('Não foi possível obter localização. Preencha manualmente.');
-    }
+    (err) => {
+      resetBtn();
+      // Mensagem específica conforme o motivo da falha.
+      let msg = 'Não foi possível obter a localização. Preencha o endereço manualmente.';
+      if (err) {
+        if (err.code === 1) msg = '🚫 Permissão de localização negada. Libere no ícone do navegador ou digite o endereço.';
+        else if (err.code === 2) msg = '📡 Localização indisponível no momento. Tente novamente ou digite o endereço.';
+        else if (err.code === 3) msg = '⏱️ A busca pela localização demorou demais. Tente de novo.';
+      }
+      showOcToast(msg);
+    },
+    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
   );
+}
+
+// Remove a localização GPS anexada.
+function limparLocalizacao() {
+  const latEl = document.getElementById('latOcorrencia');
+  const lngEl = document.getElementById('lngOcorrencia');
+  if (latEl) latEl.value = '';
+  if (lngEl) lngEl.value = '';
+  const aviso = document.getElementById('gpsAviso');
+  if (aviso) aviso.style.display = 'none';
+  const btn = document.querySelector('.use-location-btn');
+  if (btn) btn.textContent = '📡 Usar minha localização';
+  showOcToast('Localização removida.');
 }
 
 // =============================================

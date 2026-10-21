@@ -33,8 +33,13 @@ class OcorrenciaModel extends BaseModel
      */
     public function historicoPublico(int $limite = 30): array
     {
+        // Minimizacao de dados (LGPD): o historico publico seleciona apenas
+        // colunas nao sensiveis. NUNCA traz latitude/longitude nem dados de
+        // contato (nome/telefone/email), ainda que existam na ocorrencia.
         return $this->db->select(
-            'SELECT o.*, b.nome AS bairro
+            'SELECT o.id_ocorrencia, o.protocolo, o.tipo, o.urgencia,
+                    o.endereco_descricao, o.descricao, o.status, o.criada_em,
+                    b.nome AS bairro
              FROM ocorrencia o
              JOIN bairro b ON b.id_bairro = o.id_bairro
              WHERE o.visivel_publicamente = 1
@@ -68,9 +73,9 @@ class OcorrenciaModel extends BaseModel
         $id = $this->db->insert(
             'INSERT INTO ocorrencia
                (protocolo, id_usuario, id_bairro, tipo, urgencia, endereco_descricao,
-                data_ocorrencia, descricao, anonima, nome_contato, telefone_contato,
-                email_contato, visivel_publicamente, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, \'NOVA\')',
+                latitude, longitude, data_ocorrencia, descricao, anonima, nome_contato,
+                telefone_contato, email_contato, visivel_publicamente, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, \'NOVA\')',
             [
                 $protocolo,
                 $d['id_usuario'] ?? null,
@@ -78,6 +83,8 @@ class OcorrenciaModel extends BaseModel
                 $d['tipo'],
                 $d['urgencia'],
                 $d['endereco'],
+                $d['latitude'] ?? null,
+                $d['longitude'] ?? null,
                 $d['data_ocorrencia'] ?: null,
                 $d['descricao'],
                 !empty($d['anonima']) ? 1 : 0,
@@ -115,6 +122,17 @@ class OcorrenciaModel extends BaseModel
             'INSERT INTO ocorrencia_foto (id_ocorrencia, url_arquivo, tipo_mime, tamanho_bytes)
              VALUES (?, ?, ?, ?)',
             [$idOcorrencia, $url, $mime, $tamanho]
+        );
+    }
+
+    /** Lista as fotos (URLs) vinculadas a uma ocorrencia, em ordem de envio. */
+    public function fotos(int $idOcorrencia): array
+    {
+        return $this->db->select(
+            'SELECT url_arquivo FROM ocorrencia_foto
+             WHERE id_ocorrencia = ?
+             ORDER BY id_ocorrencia_foto',
+            [$idOcorrencia]
         );
     }
 

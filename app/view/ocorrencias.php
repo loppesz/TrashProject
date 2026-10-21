@@ -86,6 +86,10 @@
                 <input type="text" id="localOcorrencia" name="endereco" placeholder="Rua, número – Bairro" required>
                 <button type="button" class="use-location-btn" onclick="usarLocalizacao()">📡 Usar minha localização</button>
               </div>
+              <!-- Coordenadas (uso interno): enviadas separadas, nunca exibidas no histórico público. -->
+              <input type="hidden" id="latOcorrencia" name="lat" value="">
+              <input type="hidden" id="lngOcorrencia" name="lng" value="">
+              <small id="gpsAviso" class="gps-aviso" style="display:none;color:#64748b;">📍 Localização GPS anexada (uso interno da equipe, não aparece no histórico público). <button type="button" class="gps-limpar" onclick="limparLocalizacao()" style="background:none;border:none;color:#dc2626;cursor:pointer;text-decoration:underline;padding:0;">remover</button></small>
             </div>
 
             <div class="form-row-2">
@@ -125,6 +129,7 @@
                 <img id="fotoImg" src="" alt="Preview">
                 <button type="button" onclick="removerFoto()" class="remove-foto">✕ Remover</button>
               </div>
+              <small style="display:block;margin-top:6px;color:#64748b;">🔒 Por privacidade, removemos os metadados da foto (incluindo a localização GPS que o celular costuma gravar) antes de armazená-la.</small>
             </div>
 
             <div class="form-section-divider">Dados de contato (opcional – para acompanhamento)</div>
@@ -148,7 +153,7 @@
             <div class="form-group" style="margin-top:8px;">
               <label class="checkbox-label">
                 <input type="checkbox" id="anonimo" name="anonima" value="1">
-                <span>Registrar anonimamente (não vincular dados pessoais)</span>
+                <span>Registrar anonimamente — não salvamos seu nome, telefone nem e-mail (e a ocorrência não fica vinculada à sua conta).</span>
               </label>
             </div>
 

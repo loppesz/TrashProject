@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'coletafacil-v32';
+﻿const CACHE_NAME = 'coletafacil-v35';
 const PRECACHE = [
   '/',
   '/assets/css/style.css',
@@ -30,6 +30,15 @@ self.addEventListener('fetch', e => {
   if (e.request.method !== 'GET') return;
 
   const url = new URL(e.request.url);
+
+  // Endpoints JSON (consultas via fetch) vão SEMPRE direto à rede, sem o
+  // fallback para a página offline — senão o cliente receberia HTML e o
+  // JSON.parse falharia. Ex.: coleta/consultarJson, ocorrencia/consultarJson.
+  // O painel admin também vai sempre à rede (nunca servir versão em cache).
+  if (/consultarJson|kidsSalvar/i.test(url.pathname) || url.pathname.indexOf('/admin') !== -1) {
+    return; // deixa o navegador tratar a requisição normalmente
+  }
+
   const isStatic = /\.(css|js|json|png|jpg|jpeg|svg|ico|webp|woff2?|mp4)$/.test(url.pathname);
 
   if (isStatic) {

@@ -5,8 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Área Kids – ColetaFácil</title>
-  <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>">
-  <link rel="stylesheet" href="<?= baseUrl('assets/css/kids.css') ?>">
+  <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>?v=<?= $assetV ?>">
+  <link rel="stylesheet" href="<?= baseUrl('assets/css/kids.css') ?>?v=<?= $assetV ?>">
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body class="kids-body">
@@ -70,6 +71,12 @@
               <div class="xp-bar" id="xpBar" style="width:0%"></div>
             </div>
             <span class="xp-text" id="xpText">0 / 200 XP para o próximo nível</span>
+          </div>
+
+          <!-- SELETOR DE PERFIS (apenas para responsável logado) -->
+          <div class="kids-perfis" id="kidsPerfis" style="display:none;">
+            <span class="kids-perfis-label">👨‍👩‍👧 Quem está jogando?</span>
+            <div class="kids-perfis-row" id="kidsPerfisRow"></div>
           </div>
         </div>
 
@@ -475,8 +482,8 @@
         ];
     }, $perfisKids ?? []), JSON_UNESCAPED_UNICODE) ?>;
   </script>
-  <script src="<?= baseUrl('assets/js/script.js') ?>"></script>
-  <script src="<?= baseUrl('assets/js/kids-data.js') ?>"></script>
-  <script src="<?= baseUrl('assets/js/kids.js') ?>"></script>
+  <script src="<?= baseUrl('assets/js/script.js') ?>?v=<?= $assetV ?>"></script>
+  <script src="<?= baseUrl('assets/js/kids-data.js') ?>?v=<?= $assetV ?>"></script>
+  <script src="<?= baseUrl('assets/js/kids.js') ?>?v=<?= $assetV ?>"></script>
 </body>
 </html>

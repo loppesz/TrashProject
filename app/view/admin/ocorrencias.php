@@ -84,7 +84,8 @@
                     data-urgencia="<?= htmlspecialchars($o['urgencia'], ENT_QUOTES) ?>"
                     data-descricao="<?= htmlspecialchars($o['descricao'], ENT_QUOTES) ?>"
                     data-status="<?= htmlspecialchars($o['status'], ENT_QUOTES) ?>"
-                    data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>">👁 Ver</button>
+                    data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>"
+                    data-fotos="<?= htmlspecialchars(json_encode(array_map(static fn($u) => baseUrl($u), $o['fotos'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">👁 Ver</button>
                 </td>
               </tr>
             <?php endforeach; ?>
@@ -142,6 +143,21 @@
         '<p><strong>Urgência:</strong> ' + d.urgencia + '</p>' +
         '<p><strong>Descrição:</strong> ' + d.descricao + '</p>' +
         '</div>';
+
+      // Fotos de evidência enviadas pelo cidadão (abrem em tamanho real em nova aba).
+      var fotos = [];
+      try { fotos = JSON.parse(d.fotos || '[]'); } catch (e) { fotos = []; }
+      if (fotos.length) {
+        html += '<div class="oc-fotos-admin"><strong>📷 Fotos da ocorrência</strong><div class="oc-fotos-grid">';
+        html += fotos.map(function (url) {
+          return '<a href="' + url + '" target="_blank" rel="noopener" title="Abrir em tamanho real">'
+               + '<img src="' + url + '" alt="Foto da ocorrência" loading="lazy"></a>';
+        }).join('');
+        html += '</div></div>';
+      } else {
+        html += '<p style="color:#94a3b8;">📷 Nenhuma foto enviada para esta ocorrência.</p>';
+      }
+
       document.getElementById('modalOcBody').innerHTML = html;
 
       // Pre-carrega o form de gestao com os valores atuais

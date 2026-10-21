@@ -44,10 +44,17 @@ class Admin extends BaseController
     {
         $ocModel = $this->model('Ocorrencia');
 
+        // Anexa as fotos (URLs) de cada ocorrencia para exibir no painel.
+        $ocorrencias = $ocModel->listaAdmin();
+        foreach ($ocorrencias as &$o) {
+            $o['fotos'] = array_column($ocModel->fotos((int) $o['id_ocorrencia']), 'url_arquivo');
+        }
+        unset($o);
+
         $this->view('admin/ocorrencias', [
             'tituloPagina' => 'Ocorrências',
             'adminMenu'    => 'ocorrencias',
-            'ocorrencias'  => $ocModel->listaAdmin(),
+            'ocorrencias'  => $ocorrencias,
             'total'        => $ocModel->total(),
             'sucesso'      => $_GET['ok'] ?? '',
         ]);

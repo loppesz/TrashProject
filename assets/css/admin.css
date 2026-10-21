@@ -539,3 +539,42 @@
   gap: 8px;
   cursor: pointer;
 }
+
+/* =============================================
+   FOTOS DA OCORRÊNCIA (modal do painel admin)
+============================================= */
+.oc-fotos-admin {
+  margin: 16px 0;
+  padding-top: 12px;
+  border-top: 1px solid #e2e8f0;
+}
+.oc-fotos-admin > strong {
+  display: block;
+  margin-bottom: 10px;
+  color: #334155;
+}
+.oc-fotos-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.oc-fotos-grid a {
+  display: block;
+  width: 120px;
+  height: 120px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+  background: #f1f5f9;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.oc-fotos-grid a:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+.oc-fotos-grid img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}

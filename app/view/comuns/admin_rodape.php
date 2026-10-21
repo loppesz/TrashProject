@@ -1,7 +1,8 @@
     </div><!-- /.admin-content -->
   </div><!-- /.admin-main -->
 
-  <script src="<?= baseUrl('assets/js/script.js') ?>"></script>
-  <script src="<?= baseUrl('assets/js/admin.js') ?>"></script>
+  <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
+  <script src="<?= baseUrl('assets/js/script.js') ?>?v=<?= $assetV ?>"></script>
+  <script src="<?= baseUrl('assets/js/admin.js') ?>?v=<?= $assetV ?>"></script>
 </body>
 </html>

@@ -340,3 +340,57 @@
   .mascot-speech{display:none}
   .kids-hero-text{gap:12px}
 }
+
+/* =============================================
+   SELETOR DE PERFIS KIDS (responsável logado)
+============================================= */
+.kids-perfis {
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.25);
+}
+.kids-perfis-label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 700;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+.kids-perfis-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kids-perfil-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  font-family: inherit;
+  font-weight: 700;
+  font-size: 0.85rem;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.15s ease, background 0.15s ease, border-color 0.15s ease;
+}
+.kids-perfil-chip small {
+  font-weight: 600;
+  opacity: 0.8;
+  font-size: 0.72rem;
+}
+.kids-perfil-chip:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.28);
+}
+.kids-perfil-chip.ativo {
+  background: #fde047;
+  color: #1a1a2e;
+  border-color: #fde047;
+}
+.kids-perfil-chip.novo {
+  background: transparent;
+  border-style: dashed;
+}
