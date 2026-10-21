@@ -511,6 +511,16 @@
 .dark .protocolo-box strong { color: #4ade80; }
 .btn-copiar-prot { background: none; border: 1.5px solid #4ade80; color: var(--green-dark); padding: 5px 12px; border-radius: 8px; font-size: 0.78rem; font-weight: 700; cursor: pointer; font-family: inherit; }
 .dark .btn-copiar-prot { color: #4ade80; }
+.btn-copiar-prot:hover { background: color-mix(in srgb, var(--green) 10%, transparent); }
+.btn-copiar-prot.copiado { background: var(--green, #16a34a); border-color: var(--green, #16a34a); color: #fff; }
+/* Aviso "copiado para a área de transferência" logo abaixo do protocolo */
+.copiado-aviso {
+  margin: -6px 0 10px; padding: 8px 12px; border-radius: 10px;
+  font-size: .82rem; font-weight: 700;
+  background: var(--success-bg, #dcfce7); color: var(--success, #15803d);
+  animation: fadeUp .25s ease;
+}
+.copiado-aviso.erro { background: var(--warning-bg, #fef3c7); color: var(--warning, #92400e); }
 .modal-dica { font-size: 0.78rem; color: var(--text-muted); }
 .pontos-ganhos { background: linear-gradient(135deg, #fef3c7, #fde68a); border-radius: 12px; padding: 12px 20px; font-weight: 800; color: #92400e; font-size: 1rem; display: inline-block; margin: 8px 0; }
 
@@ -608,6 +618,26 @@
 .sr-badge.resolvida, .hc-status.resolvida { background: var(--success-bg); color: var(--success); }
 .hc-type-icon { background: var(--surface-2) !important; color: var(--accent-strong); font-weight: 900; }
 .mo-item { width: 100%; text-align: left; color: inherit; font: inherit; }
+.sr-badge.arquivada, .hc-status.arquivada { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
+
+/* Minhas ocorrências: status + trecho da descrição que o próprio usuário escreveu */
+.mo-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 4px; }
+.mo-topo strong { margin-bottom: 0; }
+.mo-topo .sr-badge { flex-shrink: 0; font-size: .66rem; padding: 2px 8px; white-space: nowrap; }
+.mo-desc {
+  display: block; margin: 2px 0 6px;
+  font-size: .78rem; line-height: 1.45; color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+
+/* Consulta de status: descrição completa (só para o autor) */
+.sr-desc { padding: 14px 20px; border-bottom: 1px solid var(--border); }
+.sr-desc small { display: block; font-size: .72rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.sr-desc p {
+  font-size: .86rem; line-height: 1.6; color: var(--text-soft);
+  background: var(--surface-2); padding: 10px 14px; border-radius: 8px;
+  white-space: pre-line; overflow-wrap: anywhere;
+}
 
 .gps-aviso {
   align-items: center; justify-content: space-between; gap: 12px;

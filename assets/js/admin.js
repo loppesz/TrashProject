@@ -47,54 +47,75 @@ document.addEventListener('click', function(e) {
 // =============================================
 // OCORRÊNCIAS ADMIN
 // =============================================
-// --- Ocorrencias "ocultas" (triadas): guardadas no navegador via localStorage ---
-// Quando o admin altera o status de uma ocorrencia, ela sai da lista (fica oculta).
-// O botao "Mostrar ocultas" reexibe; cada linha oculta tem um botao para reexibir.
-function ocOcultasSet() {
-  try { return new Set(JSON.parse(localStorage.getItem('oc_ocultas') || '[]')); }
-  catch (e) { return new Set(); }
-}
-function salvarOcOcultas(set) {
-  localStorage.setItem('oc_ocultas', JSON.stringify(Array.from(set)));
+// As abas seguem o status SALVO NO BANCO (data-aba de cada linha):
+//   Em aberto  = Nova, Em análise, Em atendimento
+//   Resolvidas = Resolvida
+//   Arquivadas = Arquivada
+// Por isso o que foi resolvido/arquivado continua fora de "Em aberto"
+// mesmo depois de recarregar a página ou trocar de navegador.
+const OC_ABA_VAZIA = {
+  abertas:    'Nenhuma ocorrência em aberto. Tudo em dia.',
+  resolvidas: 'Nenhuma ocorrência resolvida ainda.',
+  arquivadas: 'Nenhuma ocorrência arquivada.',
+};
+
+function abaOcAtual() {
+  return document.querySelector('.oc-aba.active')?.dataset.aba || 'abertas';
 }
 
-// Filtro da lista de ocorrencias: busca + status + tipo + estado oculto.
+// Troca de aba sem recarregar; a aba fica na URL (?aba=) e nos formulários,
+// para o admin voltar à mesma aba depois de salvar.
+function trocarAbaOc(aba) {
+  if (!OC_ABA_VAZIA[aba]) aba = 'abertas';
+  document.querySelectorAll('.oc-aba').forEach(b => {
+    const ativa = b.dataset.aba === aba;
+    b.classList.toggle('active', ativa);
+    b.setAttribute('aria-selected', ativa ? 'true' : 'false');
+  });
+  document.querySelectorAll('.input-aba').forEach(i => { i.value = aba; });
+
+  // O filtro de status só existe em "Em aberto".
+  const fs = document.getElementById('filtroStatus');
+  if (fs) {
+    fs.hidden = aba !== 'abertas';
+    if (fs.hidden) fs.value = '';
+  }
+
+  try {
+    const params = new URLSearchParams(window.location.search);
+    params.set('aba', aba);
+    window.history.replaceState({}, '', window.location.pathname + '?' + params.toString());
+  } catch (e) {}
+
+  filtrarOcAdmin();
+}
+
+// Filtro da lista: aba + busca + status + tipo.
 function filtrarOcAdmin() {
   const tabela = document.getElementById('tabelaOcorrencias');
   if (!tabela) return;
 
-  const busca  = (document.getElementById('buscaOc')?.value || '').toLowerCase();
+  const aba    = abaOcAtual();
+  const busca  = (document.getElementById('buscaOc')?.value || '').trim().toLowerCase();
   const status = document.getElementById('filtroStatus')?.value || '';
-  const tipo   = document.getElementById('filtroTipo')?.value || '';
-  const mostrarOcultas = !!document.getElementById('mostrarOcultas')?.checked;
-  const ocultas = ocOcultasSet();
-  let nOcultas = 0;
+  const tipo   = (document.getElementById('filtroTipo')?.value || '').toLowerCase();
+  let naAba = 0, visiveis = 0;
 
-  tabela.querySelectorAll('tbody tr').forEach(tr => {
-    if (!tr.dataset.busca) return; // ignora a linha "nenhuma ocorrencia"
-    const estaOculta = ocultas.has(tr.dataset.id);
-    if (estaOculta) nOcultas++;
-
-    const okBusca  = !busca  || tr.dataset.busca.includes(busca);
+  tabela.querySelectorAll('tbody tr[data-aba]').forEach(tr => {
+    const okAba = tr.dataset.aba === aba;
+    if (okAba) naAba++;
+    const okBusca  = !busca  || (tr.dataset.busca || '').includes(busca);
     const okStatus = !status || tr.dataset.status === status;
     const okTipo   = !tipo   || (tr.dataset.tipo || '').includes(tipo);
-    const passaFiltro = okBusca && okStatus && okTipo;
-    const visivel = passaFiltro && (mostrarOcultas || !estaOculta);
-
+    const visivel  = okAba && okBusca && okStatus && okTipo;
     tr.style.display = visivel ? '' : 'none';
-    tr.classList.toggle('linha-oculta', estaOculta);
+    if (visivel) visiveis++;
   });
 
-  const cont = document.getElementById('contadorOcultas');
-  if (cont) cont.textContent = String(nOcultas);
-}
-
-// Reexibe (desoculta) uma ocorrencia a partir do botao da linha.
-function reexibirOc(btn) {
-  const set = ocOcultasSet();
-  set.delete(btn.dataset.id);
-  salvarOcOcultas(set);
-  filtrarOcAdmin();
+  const vazio = document.getElementById('ocVazioAba');
+  const texto = document.getElementById('ocVazioTexto');
+  if (vazio) vazio.style.display = visiveis === 0 ? '' : 'none';
+  if (texto) texto.textContent = naAba === 0 ? OC_ABA_VAZIA[aba] : 'Nenhuma ocorrência encontrada com esses filtros.';
 }
 
 function atualizarStatus(selectEl) {
@@ -186,20 +207,20 @@ function verOcorrenciaDaLinha(el) {
 document.addEventListener('DOMContentLoaded', function () {
   if (!document.getElementById('tabelaOcorrencias')) return;
 
-  // Se veio de uma alteracao de status (?oc=ID), marca a ocorrencia como oculta
-  // e limpa o parametro da URL para nao repetir ao recarregar.
+  // O sistema antigo de "ocultas" (localStorage) não é mais usado.
+  try { localStorage.removeItem('oc_ocultas'); } catch (e) {}
+
+  // Depois de salvar (?ok=1&oc=ID&para=...): destaca a linha se ela continuou
+  // na aba atual e limpa esses parâmetros da URL (mantém só ?aba=).
   try {
     const params = new URLSearchParams(window.location.search);
     const oc = params.get('oc');
     if (oc) {
-      const set = ocOcultasSet();
-      set.add(oc);
-      salvarOcOcultas(set);
-      params.delete('oc');
-      params.delete('ok');
-      const nova = window.location.pathname + (params.toString() ? '?' + params.toString() : '');
-      window.history.replaceState({}, '', nova);
+      const tr = document.querySelector('#tabelaOcorrencias tr[data-id="' + CSS.escape(oc) + '"]');
+      if (tr && tr.dataset.aba === abaOcAtual()) tr.classList.add('linha-alterada');
     }
+    ['ok', 'oc', 'para'].forEach(p => params.delete(p));
+    window.history.replaceState({}, '', window.location.pathname + (params.toString() ? '?' + params.toString() : ''));
   } catch (e) {}
 
   filtrarOcAdmin();

@@ -260,19 +260,6 @@ function filtrarBairros() {
 }
 
 // =============================================
-// NOTIFICAÇÃO (SIMULADA)
-// =============================================
-function ativarNotificacao() {
-  document.getElementById('modalNotif').style.display = 'flex';
-}
-
-// Fechar modal
-document.addEventListener('click', e => {
-  const m = document.getElementById('modalNotif');
-  if (m && e.target === m) m.style.display = 'none';
-});
-
-// =============================================
 // AUTO-CONSULTA POR QUERY STRING (?id_bairro=)
 // =============================================
 window.addEventListener('DOMContentLoaded', () => {

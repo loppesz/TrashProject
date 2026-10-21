@@ -68,7 +68,6 @@
       <!-- ALERTA PRÓXIMA COLETA -->
       <div class="alerta-proxima" id="alertaProxima">
         ⚠️ <strong>Lembre-se:</strong> Coloque os materiais na calçada até as <strong>06h30</strong> na manhã do dia da coleta.
-        <button class="btn-notificar" onclick="ativarNotificacao()">🔔 Me lembrar</button>
       </div>
 
       <!-- GRID DE INFORMAÇÕES RICAS -->
@@ -190,17 +189,6 @@
             </div>
             <a href="<?= baseUrl('ponto') ?>" class="mri-link">Ver pontos</a>
           </div>
-        </div>
-      </div>
-
-      <!-- NOTIFICAÇÃO MODAL -->
-      <div id="modalNotif" class="modal" style="display:none;">
-        <div class="modal-content">
-          <div class="modal-icon">🔔</div>
-          <h3>Lembrete configurado!</h3>
-          <p>Você receberá um alerta <strong>na véspera</strong> de cada coleta no seu bairro.</p>
-          <p style="font-size:0.8rem;color:#94a3b8;">(Funcionalidade simulada – em breve disponível no app)</p>
-          <button class="btn-primary" onclick="document.getElementById('modalNotif').style.display='none'">Entendido!</button>
         </div>
       </div>
 

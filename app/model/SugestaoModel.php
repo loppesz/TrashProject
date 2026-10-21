@@ -71,7 +71,7 @@ class SugestaoModel extends BaseModel
         return $out;
     }
 
-    /** Total de sugestoes pendentes (NOVA ou EM_ANALISE). */
+    /** Total de sugestoes pendentes (NOVA; registros antigos EM_ANALISE contam como pendentes). */
     public function totalPendentes(): int
     {
         $r = $this->db->select(
@@ -83,13 +83,14 @@ class SugestaoModel extends BaseModel
     }
 
     /**
-     * Atualiza o status de analise de uma sugestao (APROVADA / RECUSADA / EM_ANALISE).
+     * Registra a decisao do admin sobre uma sugestao (APROVADA / RECUSADA).
+     * O estado intermediario "em analise" nao e mais usado.
      *
      * @return int linhas afetadas
      */
     public function atualizarStatus(int $id, string $status, int $idAdmin): int
     {
-        $validos = ['NOVA', 'EM_ANALISE', 'APROVADA', 'RECUSADA'];
+        $validos = ['APROVADA', 'RECUSADA'];
         if (!in_array($status, $validos, true)) {
             return 0;
         }

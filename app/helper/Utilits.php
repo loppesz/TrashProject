@@ -146,6 +146,21 @@ function rotuloStatusOcorrencia(string $status): string
 }
 
 /**
+ * Aba do painel admin onde a ocorrencia aparece, conforme o status salvo:
+ * RESOLVIDA -> resolvidas, ARQUIVADA -> arquivadas, demais -> abertas.
+ */
+function abaAdminOcorrencia(string $status): string
+{
+    if ($status === 'RESOLVIDA') {
+        return 'resolvidas';
+    }
+    if ($status === 'ARQUIVADA') {
+        return 'arquivadas';
+    }
+    return 'abertas';
+}
+
+/**
  * Classe CSS do badge de status (reaproveita os estilos existentes).
  */
 function classeStatusOcorrencia(string $status): string

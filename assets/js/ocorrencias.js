@@ -333,9 +333,35 @@ function fecharModalSucesso() {
   document.getElementById('modalSucesso').style.display = 'none';
 }
 
-function copiarProtocolo() {
-  const prot = document.getElementById('protocoloGerado').textContent;
-  navigator.clipboard.writeText(prot).then(() => showOcToast('✅ Protocolo copiado!'));
+// Copia o protocolo e confirma no próprio modal (aviso + botão "Copiado!") e no toast.
+function copiarProtocolo(btn) {
+  const prot = (document.getElementById('protocoloGerado')?.textContent || '').trim();
+  if (!prot) return;
+  const aviso = document.getElementById('avisoCopiado');
+
+  copiarParaAreaTransferencia(prot).then(ok => {
+    if (aviso) {
+      aviso.textContent = ok
+        ? '✓ Protocolo ' + prot + ' copiado para a área de transferência.'
+        : 'Não foi possível copiar automaticamente. Selecione o número e use Ctrl+C.';
+      aviso.classList.toggle('erro', !ok);
+      aviso.hidden = false;
+      clearTimeout(aviso._t);
+      aviso._t = setTimeout(() => { aviso.hidden = true; }, 4000);
+    }
+    showOcToast(ok ? '✅ Copiado para a área de transferência' : 'Não foi possível copiar o protocolo.');
+
+    if (ok && btn) {
+      if (!btn.dataset.rotulo) btn.dataset.rotulo = btn.textContent;
+      btn.textContent = '✓ Copiado!';
+      btn.classList.add('copiado');
+      clearTimeout(btn._t);
+      btn._t = setTimeout(() => {
+        btn.textContent = btn.dataset.rotulo;
+        btn.classList.remove('copiado');
+      }, 2000);
+    }
+  });
 }
 
 // =============================================
@@ -362,6 +388,15 @@ function consultarProtocolo() {
       document.getElementById('srData').textContent   = d.data || '–';
       document.getElementById('srEquipe').textContent = 'Atendimento municipal de Muriaé';
 
+      // Descrição: o servidor só envia para o autor da ocorrência (logado).
+      const descWrap = document.getElementById('srDescWrap');
+      const descEl = document.getElementById('srDesc');
+      if (descWrap && descEl) {
+        const temDesc = d.minha && typeof d.descricao === 'string' && d.descricao.trim() !== '';
+        descEl.textContent = temDesc ? d.descricao : '';
+        descWrap.hidden = !temDesc;
+      }
+
       const badge = document.getElementById('srBadge');
       const badgeMap = { nova:'Nova', analise:'Em análise', andamento:'Em atendimento', resolvida:'Resolvida', arquivada:'Arquivada' };
       badge.textContent = badgeMap[d.status] || d.status;
@@ -372,7 +407,9 @@ function consultarProtocolo() {
         ? d.obs
         : (d.status === 'resolvida'
             ? '✅ Esta ocorrência foi resolvida. Obrigado pela sua contribuição!'
-            : 'Nossa equipe está acompanhando esta ocorrência. Você será notificado de atualizações.');
+            : d.status === 'arquivada'
+              ? 'Esta ocorrência foi arquivada pela equipe (repetida, fora da área ou sem confirmação).'
+              : 'Nossa equipe está acompanhando esta ocorrência. Acompanhe o status por aqui.');
 
       document.getElementById('statusResultado').style.display = 'block';
     })
@@ -387,6 +424,7 @@ const ETAPA_META = {
   analise:   { icon:'🔍', label:'Em análise' },
   andamento: { icon:'🚛', label:'Em atendimento' },
   resolvida: { icon:'✅', label:'Resolvida' },
+  arquivada: { icon:'🗂️', label:'Arquivada' },
 };
 
 function renderTimeline(status, historico) {

@@ -52,7 +52,7 @@ class OcorrenciaModel extends BaseModel
     public function porUsuario(int $idUsuario, int $limite = 5): array
     {
         return $this->db->select(
-            'SELECT o.protocolo, o.tipo, o.status, o.criada_em, b.nome AS bairro
+            'SELECT o.protocolo, o.tipo, o.status, o.descricao, o.criada_em, b.nome AS bairro
              FROM ocorrencia o
              JOIN bairro b ON b.id_bairro = o.id_bairro
              WHERE o.id_usuario = ?
@@ -291,6 +291,8 @@ class OcorrenciaModel extends BaseModel
      * Atualiza o status de uma ocorrencia (acao do admin).
      * Grava tambem a observacao e o responsavel; preenche resolvida_em quando resolve.
      *
+     * @param string|null $observacao null = manter a observacao atual (troca rapida
+     *                                de status pela lista, que nao envia o campo).
      * @return int linhas afetadas
      */
     public function atualizarStatus(int $id, string $status, ?string $observacao, int $idAdmin): int
@@ -302,13 +304,22 @@ class OcorrenciaModel extends BaseModel
 
         $resolvida = $status === 'RESOLVIDA' ? date('Y-m-d H:i:s') : null;
 
-        $n = $this->db->update(
-            'UPDATE ocorrencia
-             SET status = ?, observacao_admin = ?, id_administrador_responsavel = ?,
-                 resolvida_em = ?
-             WHERE id_ocorrencia = ?',
-            [$status, $observacao ?: null, $idAdmin, $resolvida, $id]
-        );
+        if ($observacao === null) {
+            $n = $this->db->update(
+                'UPDATE ocorrencia
+                 SET status = ?, id_administrador_responsavel = ?, resolvida_em = ?
+                 WHERE id_ocorrencia = ?',
+                [$status, $idAdmin, $resolvida, $id]
+            );
+        } else {
+            $n = $this->db->update(
+                'UPDATE ocorrencia
+                 SET status = ?, observacao_admin = ?, id_administrador_responsavel = ?,
+                     resolvida_em = ?
+                 WHERE id_ocorrencia = ?',
+                [$status, $observacao ?: null, $idAdmin, $resolvida, $id]
+            );
+        }
 
         // Registra a mudanca no historico/auditoria.
         $this->registrarHistorico($id, $status, $observacao, $idAdmin);

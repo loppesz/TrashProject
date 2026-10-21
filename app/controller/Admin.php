@@ -53,12 +53,21 @@ class Admin extends BaseController
         }
         unset($o);
 
+        // Abas pelo status salvo no banco: o que é resolvido/arquivado sai de "Em aberto"
+        // e continua fora mesmo depois de recarregar a página.
+        $abasValidas = ['abertas', 'resolvidas', 'arquivadas'];
+        $abaAtual    = in_array($_GET['aba'] ?? '', $abasValidas, true) ? $_GET['aba'] : 'abertas';
+        $movidaPara  = in_array($_GET['para'] ?? '', $abasValidas, true) ? $_GET['para'] : '';
+
         $this->view('admin/ocorrencias', [
             'tituloPagina' => 'Ocorrências',
             'adminMenu'    => 'ocorrencias',
             'ocorrencias'  => $ocorrencias,
             'total'        => $ocModel->total(),
             'sucesso'      => $_GET['ok'] ?? '',
+            'abaAtual'     => $abaAtual,
+            'movidaPara'   => $movidaPara,
+            'ocAlterada'   => (int) ($_GET['oc'] ?? 0),
         ]);
     }
 
@@ -74,7 +83,8 @@ class Admin extends BaseController
 
         $id         = (int) $this->request->post('id_ocorrencia');
         $status     = (string) $this->request->post('status');
-        $observacao = trim((string) $this->request->post('observacao'));
+        // A troca rápida pela lista não envia "observacao": nesse caso a nota atual é mantida.
+        $observacao = array_key_exists('observacao', $_POST) ? trim((string) $_POST['observacao']) : null;
         $admin      = auth_user();
 
         if ($id > 0 && $admin) {
@@ -100,10 +110,12 @@ class Admin extends BaseController
             }
         }
 
-        // Passa o id alterado para o front ocultar essa ocorrencia da lista (triagem).
-        $destino = baseUrl('admin/ocorrencias') . '?ok=1';
+        // Volta para a aba em que o admin estava e informa para qual aba a ocorrência foi.
+        $abasValidas = ['abertas', 'resolvidas', 'arquivadas'];
+        $abaOrigem   = in_array($_POST['aba'] ?? '', $abasValidas, true) ? $_POST['aba'] : 'abertas';
+        $destino = baseUrl('admin/ocorrencias') . '?ok=1&aba=' . $abaOrigem;
         if ($id > 0) {
-            $destino .= '&oc=' . $id;
+            $destino .= '&oc=' . $id . '&para=' . abaAdminOcorrencia($status);
         }
         header('Location: ' . $destino);
         exit;
@@ -364,9 +376,10 @@ class Admin extends BaseController
         $status = (string) $this->request->post('status');
         $admin  = auth_user();
 
-        if ($id > 0 && $admin && in_array($status, ['EM_ANALISE', 'APROVADA', 'RECUSADA'], true)) {
+        // Decisão direta: aprovar ou recusar (não existe mais o estado "em análise").
+        if ($id > 0 && $admin && in_array($status, ['APROVADA', 'RECUSADA'], true)) {
             $this->model('Sugestao')->atualizarStatus($id, $status, (int) $admin['id_usuario']);
-            $rotulo = ['EM_ANALISE' => 'marcada em análise', 'APROVADA' => 'aprovada', 'RECUSADA' => 'recusada'][$status];
+            $rotulo = ['APROVADA' => 'aprovada', 'RECUSADA' => 'recusada'][$status];
             header('Location: ' . baseUrl('admin/sugestoes') . '?msg=' . rawurlencode('Sugestão ' . $rotulo . '.'));
             exit;
         }

@@ -13,12 +13,15 @@
       <?php
       $sugestoes = $sugestoes ?? [];
       $contagens = $contagens ?? [];
+      // Só três estados: Nova (aguardando decisão), Aprovada e Recusada.
+      // Registros antigos "EM_ANALISE" contam como Nova.
       $rotuloStatus = [
           'NOVA'       => '🔵 Nova',
-          'EM_ANALISE' => '🟡 Em análise',
+          'EM_ANALISE' => '🔵 Nova',
           'APROVADA'   => '🟢 Aprovada',
           'RECUSADA'   => '🔴 Recusada',
       ];
+      $totalNovas = (int) ($contagens['NOVA'] ?? 0) + (int) ($contagens['EM_ANALISE'] ?? 0);
       ?>
 
       <!-- RESUMO -->
@@ -28,8 +31,7 @@
           <span class="total-label">Total: <strong><?= count($sugestoes) ?></strong></span>
         </div>
         <div class="filtros-admin" style="gap:16px;flex-wrap:wrap;">
-          <span>🔵 Novas: <strong><?= (int) ($contagens['NOVA'] ?? 0) ?></strong></span>
-          <span>🟡 Em análise: <strong><?= (int) ($contagens['EM_ANALISE'] ?? 0) ?></strong></span>
+          <span>🔵 Novas: <strong><?= $totalNovas ?></strong></span>
           <span>🟢 Aprovadas: <strong><?= (int) ($contagens['APROVADA'] ?? 0) ?></strong></span>
           <span>🔴 Recusadas: <strong><?= (int) ($contagens['RECUSADA'] ?? 0) ?></strong></span>
         </div>

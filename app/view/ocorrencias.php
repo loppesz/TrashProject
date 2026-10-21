@@ -282,6 +282,12 @@
               <div class="sr-info-item"><span>👤</span><div><small>Equipe</small><p id="srEquipe"></p></div></div>
             </div>
 
+            <!-- Descrição: aparece só para o autor da ocorrência (logado) -->
+            <div class="sr-desc" id="srDescWrap" hidden>
+              <small>Sua descrição</small>
+              <p id="srDesc"></p>
+            </div>
+
             <!-- TIMELINE -->
             <div class="status-timeline-rich" id="srTimeline"></div>
 
@@ -301,8 +307,15 @@
           <p class="consultar-sub">Registros vinculados à sua conta</p>
           <div class="minhas-oc-lista" id="minhasOcorrencias">
             <?php foreach (($minhasOcorrencias ?? []) as $minha): ?>
+              <?php $descMinha = trim((string) ($minha['descricao'] ?? '')); ?>
               <button type="button" class="mo-item" onclick="consultarOcorrenciaDaLista('<?= htmlspecialchars($minha['protocolo'], ENT_QUOTES) ?>')">
-                <strong><?= htmlspecialchars(rotuloTipoOcorrencia($minha['tipo'])) ?> — <?= htmlspecialchars($minha['bairro']) ?></strong>
+                <span class="mo-topo">
+                  <strong><?= htmlspecialchars(rotuloTipoOcorrencia($minha['tipo'])) ?> — <?= htmlspecialchars($minha['bairro']) ?></strong>
+                  <span class="sr-badge <?= classeStatusOcorrencia($minha['status']) ?>"><?= rotuloStatusOcorrencia($minha['status']) ?></span>
+                </span>
+                <?php if ($descMinha !== ''): ?>
+                  <span class="mo-desc"><?= htmlspecialchars(mb_strimwidth($descMinha, 0, 140, '…', 'UTF-8')) ?></span>
+                <?php endif; ?>
                 <small><span><?= htmlspecialchars($minha['protocolo']) ?></span><span><?= date('d/m/Y', strtotime($minha['criada_em'])) ?></span></small>
               </button>
             <?php endforeach; ?>
@@ -410,8 +423,9 @@
       <div class="protocolo-box">
         <span>Protocolo:</span>
         <strong id="protocoloGerado"></strong>
-        <button onclick="copiarProtocolo()" class="btn-copiar-prot">📋 Copiar</button>
+        <button type="button" onclick="copiarProtocolo(this)" class="btn-copiar-prot" aria-label="Copiar protocolo">📋 Copiar</button>
       </div>
+      <p id="avisoCopiado" class="copiado-aviso" role="status" aria-live="polite" hidden></p>
       <p class="modal-dica">Guarde este número para acompanhar o status da ocorrência na aba "Consultar Status".</p>
       <?php
         // Mensagem de pontos com o valor realmente creditado no registro.
@@ -436,7 +450,7 @@
   </div>
 
   <!-- TOAST -->
-  <div id="ocToast" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:opacity .3s;"></div>
+  <div id="ocToast" role="status" aria-live="polite" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);transition:opacity .3s;"></div>
 
   <?php
   // --- Dados reais do historico publico, no formato esperado pelo ocorrencias.js ---

@@ -1,34 +1,64 @@
 <?php require_once 'app/view/comuns/admin_cabecalho.php'; ?>
+<?php
+  // Abas pelo status salvo no banco (persistem ao recarregar a página).
+  $ocorrencias  = $ocorrencias ?? [];
+  $statusOpcoes = ['NOVA','EM_ANALISE','EM_ANDAMENTO','RESOLVIDA','ARQUIVADA'];
+  $abas = ['abertas' => 'Em aberto', 'resolvidas' => 'Resolvidas', 'arquivadas' => 'Arquivadas'];
+  $abaAtual   = isset($abas[$abaAtual ?? '']) ? $abaAtual : 'abertas';
+  $movidaPara = isset($abas[$movidaPara ?? '']) ? $movidaPara : '';
+
+  $contAbas = ['abertas' => 0, 'resolvidas' => 0, 'arquivadas' => 0];
+  $protAlterada = '';
+  foreach ($ocorrencias as $o) {
+      $contAbas[abaAdminOcorrencia($o['status'])]++;
+      if ((int) $o['id_ocorrencia'] === (int) ($ocAlterada ?? 0)) {
+          $protAlterada = $o['protocolo'];
+      }
+  }
+?>
 
       <?php if (!empty($sucesso)): ?>
-        <div class="dashboard-card" style="border-left:4px solid #22c55e;">
-          <strong style="color:#15803d;">✅ Status atualizado com sucesso.</strong>
+        <div class="dashboard-card" style="border-left:4px solid #22c55e;" role="status">
+          <strong style="color:var(--success, #15803d);">✅ Status atualizado.</strong>
+          <?php if ($movidaPara !== '' && $movidaPara !== $abaAtual && $protAlterada !== ''): ?>
+            <span style="color:var(--text-soft);">
+              A ocorrência #<?= htmlspecialchars($protAlterada) ?> foi para
+              <button type="button" class="link-aba" onclick="trocarAbaOc('<?= $movidaPara ?>')"><?= $abas[$movidaPara] ?></button>.
+            </span>
+          <?php endif; ?>
         </div>
       <?php endif; ?>
 
-      <!-- FILTROS -->
+      <!-- ABAS + FILTROS -->
       <div class="dashboard-card">
+        <div class="oc-abas" role="tablist" aria-label="Situação das ocorrências">
+          <?php foreach ($abas as $chave => $rotulo): ?>
+            <button type="button" role="tab" class="oc-aba <?= $chave === $abaAtual ? 'active' : '' ?>"
+                    data-aba="<?= $chave ?>" aria-selected="<?= $chave === $abaAtual ? 'true' : 'false' ?>"
+                    aria-controls="tabelaOcorrencias" onclick="trocarAbaOc('<?= $chave ?>')">
+              <?= $rotulo ?> <span class="oc-aba-num"><?= $contAbas[$chave] ?></span>
+            </button>
+          <?php endforeach; ?>
+        </div>
         <div class="filtros-admin">
-          <input type="text" placeholder="Buscar por bairro ou protocolo..." id="buscaOc" oninput="filtrarOcAdmin()">
-          <select id="filtroStatus" onchange="filtrarOcAdmin()">
-            <option value="">Todos os status</option>
+          <input type="text" placeholder="Buscar por bairro ou protocolo..." id="buscaOc" oninput="filtrarOcAdmin()" aria-label="Buscar por bairro ou protocolo">
+          <!-- Status só faz sentido em "Em aberto" (as outras abas já são um status só) -->
+          <select id="filtroStatus" onchange="filtrarOcAdmin()" aria-label="Filtrar por status" <?= $abaAtual !== 'abertas' ? 'hidden' : '' ?>>
+            <option value="">Todos em aberto</option>
             <option value="nova">Nova</option>
             <option value="analise">Em análise</option>
             <option value="andamento">Em atendimento</option>
-            <option value="resolvida">Resolvida</option>
-            <option value="arquivada">Arquivada</option>
           </select>
-          <select id="filtroTipo" onchange="filtrarOcAdmin()">
+          <select id="filtroTipo" onchange="filtrarOcAdmin()" aria-label="Filtrar por tipo">
             <option value="">Todos os tipos</option>
             <option value="descarte">Descarte irregular</option>
             <option value="coleta">Coleta não realizada</option>
             <option value="material">Material deixado</option>
             <option value="ponto">Ponto inadequado</option>
+            <option value="entulho">Entulho/Móveis</option>
+            <option value="tóxico">Lixo tóxico</option>
+            <option value="outros">Outros</option>
           </select>
-          <label class="toggle-ocultas" title="Ocorrências já triadas (com status alterado) ficam ocultas">
-            <input type="checkbox" id="mostrarOcultas" onchange="filtrarOcAdmin()">
-            👁 Mostrar ocultas (<span id="contadorOcultas">0</span>)
-          </label>
         </div>
       </div>
 
@@ -36,7 +66,7 @@
       <div class="dashboard-card">
         <div class="card-header">
           <h2>Lista de Ocorrências</h2>
-          <span class="total-label">Total: <strong><?= (int) ($total ?? 0) ?></strong></span>
+          <span class="total-label">Total geral: <strong><?= (int) ($total ?? 0) ?></strong></span>
         </div>
         <table class="admin-table" id="tabelaOcorrencias">
           <thead>
@@ -52,17 +82,16 @@
             </tr>
           </thead>
           <tbody>
-            <?php
-            $ocorrencias = $ocorrencias ?? [];
-            $statusOpcoes = ['NOVA','EM_ANALISE','EM_ANDAMENTO','RESOLVIDA','ARQUIVADA'];
-            ?>
             <?php foreach ($ocorrencias as $o): ?>
               <?php
-              $tipoBusca   = strtolower(rotuloTipoOcorrencia($o['tipo']));
+              $tipoBusca   = mb_strtolower(rotuloTipoOcorrencia($o['tipo']), 'UTF-8');
               $statusBusca = classeStatusOcorrencia($o['status']);
+              $abaLinha    = abaAdminOcorrencia($o['status']);
               ?>
-              <tr data-id="<?= (int) $o['id_ocorrencia'] ?>" data-status="<?= $statusBusca ?>" data-tipo="<?= htmlspecialchars($tipoBusca, ENT_QUOTES) ?>"
-                  data-busca="<?= htmlspecialchars(strtolower($o['protocolo'] . ' ' . $o['bairro']), ENT_QUOTES) ?>">
+              <tr data-id="<?= (int) $o['id_ocorrencia'] ?>" data-status="<?= $statusBusca ?>" data-aba="<?= $abaLinha ?>"
+                  data-tipo="<?= htmlspecialchars($tipoBusca, ENT_QUOTES) ?>"
+                  data-busca="<?= htmlspecialchars(mb_strtolower($o['protocolo'] . ' ' . $o['bairro'], 'UTF-8'), ENT_QUOTES) ?>"
+                  <?= $abaLinha !== $abaAtual ? 'style="display:none"' : '' ?>>
                 <td>#<?= htmlspecialchars($o['protocolo']) ?></td>
                 <td class="td-foto">
                   <?php $ocFotos = $o['fotos'] ?? []; ?>
@@ -84,7 +113,8 @@
                 <td>
                   <form method="POST" action="<?= baseUrl('admin/atualizarStatus') ?>" class="form-status-inline">
                     <input type="hidden" name="id_ocorrencia" value="<?= (int) $o['id_ocorrencia'] ?>">
-                    <select class="status-select" name="status" onchange="this.form.submit()">
+                    <input type="hidden" name="aba" class="input-aba" value="<?= $abaAtual ?>">
+                    <select class="status-select" name="status" onchange="this.form.submit()" aria-label="Status da ocorrência #<?= htmlspecialchars($o['protocolo'], ENT_QUOTES) ?>">
                       <?php foreach ($statusOpcoes as $op): ?>
                         <option value="<?= $op ?>" <?= $o['status'] === $op ? 'selected' : '' ?>><?= rotuloStatusOcorrencia($op) ?></option>
                       <?php endforeach; ?>
@@ -104,13 +134,17 @@
                     data-status="<?= htmlspecialchars($o['status'], ENT_QUOTES) ?>"
                     data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>"
                     data-fotos="<?= htmlspecialchars(json_encode(array_map(static fn($u) => baseUrl($u), $o['fotos'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">👁 Ver</button>
-                  <button type="button" class="btn-acao reexibir-btn" onclick="reexibirOc(this)" data-id="<?= (int) $o['id_ocorrencia'] ?>" title="Reexibir na lista">↩ Reexibir</button>
                 </td>
               </tr>
             <?php endforeach; ?>
-            <?php if (empty($ocorrencias)): ?>
-              <tr><td colspan="8" style="text-align:center;padding:24px;color:#94a3b8;">Nenhuma ocorrência registrada.</td></tr>
-            <?php endif; ?>
+            <!-- Mensagem quando a aba (ou o filtro) não tem nenhuma ocorrência -->
+            <tr class="oc-vazio-aba" id="ocVazioAba" <?= $contAbas[$abaAtual] > 0 ? 'style="display:none"' : '' ?>>
+              <td colspan="8" id="ocVazioTexto"><?= [
+                  'abertas'    => 'Nenhuma ocorrência em aberto. Tudo em dia.',
+                  'resolvidas' => 'Nenhuma ocorrência resolvida ainda.',
+                  'arquivadas' => 'Nenhuma ocorrência arquivada.',
+              ][$abaAtual] ?></td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -129,6 +163,7 @@
       <!-- Gestão: status + observação do administrador (editável, grava no banco) -->
       <form method="POST" action="<?= baseUrl('admin/atualizarStatus') ?>">
         <input type="hidden" name="id_ocorrencia" id="modalIdOc" value="">
+        <input type="hidden" name="aba" class="input-aba" value="<?= $abaAtual ?>">
         <div class="form-group">
           <label>Status</label>
           <select name="status" id="modalStatus">
@@ -150,8 +185,8 @@
   </div>
 
   <!--
-    As funções do modal e dos filtros desta página
-    (verOcorrencia, verOcorrenciaDaLinha, fecharModalAdmin, filtrarOcAdmin)
+    As funções do modal, das abas e dos filtros desta página
+    (verOcorrencia, verOcorrenciaDaLinha, fecharModalAdmin, trocarAbaOc, filtrarOcAdmin)
     ficam em assets/js/admin.js — fonte única, para evitar definições duplicadas.
   -->
 

@@ -702,35 +702,42 @@
 .dark .oc-det-desc p { background: #0f172a; border-color: #334155; color: #cbd5e1; }
 
 /* =============================================
-   LISTA DE OCORRÊNCIAS — triagem (ocultar/reexibir)
+   LISTA DE OCORRÊNCIAS — abas pelo status salvo no banco
+   (Em aberto | Resolvidas | Arquivadas)
 ============================================= */
-.toggle-ocultas {
-  display: inline-flex;
-  align-items: center;
-  gap: 7px;
-  font-size: 0.85rem;
-  font-weight: 600;
-  color: #475569;
-  cursor: pointer;
-  user-select: none;
-  padding: 6px 10px;
-  border-radius: 8px;
-  white-space: nowrap;
+.oc-abas {
+  display: flex; flex-wrap: wrap; gap: 6px;
+  padding: 4px; margin-bottom: 14px;
+  background: var(--surface-2); border: 1px solid var(--border); border-radius: 12px;
+  width: fit-content; max-width: 100%;
 }
-.toggle-ocultas:hover { background: #f1f5f9; }
-.toggle-ocultas input { width: 16px; height: 16px; cursor: pointer; accent-color: #16a34a; }
+.oc-aba {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 8px 14px; border: 0; border-radius: 9px;
+  background: transparent; color: var(--text-soft);
+  font: inherit; font-size: .86rem; font-weight: 700; cursor: pointer;
+  transition: background .2s, color .2s;
+}
+.oc-aba:hover { color: var(--text); background: color-mix(in srgb, var(--accent) 8%, transparent); }
+.oc-aba.active { background: var(--surface); color: var(--text); box-shadow: var(--shadow); }
+.oc-aba-num {
+  min-width: 22px; padding: 1px 7px; border-radius: 999px; text-align: center;
+  font-size: .74rem; font-weight: 800; background: var(--border); color: var(--text-soft);
+}
+.oc-aba[data-aba="abertas"].active .oc-aba-num    { background: var(--warning-bg); color: var(--warning); }
+.oc-aba[data-aba="resolvidas"].active .oc-aba-num { background: var(--success-bg); color: var(--success); }
+.oc-aba[data-aba="arquivadas"].active .oc-aba-num { background: var(--surface-2); color: var(--text-muted); border: 1px solid var(--border); }
 
-/* Linha oculta (visível só quando "Mostrar ocultas" está ativo) */
-.linha-oculta { opacity: 0.6; background: repeating-linear-gradient(45deg, transparent, transparent 8px, rgba(148,163,184,0.06) 8px, rgba(148,163,184,0.06) 16px); }
-.linha-oculta:hover { opacity: 0.85; }
+/* Linha que acabou de mudar de status (quando continua na mesma aba) */
+.linha-alterada td { animation: linhaAlterada 2.4s ease; }
+@keyframes linhaAlterada { 0%, 40% { background: color-mix(in srgb, var(--accent) 16%, var(--surface)); } 100% { background: transparent; } }
 
-/* Botão "Reexibir": só aparece nas linhas ocultas */
-.reexibir-btn { display: none; margin-left: 4px; background: #e0f2fe; color: #0369a1; }
-.reexibir-btn:hover { background: #bae6fd; }
-.linha-oculta .reexibir-btn { display: inline-flex; }
-
-.dark .toggle-ocultas { color: #cbd5e1; }
-.dark .toggle-ocultas:hover { background: #1e293b; }
+/* Aviso "movida para Resolvidas/Arquivadas" com atalho para a aba */
+.link-aba {
+  background: none; border: 0; padding: 0; font: inherit; font-weight: 800;
+  color: var(--accent-strong, #15803d); text-decoration: underline; cursor: pointer;
+}
+.oc-vazio-aba td { text-align: center; padding: 26px !important; color: var(--text-muted) !important; }
 
 /* =============================================
    TEMA ADMINISTRATIVO — superfícies semânticas claro/escuro
@@ -770,7 +777,7 @@
 .tipo-item { background: var(--surface-2); border-color: var(--border); }
 .modal-top h3, .oc-det-item strong, .oc-fotos-admin > strong { color: var(--text); }
 .modal-close { color: var(--text-muted); }
-.modal-close:hover, .toggle-ocultas:hover { background: var(--surface-2); }
+.modal-close:hover { background: var(--surface-2); }
 .oc-det-desc p { background: var(--surface-2); border-color: var(--border); }
 .oc-fotos-admin { border-color: var(--border); }
 .oc-fotos-grid a, .oc-thumb { background: var(--surface-2); border-color: var(--border); }

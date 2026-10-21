@@ -126,7 +126,9 @@ function compartilhar(nome, endereco) {
 }
 
 function copiarTexto(txt) {
-  navigator.clipboard.writeText(txt)
+  // Helper de script.js: funciona também fora de HTTPS (endereço local).
+  copiarParaAreaTransferencia(txt)
+    .then(ok => { if (!ok) throw new Error('falhou'); })
     .then(() => showToast('✅ Copiado! Cole onde quiser.'))
     .catch(() => showToast('📋 ' + txt));
 }

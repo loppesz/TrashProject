@@ -99,8 +99,15 @@ class Ocorrencia extends BaseController
             ];
         }
 
+        // A descrição só volta para o próprio autor (logado), não para quem
+        // apenas digitou o protocolo.
+        $usuario = auth_user();
+        $minha = $usuario && !empty($o['id_usuario']) && (int) $o['id_usuario'] === (int) $usuario['id_usuario'];
+
         echo json_encode([
             'ok'        => true,
+            'minha'     => $minha,
+            'descricao' => $minha ? (string) $o['descricao'] : null,
             'protocolo' => $o['protocolo'],
             'local'     => $o['endereco_descricao'],
             'tipo'      => rotuloTipoOcorrencia($o['tipo']),

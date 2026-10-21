@@ -22,6 +22,39 @@ function toggleTheme() {
 document.addEventListener('DOMContentLoaded', atualizarBotaoTema);
 
 // =============================================
+// COPIAR PARA A ÁREA DE TRANSFERÊNCIA
+// =============================================
+// navigator.clipboard só funciona em HTTPS ou localhost. No endereço local
+// (http://coletaseletiva) ele não existe, então usamos o método antigo
+// (textarea + execCommand) como alternativa. Retorna Promise<boolean>.
+function copiarParaAreaTransferencia(texto) {
+  texto = String(texto == null ? '' : texto);
+  if (navigator.clipboard && window.isSecureContext) {
+    return navigator.clipboard.writeText(texto)
+      .then(() => true)
+      .catch(() => copiarTextoAlternativo(texto));
+  }
+  return Promise.resolve(copiarTextoAlternativo(texto));
+}
+
+function copiarTextoAlternativo(texto) {
+  const focoAnterior = document.activeElement;
+  const ta = document.createElement('textarea');
+  ta.value = texto;
+  ta.setAttribute('readonly', '');
+  ta.setAttribute('aria-hidden', 'true');
+  ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;pointer-events:none;';
+  document.body.appendChild(ta);
+  ta.select();
+  ta.setSelectionRange(0, texto.length);
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  document.body.removeChild(ta);
+  if (focoAnterior && typeof focoAnterior.focus === 'function') focoAnterior.focus();
+  return ok;
+}
+
+// =============================================
 // NAVBAR – DROPDOWNS (menu ☰ e Conta)
 // =============================================
 function toggleDropdown(event, id) {
