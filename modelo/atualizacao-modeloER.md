@@ -335,7 +335,8 @@ O relacionamento de `sugestao_ponto_descarte.id_administrador_analise` e o de `o
 - Fotos de pontos e ocorrências são excluídas quando o registro pai é excluído.
 - Usuários excluídos podem deixar nulas as referências opcionais de ocorrências, sugestões e histórico.
 - `dia_semana` aceita apenas valores de 1 a 7.
-- `horario_fim` deve ser maior que `horario_inicio`.
+- Em `coleta`, `horario_fim` é opcional (o DEMSUR divulga só o horário aproximado de passagem); quando informado, deve ser maior que `horario_inicio`.
+- `coleta.tipo` separa `SELETIVA` (recicláveis) de `COMUM` (lixo doméstico), e `coleta.trecho` indica a parte do bairro com horário próprio (`''` = bairro todo). A combinação bairro + tipo + trecho + dia + horário de início não se repete.
 - `custo_pontos` e `pontos_utilizados` devem ser maiores que zero.
 - O vínculo entre coleta e material e entre ponto e material possui chave primária composta.
 - O usuario pode possuir varios perfis Kids.

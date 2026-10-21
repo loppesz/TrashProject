@@ -163,35 +163,11 @@ INSERT INTO material_exemplo (id_material, ordem, icone, rotulo, negativo) VALUE
 (5,1,'🍎','Casca',TRUE),(5,2,'🍗','Restos',TRUE);
 
 -- ---------------------------------------------------------------------
--- COLETA (horarios por bairro — dados da tabela geral da pagina Coleta)
--- dia_semana: 1=domingo, 2=segunda, 3=terca, 4=quarta, 5=quinta, 6=sexta, 7=sabado
+-- COLETA
+-- Os horários reais (cronograma oficial do DEMSUR, coleta comum e seletiva)
+-- são cadastrados pela migration_06_cronograma_demsur.sql, que roda depois
+-- da migration_04 (lista oficial de bairros). Nada de horário fictício aqui.
 -- ---------------------------------------------------------------------
-INSERT INTO coleta (id_coleta, id_bairro, dia_semana, horario_inicio, horario_fim, equipe_responsavel, ativo) VALUES
-(1,  1, 3, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Centro: Ter
-(2,  1, 6, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Centro: Sex
-(3,  2, 2, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Padre Eustáquio: Seg
-(4,  2, 5, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Padre Eustáquio: Qui
-(5,  3, 4, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Santa Terezinha: Qua
-(6,  3, 7, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Santa Terezinha: Sáb
-(7,  4, 3, '13:00:00', '18:00:00', 'SAAE Muriaé', TRUE),  -- N.S. Fátima: Ter
-(8,  4, 6, '13:00:00', '18:00:00', 'SAAE Muriaé', TRUE),  -- N.S. Fátima: Sex
-(9,  5, 2, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Laranjeiras: Seg
-(10, 5, 5, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Laranjeiras: Qui
-(11, 6, 4, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Granjas Betânia: Qua
-(12, 7, 5, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Dom Silvério: Qui
-(13, 8, 3, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE),  -- Mauá: Ter
-(14, 8, 7, '06:00:00', '11:00:00', 'SAAE Muriaé', TRUE);  -- Mauá: Sáb
-
--- Materiais recolhidos por coleta (conforme a tabela da pagina)
-INSERT INTO coleta_material (id_coleta, id_material) VALUES
-(1,1),(1,2),(1,3),(1,4), (2,1),(2,2),(2,3),(2,4),           -- Centro: Papel, Plástico, Metal, Vidro
-(3,1),(3,2),(3,3), (4,1),(4,2),(4,3),                       -- Padre Eustáquio: Papel, Plástico, Metal
-(5,1),(5,2),(5,4), (6,1),(6,2),(6,4),                       -- Santa Terezinha: Papel, Plástico, Vidro
-(7,1),(7,2),(7,3),(7,4), (8,1),(8,2),(8,3),(8,4),           -- N.S. Fátima: todos
-(9,1),(9,2), (10,1),(10,2),                                 -- Laranjeiras: Papel, Plástico
-(11,1),(11,2),(11,3),                                       -- Granjas Betânia: Papel, Plástico, Metal
-(12,1),(12,2),                                              -- Dom Silvério: Papel, Plástico
-(13,1),(13,2),(13,3),(13,4), (14,1),(14,2),(14,3),(14,4);   -- Mauá: todos
 
 -- ---------------------------------------------------------------------
 -- PONTOS DE DESCARTE (6 pontos da pagina Pontos)

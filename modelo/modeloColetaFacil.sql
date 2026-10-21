@@ -35,13 +35,18 @@ CREATE TABLE bairro (
   ativo BOOLEAN NOT NULL DEFAULT TRUE
 ) ENGINE=InnoDB;
 
--- Um registro por dia/horário de coleta do bairro. 1=domingo, ... 7=sabado.
+-- Um registro por passagem do caminhão no bairro. 1=domingo, ... 7=sabado.
+-- tipo: SELETIVA (recicláveis) ou COMUM (lixo doméstico).
+-- trecho: parte do bairro com horário próprio ('' = bairro todo).
+-- horario_fim NULL = só o horário aproximado de passagem ("a partir de").
 CREATE TABLE coleta (
   id_coleta INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
   id_bairro INT UNSIGNED NOT NULL,
+  tipo ENUM('SELETIVA','COMUM') NOT NULL DEFAULT 'SELETIVA',
+  trecho VARCHAR(80) NOT NULL DEFAULT '',
   dia_semana TINYINT UNSIGNED NOT NULL,
   horario_inicio TIME NOT NULL,
-  horario_fim TIME NOT NULL,
+  horario_fim TIME NULL,
   equipe_responsavel VARCHAR(150) NULL,
   telefone_contato VARCHAR(20) NULL,
   observacao VARCHAR(500) NULL,
@@ -49,7 +54,7 @@ CREATE TABLE coleta (
   FOREIGN KEY (id_bairro) REFERENCES bairro(id_bairro),
   CONSTRAINT ck_coleta_dia CHECK (dia_semana BETWEEN 1 AND 7),
   CONSTRAINT ck_coleta_horario CHECK (horario_fim > horario_inicio),
-  UNIQUE KEY uk_coleta_bairro_dia_hora (id_bairro,dia_semana,horario_inicio),
+  UNIQUE KEY uk_coleta_slot (id_bairro,tipo,trecho,dia_semana,horario_inicio),
   INDEX idx_coleta_consulta (id_bairro,ativo,dia_semana)
 ) ENGINE=InnoDB;
 

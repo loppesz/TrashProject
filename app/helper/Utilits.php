@@ -114,6 +114,70 @@ function abreviaDiaSemana(int $dia): string
 }
 
 /**
+ * Texto dos horarios de coleta de um dia.
+ * [['inicio'=>'18:00','fim'=>null],['inicio'=>'21:20','fim'=>null]] -> "18h e 21h20".
+ * Com fim: "07h às 12h". Com $aPartir (e sem fim): "a partir das 07h30".
+ */
+function textoHorariosColeta(array $horarios, bool $aPartir = false): string
+{
+    $partes = [];
+    foreach ($horarios as $h) {
+        $partes[] = !empty($h['fim'])
+            ? formataHora($h['inicio']) . ' às ' . formataHora($h['fim'])
+            : formataHora($h['inicio']);
+    }
+    $txt = implode(' e ', $partes);
+    $temFim = count(array_filter($horarios, static fn($h) => !empty($h['fim']))) > 0;
+    return ($aPartir && !$temFim && $txt !== '') ? 'a partir das ' . $txt : $txt;
+}
+
+/**
+ * Junta os dias que tem o mesmo horario, mantendo a ordem (seg..dom):
+ * [['dia'=>2,...],['dia'=>4,...]] -> [['rotulo'=>'Seg e Qua','horario'=>'08h'], ...].
+ */
+function agrupaDiasColeta(array $dias, bool $aPartir = false): array
+{
+    $grupos = [];
+    foreach ($dias as $d) {
+        $txt = textoHorariosColeta($d['horarios'], $aPartir);
+        $grupos[$txt][] = (int) $d['dia'];
+    }
+    $out = [];
+    foreach ($grupos as $txt => $lista) {
+        $out[] = ['rotulo' => rotuloDiasColeta($lista), 'horario' => (string) $txt];
+    }
+    return $out;
+}
+
+/**
+ * Rotulo de uma lista de dias (1=dom..7=sab): "Seg a Sex", "Ter e Qui", "Seg, Qua e Sex".
+ */
+function rotuloDiasColeta(array $dias): string
+{
+    $pos = static fn(int $d): int => ($d + 5) % 7; // seg=0 ... dom=6
+    usort($dias, static fn($a, $b) => $pos($a) <=> $pos($b));
+    $n = count($dias);
+    if ($n === 0) {
+        return '';
+    }
+    $consecutivos = true;
+    for ($i = 1; $i < $n; $i++) {
+        if ($pos($dias[$i]) !== $pos($dias[$i - 1]) + 1) {
+            $consecutivos = false;
+            break;
+        }
+    }
+    $nomes = array_map('abreviaDiaSemana', $dias);
+    if ($n >= 3 && $consecutivos) {
+        return $nomes[0] . ' a ' . $nomes[$n - 1];
+    }
+    if ($n === 1) {
+        return $nomes[0];
+    }
+    return implode(', ', array_slice($nomes, 0, -1)) . ' e ' . $nomes[$n - 1];
+}
+
+/**
  * Rotulo legivel do tipo de ocorrencia (ENUM do banco -> texto).
  */
 function rotuloTipoOcorrencia(string $tipo): string

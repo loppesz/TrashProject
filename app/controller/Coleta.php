@@ -1,22 +1,31 @@
 <?php
 
 /**
- * Controller da consulta de coleta seletiva por bairro.
+ * Controller da consulta de coleta por bairro (comum e seletiva).
+ * Horarios: cronograma oficial do DEMSUR (ver ColetaModel::FONTE).
  */
 class Coleta extends BaseController
 {
     public function index(): void
     {
-        $model = $this->model('Coleta');
+        $model   = $this->model('Coleta');
+        $bairros = $model->quadroPublico();
+        $porTipo = $model->totalBairrosPorTipo();
 
         $this->view('coleta', [
             'tituloPagina' => 'Consultar Coleta – ColetaFácil',
-            'descricao'    => 'Consulte o calendário de coleta seletiva em Muriaé-MG. Veja os dias e horários de coleta por bairro.',
+            'descricao'    => 'Dias e horários da coleta comum e da coleta seletiva em todos os bairros de Muriaé-MG, conforme o cronograma do DEMSUR.',
             'cssPagina'    => ['coleta.css'],
             'jsPagina'     => ['coleta.js'],
             'menu'         => 'coleta',
-            'bairros'         => $model->porBairro(),
-            'bairrosSelect'  => $model->bairrosComColeta(),
+            'bairros'       => $bairros,
+            'bairrosSelect' => array_map(static fn($b) => ['id_bairro' => $b['id_bairro'], 'nome' => $b['nome']], $bairros),
+            'resumoColeta'  => [
+                'bairros'  => count($bairros),
+                'comum'    => $porTipo['COMUM'],
+                'seletiva' => $porTipo['SELETIVA'],
+            ],
+            'fonteColeta'   => ColetaModel::FONTE,
         ]);
     }
 
@@ -42,18 +51,21 @@ class Coleta extends BaseController
 
             $d = $this->model('Coleta')->detalheBairro($idBairro);
             if ($d === null) {
-                echo json_encode(['ok' => false, 'motivo' => 'sem_coleta']);
+                echo json_encode(['ok' => false, 'motivo' => 'nao_encontrado']);
                 exit;
             }
 
+            $fonte = ColetaModel::FONTE;
             echo json_encode([
                 'ok'             => true,
                 'id_bairro'      => $d['id_bairro'],
                 'nome'           => $d['nome'],
-                'dias'           => $d['dias'],
-                'horario'        => formataHora($d['inicio']) . ' às ' . formataHora($d['fim']),
-                'equipe'         => $d['equipe'],
-                'telefone'       => $d['telefone'],
+                'seletiva'       => $d['seletiva'],
+                'comum'          => $d['comum'],
+                'sem_cronograma' => empty($d['seletiva']) && empty($d['comum']),
+                'equipe'         => $d['equipe'] ?: $fonte['orgao'],
+                'telefone'       => $d['telefone'] ?: $fonte['telefone'],
+                'fonte_url'      => $fonte['url'],
                 'materiais'      => array_map(static fn($m) => [
                     'nome'  => $m['nome'],
                     'icone' => $m['icone'],
