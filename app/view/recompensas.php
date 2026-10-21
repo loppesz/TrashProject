@@ -1,4 +1,8 @@
 <?php require_once 'app/view/comuns/cabecalho.php'; ?>
+<?php
+  // Regras de pontos vindas do controller (fonte unica: PontosModel::regras()).
+  $rp = $regrasPontos ?? ['registro' => 10, 'resolvida' => 40, 'foto' => 15, 'limiteDia' => 3, 'maximo' => 65];
+?>
 
   <!-- HERO RECOMPENSAS -->
   <section class="reward-hero">
@@ -6,15 +10,15 @@
       <div class="reward-hero-inner">
         <div>
           <span class="hero-badge">⭐ Sistema de Recompensas</span>
-          <h1>Recicle, reporte<br>e <span class="text-yellow">ganhe prêmios!</span></h1>
-          <p>Cada ocorrência reportada vale pontos. Troque seus pontos por recompensas reais na sua comunidade.</p>
-          <a href="<?= baseUrl('ocorrencia') ?>" class="btn-reward-hero">Começar a ganhar pontos →</a>
+          <h1>Cuide da sua rua<br>e <span class="text-yellow">troque por recompensas</span></h1>
+          <p>Registre problemas reais de descarte em Muriaé. Quando a equipe confirma e resolve, você recebe a maior parte dos pontos e pode trocá-los por itens que ajudam a reciclar em casa.</p>
+          <a href="<?= baseUrl('ocorrencia') ?>" class="btn-reward-hero">Registrar uma ocorrência →</a>
         </div>
         <div class="reward-hero-visual">
           <div class="reward-coin">
             <span>⭐</span>
-            <strong>+50 pts</strong>
-            <small>por ocorrência</small>
+            <strong>até <?= (int) $rp['maximo'] ?> pts</strong>
+            <small>por ocorrência confirmada</small>
           </div>
         </div>
       </div>
@@ -66,40 +70,30 @@
   <section class="container">
     <div class="section-header">
       <h2>Como ganhar pontos?</h2>
-      <p>Cada ação de conscientização vale pontos no ColetaFácil</p>
+      <p>A maior parte dos pontos só entra quando o problema é confirmado pela equipe</p>
     </div>
     <div class="pontos-como-grid">
       <div class="pontos-como-item">
-        <span class="pc-icon">🚨</span>
-        <div><h4>Reportar ocorrência</h4><p>Cada ocorrência registrada e validada</p></div>
-        <span class="pc-pts">+50 pts</span>
-      </div>
-      <div class="pontos-como-item">
-        <span class="pc-icon">📸</span>
-        <div><h4>Foto com evidência</h4><p>Ocorrência com foto aprovada</p></div>
-        <span class="pc-pts">+20 pts</span>
-      </div>
-      <div class="pontos-como-item">
-        <span class="pc-icon">🔥</span>
-        <div><h4>Sequência de 7 dias</h4><p>Acessar a plataforma por 7 dias seguidos</p></div>
-        <span class="pc-pts">+100 pts</span>
-      </div>
-      <div class="pontos-como-item">
-        <span class="pc-icon">🧒</span>
-        <div><h4>Completar quiz kids</h4><p>Criança completar quiz na Área Kids</p></div>
-        <span class="pc-pts">+30 pts</span>
-      </div>
-      <div class="pontos-como-item">
-        <span class="pc-icon">👥</span>
-        <div><h4>Indicar um amigo</h4><p>Quando o amigo se cadastrar</p></div>
-        <span class="pc-pts">+80 pts</span>
+        <span class="pc-icon">📝</span>
+        <div><h4>Registrar ocorrência</h4><p>Ao enviar, logado e sem modo anônimo (até <?= (int) $rp['limiteDia'] ?> por dia)</p></div>
+        <span class="pc-pts">+<?= (int) $rp['registro'] ?> pts</span>
       </div>
       <div class="pontos-como-item">
         <span class="pc-icon">✅</span>
-        <div><h4>Ocorrência resolvida</h4><p>Bônus quando o problema for resolvido</p></div>
-        <span class="pc-pts">+30 pts</span>
+        <div><h4>Ocorrência confirmada</h4><p>Quando a equipe verifica e resolve o problema</p></div>
+        <span class="pc-pts">+<?= (int) $rp['resolvida'] ?> pts</span>
+      </div>
+      <div class="pontos-como-item">
+        <span class="pc-icon">📸</span>
+        <div><h4>Foto de evidência</h4><p>Creditada junto com a confirmação da ocorrência</p></div>
+        <span class="pc-pts">+<?= (int) $rp['foto'] ?> pts</span>
       </div>
     </div>
+    <ul class="pontos-regras-justas">
+      <li>Ocorrências repetidas, falsas ou fora de Muriaé são arquivadas e não recebem o bônus de confirmação.</li>
+      <li>Registros anônimos não somam pontos, porque não ficam ligados a uma conta.</li>
+      <li>Administradores não pontuam ao resolver as próprias ocorrências e não entram no ranking.</li>
+    </ul>
   </section>
 
   <!-- RECOMPENSAS DISPONÍVEIS -->
@@ -107,35 +101,51 @@
     <div class="container">
       <div class="section-header">
         <h2>Troque seus pontos</h2>
-        <p>Recompensas pensadas para a sua comunidade<?php if ($usuario): ?> — você tem <strong><?= number_format($saldo, 0, ',', '.') ?> pts</strong><?php endif; ?></p>
+        <p>Itens que ajudam a separar, reaproveitar e reduzir o lixo em casa<?php if ($usuario): ?> — você tem <strong><?= number_format($saldo, 0, ',', '.') ?> pts</strong><?php endif; ?></p>
       </div>
       <div class="recompensas-grid">
         <?php
         $recompensas = $recompensas ?? [];
-        // icones por nome (fallback generico)
+        // Ícones por nome (fallback genérico)
         $iconeRec = [
-            'Café Grátis' => '☕', 'Desconto no Mercado' => '🛒', 'Kit de Mudas' => '🌱',
-            'Certificado Digital' => '🎓', 'Desconto Bicicletaria' => '🚲', 'Kit Escolar Eco' => '🎨',
+            'Certificado digital "Morador Consciente"' => '📜',
+            'Kit de sacos coloridos para separação'   => '🛍️',
+            'Muda de árvore nativa da Mata Atlântica' => '🌳',
+            'Ecobag reutilizável'                     => '👜',
+            'Vaga em oficina de compostagem'          => '🧑‍🌾',
+            'Garrafa reutilizável'                    => '🧴',
+            'Desconto em comércio parceiro de Muriaé' => '🏪',
+            'Kit compostagem doméstica'               => '🪱',
         ];
         ?>
         <?php foreach ($recompensas as $r): ?>
           <?php
-          $disp  = (int) $r['disponivel'] === 1;
-          $custo = (int) $r['custo_pontos'];
-          $podeResgatar = $usuario && $disp && $saldo >= $custo;
+          $custo   = (int) $r['custo_pontos'];
+          $estoque = $r['estoque'] === null ? null : (int) $r['estoque'];
+          $esgotado = $estoque !== null && $estoque <= 0;
+          $disp  = (int) $r['disponivel'] === 1 && !$esgotado;
           $ic = $iconeRec[$r['nome']] ?? '🎁';
+          $badgeTxt = $esgotado ? 'Esgotado' : ((int) $r['disponivel'] === 1 ? 'Disponível' : 'Em breve');
           ?>
           <div class="recompensa-card">
-            <div class="rc-badge <?= $disp ? 'disponivel' : 'em-breve' ?>"><?= $disp ? 'Disponível' : 'Em breve' ?></div>
-            <div class="rc-icon"><?= $ic ?></div>
+            <div class="rc-badge <?= $disp ? 'disponivel' : 'em-breve' ?>"><?= $badgeTxt ?></div>
+            <div class="rc-icon" aria-hidden="true"><?= $ic ?></div>
             <h3><?= htmlspecialchars($r['nome']) ?></h3>
-            <p>
-              <?php if (!empty($r['parceiro'])): ?>Parceiro: <?= htmlspecialchars($r['parceiro']) ?>
-              <?php elseif (!empty($r['descricao'])): ?><?= htmlspecialchars($r['descricao']) ?>
+            <?php if (!empty($r['descricao'])): ?>
+              <p><?= htmlspecialchars($r['descricao']) ?></p>
+            <?php endif; ?>
+            <?php if (!empty($r['parceiro'])): ?>
+              <p class="rc-parceiro">Parceiro: <?= htmlspecialchars($r['parceiro']) ?></p>
+            <?php endif; ?>
+            <div class="rc-cost">
+              <span>⭐ <?= number_format($custo, 0, ',', '.') ?> pts</span>
+              <?php if ($estoque !== null && !$esgotado && (int) $r['disponivel'] === 1): ?>
+                <small class="rc-estoque">Restam <?= $estoque ?></small>
               <?php endif; ?>
-            </p>
-            <div class="rc-cost"><span>⭐ <?= number_format($custo, 0, ',', '.') ?> pts</span></div>
-            <?php if (!$disp): ?>
+            </div>
+            <?php if ($esgotado): ?>
+              <button class="btn-resgatar disabled" disabled>Esgotado</button>
+            <?php elseif (!$disp): ?>
               <button class="btn-resgatar disabled" disabled>Em breve</button>
             <?php elseif (!$usuario): ?>
               <a href="<?= baseUrl('usuario/login') ?>" class="btn-resgatar" style="text-decoration:none;display:inline-block;">Entrar para resgatar</a>
@@ -204,9 +214,9 @@
       <div class="modal-icon">🎉</div>
       <h3>Resgate Solicitado!</h3>
       <p>Sua solicitação foi registrada e os pontos foram debitados.</p>
-      <p>Apresente este código no parceiro:</p>
+      <p>Guarde este código para a retirada:</p>
       <div class="resgate-code"><?= htmlspecialchars($codigoResgate) ?></div>
-      <p style="font-size:0.8rem; color:#6b7280; margin-top:8px;">Válido por 7 dias. Leve um documento com foto.</p>
+      <p style="font-size:0.8rem; color:var(--text-muted); margin-top:8px;">Válido por 7 dias. A equipe do ColetaFácil informa o local e o horário de retirada; leve um documento com foto.</p>
       <button class="btn-primary" onclick="document.getElementById('modalResgate').style.display='none'">Fechar</button>
     </div>
   </div>

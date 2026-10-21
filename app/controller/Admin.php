@@ -82,13 +82,21 @@ class Admin extends BaseController
             $anterior = $ocModel->getById($id);
             $ocModel->atualizarStatus($id, $status, $observacao, (int) $admin['id_usuario']);
 
-            if ($status === 'RESOLVIDA' && ($anterior['status'] ?? '') !== 'RESOLVIDA' && !empty($anterior['id_usuario'])) {
-                $this->model('Pontos')->creditarAcaoUnica(
-                    (int) $anterior['id_usuario'],
-                    'OCORRENCIA_RESOLVIDA',
-                    $id,
-                    'Ocorrência ' . ($anterior['protocolo'] ?? '') . ' resolvida'
-                );
+            // Pontos de confirmacao: so quando a equipe resolve (ocorrencia real).
+            // creditarAcaoUnica garante no maximo um credito de cada tipo por ocorrencia.
+            // O admin não pontua resolvendo a própria ocorrência.
+            if ($status === 'RESOLVIDA' && ($anterior['status'] ?? '') !== 'RESOLVIDA'
+                && !empty($anterior['id_usuario']) && (int) $anterior['id_usuario'] !== (int) $admin['id_usuario']) {
+                $pontos    = $this->model('Pontos');
+                $idDono    = (int) $anterior['id_usuario'];
+                $protocolo = $anterior['protocolo'] ?? '';
+
+                $pontos->creditarAcaoUnica($idDono, 'OCORRENCIA_RESOLVIDA', $id, 'Ocorrência ' . $protocolo . ' confirmada e resolvida');
+
+                // Foto de evidencia: pontua apenas se a ocorrencia foi confirmada.
+                if (!empty($ocModel->fotos($id))) {
+                    $pontos->creditarAcaoUnica($idDono, 'FOTO_APROVADA', $id, 'Foto aprovada na ocorrência ' . $protocolo);
+                }
             }
         }
 

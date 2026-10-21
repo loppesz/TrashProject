@@ -40,11 +40,31 @@ function atualizarTipoInfo() {
   } else {
     box.style.display = 'none';
   }
-  // Atualiza pontos
-  const pts = 50;
-  const fotoExtra = document.getElementById('fotoInput')?.files?.length > 0 ? 20 : 0;
+  atualizarPontosPreview();
+}
+
+// Prévia dos pontos com as mesmas regras do servidor (window.REGRAS_PONTOS):
+// uma parte ao registrar (com limite diário) e o restante na confirmação.
+function atualizarPontosPreview() {
   const el = document.getElementById('pontosPreview');
-  if (el) el.textContent = (pts + fotoExtra) + ' pts';
+  const det = document.getElementById('pontosPreviewDetalhe');
+  if (!el) return;
+  const r = window.REGRAS_PONTOS || { registro: 10, resolvida: 40, foto: 15, restantesHoje: 3, logado: false };
+  const anonima = document.getElementById('anonimo')?.checked;
+  const temFoto = document.getElementById('fotoInput')?.files?.length > 0;
+
+  if (!r.logado || anonima) {
+    el.textContent = '0 pts';
+    if (det) det.textContent = anonima ? 'Registro anônimo não soma pontos' : 'Entre na sua conta para somar pontos';
+    return;
+  }
+  const agora = r.restantesHoje > 0 ? r.registro : 0;
+  const depois = r.resolvida + (temFoto ? r.foto : 0);
+  el.textContent = 'até ' + (agora + depois) + ' pts';
+  if (det) {
+    det.textContent = (agora > 0 ? agora + ' agora' : '0 agora (limite do dia)')
+      + ' + ' + depois + ' quando a equipe confirmar' + (temFoto ? ' (com foto)' : '');
+  }
 }
 
 // =============================================
@@ -578,6 +598,7 @@ function centralizarMapaNaMinhaLocalizacao() {
 // =============================================
 window.addEventListener('DOMContentLoaded', () => {
   renderHistorico();
+  atualizarPontosPreview();
 
   // Ao escolher o bairro manualmente, remove o destaque de atenção.
   document.getElementById('bairroOcorrencia')?.addEventListener('change', function () {

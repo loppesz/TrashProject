@@ -1,0 +1,239 @@
+{
+    "gerado_em": "2026-10-21T16:27:17-03:00",
+    "recompensa": [
+        {
+            "id_recompensa": 1,
+            "nome": "Café Grátis",
+            "descricao": "Um café cortesia no parceiro.",
+            "parceiro": "Padaria Central",
+            "custo_pontos": 200,
+            "disponivel": 1,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        },
+        {
+            "id_recompensa": 2,
+            "nome": "Desconto no Mercado",
+            "descricao": "5% de desconto nas compras.",
+            "parceiro": "Supermercado Boa Compra",
+            "custo_pontos": 500,
+            "disponivel": 1,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        },
+        {
+            "id_recompensa": 3,
+            "nome": "Kit de Mudas",
+            "descricao": "3 mudas de plantas para o seu jardim.",
+            "parceiro": null,
+            "custo_pontos": 300,
+            "disponivel": 1,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        },
+        {
+            "id_recompensa": 4,
+            "nome": "Certificado Digital",
+            "descricao": "Certificado de Agente Ambiental.",
+            "parceiro": null,
+            "custo_pontos": 1000,
+            "disponivel": 1,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        },
+        {
+            "id_recompensa": 5,
+            "nome": "Desconto Bicicletaria",
+            "descricao": "10% de desconto em serviços.",
+            "parceiro": null,
+            "custo_pontos": 800,
+            "disponivel": 0,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        },
+        {
+            "id_recompensa": 6,
+            "nome": "Kit Escolar Eco",
+            "descricao": "Material escolar sustentável.",
+            "parceiro": null,
+            "custo_pontos": 600,
+            "disponivel": 0,
+            "estoque": null,
+            "ativo": 1,
+            "criado_em": "2026-10-21 13:34:23"
+        }
+    ],
+    "lancamento_pontos": [
+        {
+            "id_lancamento": 1,
+            "id_usuario": 2,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 6,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ocorrência 2026006",
+            "criada_em": "2026-08-22 07:40:00"
+        },
+        {
+            "id_lancamento": 2,
+            "id_usuario": 2,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 8,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ocorrência 2026008",
+            "criada_em": "2026-08-19 18:05:00"
+        },
+        {
+            "id_lancamento": 3,
+            "id_usuario": 2,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 10,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ocorrência 2026010",
+            "criada_em": "2026-08-23 08:00:00"
+        },
+        {
+            "id_lancamento": 4,
+            "id_usuario": 2,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "FOTO_APROVADA",
+            "quantidade": 20,
+            "descricao": "Foto aprovada",
+            "criada_em": "2026-08-19 18:06:00"
+        },
+        {
+            "id_lancamento": 5,
+            "id_usuario": 3,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ajuste inicial",
+            "criada_em": "2026-08-01 10:00:00"
+        },
+        {
+            "id_lancamento": 6,
+            "id_usuario": 3,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "SEQUENCIA_ACESSO",
+            "quantidade": 100,
+            "descricao": "Sequência de acesso",
+            "criada_em": "2026-08-05 10:00:00"
+        },
+        {
+            "id_lancamento": 7,
+            "id_usuario": 3,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "AJUSTE",
+            "quantidade": 2300,
+            "descricao": "Pontuação acumulada",
+            "criada_em": "2026-08-10 10:00:00"
+        },
+        {
+            "id_lancamento": 8,
+            "id_usuario": 4,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "AJUSTE",
+            "quantidade": 2190,
+            "descricao": "Pontuação acumulada",
+            "criada_em": "2026-08-10 10:00:00"
+        },
+        {
+            "id_lancamento": 9,
+            "id_usuario": 5,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "AJUSTE",
+            "quantidade": 1870,
+            "descricao": "Pontuação acumulada",
+            "criada_em": "2026-08-10 10:00:00"
+        },
+        {
+            "id_lancamento": 10,
+            "id_usuario": 6,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "AJUSTE",
+            "quantidade": 1540,
+            "descricao": "Pontuação acumulada",
+            "criada_em": "2026-08-10 10:00:00"
+        },
+        {
+            "id_lancamento": 11,
+            "id_usuario": 7,
+            "id_perfil_kids": null,
+            "id_ocorrencia": null,
+            "id_resgate": null,
+            "tipo": "AJUSTE",
+            "quantidade": 1320,
+            "descricao": "Pontuação acumulada",
+            "criada_em": "2026-08-10 10:00:00"
+        },
+        {
+            "id_lancamento": 12,
+            "id_usuario": 1,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 11,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ocorrência CF-2026-2913",
+            "criada_em": "2026-10-21 13:56:49"
+        },
+        {
+            "id_lancamento": 13,
+            "id_usuario": 1,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 11,
+            "id_resgate": null,
+            "tipo": "FOTO_APROVADA",
+            "quantidade": 20,
+            "descricao": "Foto na ocorrência CF-2026-2913",
+            "criada_em": "2026-10-21 13:56:49"
+        },
+        {
+            "id_lancamento": 14,
+            "id_usuario": 1,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 13,
+            "id_resgate": null,
+            "tipo": "OCORRENCIA_REGISTRADA",
+            "quantidade": 50,
+            "descricao": "Ocorrência CF-2026-2078",
+            "criada_em": "2026-10-21 15:35:07"
+        },
+        {
+            "id_lancamento": 15,
+            "id_usuario": 1,
+            "id_perfil_kids": null,
+            "id_ocorrencia": 13,
+            "id_resgate": null,
+            "tipo": "FOTO_APROVADA",
+            "quantidade": 20,
+            "descricao": "Foto na ocorrência CF-2026-2078",
+            "criada_em": "2026-10-21 15:35:07"
+        }
+    ],
+    "resgate_recompensa": []
+}

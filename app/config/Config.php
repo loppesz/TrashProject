@@ -49,7 +49,7 @@ define('MURIAE_GEO', [
 
 // Versao dos assets (CSS/JS) para controle de cache do navegador.
 // Incremente ao publicar mudancas de estilo/script.
-define('ASSET_VER', '24');
+define('ASSET_VER', '25');
 
 // Fuso horario padrao da aplicacao.
 date_default_timezone_set('America/Sao_Paulo');

@@ -25,6 +25,20 @@ class Ocorrencia extends BaseController
         $protocoloCriado = $_GET['protocolo'] ?? '';
         $erro            = $_GET['erro'] ?? '';
 
+        // Regras de pontos (fonte unica: PontosModel) e quanto o usuario ja usou hoje.
+        $pontosModel   = $this->model('Pontos');
+        $regrasPontos  = PontosModel::regras();
+        $registrosHoje = $usuario
+            ? $pontosModel->creditosHoje((int) $usuario['id_usuario'], 'OCORRENCIA_REGISTRADA')
+            : 0;
+
+        // Retorno do registro: pontos realmente creditados agora (apenas exibicao).
+        $retornoPontos = [
+            'agora'     => max(0, min($regrasPontos['registro'], (int) ($_GET['pts'] ?? 0))),
+            'foto'      => ($_GET['foto'] ?? '0') === '1',
+            'vinculada' => ($_GET['vinc'] ?? '0') === '1',
+        ];
+
         $this->view('ocorrencias', [
             'tituloPagina'  => 'Ocorrências – ColetaFácil',
             'descricao'     => 'Registre descartes irregulares e problemas na coleta em Muriaé-MG. Acompanhe o status e ganhe pontos de recompensa.',
@@ -43,6 +57,9 @@ class Ocorrencia extends BaseController
             'usaLeaflet'     => true,
             'protocoloCriado' => $protocoloCriado,
             'erroRegistro'  => $erro,
+            'regrasPontos'  => $regrasPontos,
+            'registrosHoje' => $registrosHoje,
+            'retornoPontos' => $retornoPontos,
         ]);
     }
 
@@ -184,28 +201,26 @@ class Ocorrencia extends BaseController
             ]);
 
             // --- Upload de foto (opcional) ---
+            // A foto NAO pontua agora: os pontos dela entram quando a equipe
+            // confirmar a ocorrencia (Admin::atualizarStatus -> RESOLVIDA).
             $temFoto = $this->salvarFoto((int) $res['id']);
 
             // --- Pontos (so para usuario logado e ocorrencia nao anonima) ---
+            // Registro vale pouco e tem limite diario, para evitar spam.
+            $ptsAgora = 0;
             if ($idUsuario) {
-                $pontos = $this->model('Pontos');
-                $pontos->creditarAcao(
+                $ptsAgora = $this->model('Pontos')->creditarRegistroOcorrencia(
                     (int) $idUsuario,
-                    'OCORRENCIA_REGISTRADA',
-                    'Ocorrência ' . $res['protocolo'],
-                    ['id_ocorrencia' => (int) $res['id']]
+                    (int) $res['id'],
+                    $res['protocolo']
                 );
-                if ($temFoto) {
-                    $pontos->creditarAcao(
-                        (int) $idUsuario,
-                        'FOTO_APROVADA',
-                        'Foto na ocorrência ' . $res['protocolo'],
-                        ['id_ocorrencia' => (int) $res['id']]
-                    );
-                }
             }
 
-            header('Location: ' . baseUrl('ocorrencia') . '?protocolo=' . rawurlencode($res['protocolo']));
+            $destino = baseUrl('ocorrencia') . '?protocolo=' . rawurlencode($res['protocolo'])
+                     . '&pts=' . $ptsAgora
+                     . '&foto=' . ($temFoto ? '1' : '0')
+                     . '&vinc=' . ($idUsuario ? '1' : '0');   // ocorrencia vinculada a uma conta?
+            header('Location: ' . $destino);
             exit;
         } catch (Throwable $e) {
             header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('Não foi possível registrar. Tente novamente.'));

@@ -249,13 +249,17 @@ INSERT INTO ponto_foto (id_ponto, url_arquivo, legenda, ordem) VALUES
 -- ---------------------------------------------------------------------
 -- RECOMPENSAS (pagina Recompensas)
 -- ---------------------------------------------------------------------
-INSERT INTO recompensa (id_recompensa, nome, descricao, parceiro, custo_pontos, disponivel, ativo) VALUES
-(1, 'Café Grátis',            'Um café cortesia no parceiro.',            'Padaria Central',          200,  TRUE,  TRUE),
-(2, 'Desconto no Mercado',    '5% de desconto nas compras.',              'Supermercado Boa Compra',  500,  TRUE,  TRUE),
-(3, 'Kit de Mudas',           '3 mudas de plantas para o seu jardim.',    NULL,                       300,  TRUE,  TRUE),
-(4, 'Certificado Digital',    'Certificado de Agente Ambiental.',         NULL,                       1000, TRUE,  TRUE),
-(5, 'Desconto Bicicletaria',  '10% de desconto em serviços.',             NULL,                       800,  FALSE, TRUE),
-(6, 'Kit Escolar Eco',        'Material escolar sustentável.',            NULL,                       600,  FALSE, TRUE);
+-- Itens úteis para separar, reaproveitar e reduzir o lixo (sem parceiros fictícios).
+-- estoque NULL = ilimitado (itens digitais ou ainda "em breve").
+INSERT INTO recompensa (id_recompensa, nome, descricao, parceiro, custo_pontos, disponivel, estoque, ativo) VALUES
+(1, 'Certificado digital "Morador Consciente"', 'Certificado em PDF com seu nome e o total de ocorrências confirmadas em Muriaé. Serve como comprovante de participação cívica.', NULL, 150,  TRUE,  NULL, TRUE),
+(2, 'Kit de sacos coloridos para separação',    'Sacos nas cores da coleta seletiva (azul, vermelho, verde e amarelo) para separar os recicláveis em casa.',                      NULL, 250,  TRUE,  40,   TRUE),
+(3, 'Muda de árvore nativa da Mata Atlântica',  'Muda de espécie nativa da região, entregue em ações de plantio do programa.',                                                     NULL, 300,  FALSE, NULL, TRUE),
+(4, 'Ecobag reutilizável',                      'Sacola de algodão para trocar as sacolas plásticas nas compras do dia a dia.',                                                    NULL, 400,  TRUE,  30,   TRUE),
+(5, 'Vaga em oficina de compostagem',           'Inscrição em oficina prática sobre compostagem doméstica e aproveitamento de resíduos orgânicos.',                                NULL, 500,  FALSE, NULL, TRUE),
+(6, 'Garrafa reutilizável',                     'Garrafa de 500 ml em alumínio para reduzir o uso de copos e garrafas descartáveis.',                                              NULL, 600,  TRUE,  20,   TRUE),
+(7, 'Desconto em comércio parceiro de Muriaé',  'Cupom de desconto em estabelecimentos locais que aderirem ao programa. Parceiros em definição.',                                  NULL, 800,  FALSE, NULL, TRUE),
+(8, 'Kit compostagem doméstica',                'Composteira doméstica com manual de uso para transformar restos de alimentos em adubo.',                                          NULL, 1200, FALSE, NULL, TRUE);
 
 -- ---------------------------------------------------------------------
 -- OCORRENCIAS (lista do painel admin / exemplos)
@@ -329,24 +333,13 @@ INSERT INTO ocorrencia_historico_status (id_ocorrencia, status, observacao, id_u
 -- LANCAMENTOS DE PONTOS (livro-razao; saldo = SUM(quantidade))
 -- Alimenta o ranking e o "meus pontos" da pagina de recompensas.
 -- ---------------------------------------------------------------------
+-- Regra (PontosModel::VALORES): registro 10 | confirmada/resolvida 40 | foto 15
+-- (a foto só pontua na confirmação). Só há pontos com origem real.
 INSERT INTO lancamento_pontos (id_usuario, id_ocorrencia, tipo, quantidade, descricao, criada_em) VALUES
--- Morador Teste (id 2): registrou as ocorrencias 6, 8, 10
-(2, 6,  'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026006', '2026-08-22 07:40:00'),
-(2, 8,  'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026008', '2026-08-19 18:05:00'),
-(2, 10, 'OCORRENCIA_REGISTRADA', 50, 'Ocorrência 2026010', '2026-08-23 08:00:00'),
-(2, NULL,'FOTO_APROVADA',        20, 'Foto aprovada',       '2026-08-19 18:06:00'),
--- Maria Silva (id 3) — topo do ranking
-(3, NULL,'OCORRENCIA_REGISTRADA', 50, 'Ajuste inicial', '2026-08-01 10:00:00'),
-(3, NULL,'SEQUENCIA_ACESSO',     100, 'Sequência de acesso', '2026-08-05 10:00:00'),
-(3, NULL,'AJUSTE',              2300, 'Pontuação acumulada', '2026-08-10 10:00:00'),
--- João Ferreira (id 4)
-(4, NULL,'AJUSTE',              2190, 'Pontuação acumulada', '2026-08-10 10:00:00'),
--- Ana Costa (id 5)
-(5, NULL,'AJUSTE',              1870, 'Pontuação acumulada', '2026-08-10 10:00:00'),
--- Carlos Moura (id 6)
-(6, NULL,'AJUSTE',              1540, 'Pontuação acumulada', '2026-08-10 10:00:00'),
--- Paula Rocha (id 7)
-(7, NULL,'AJUSTE',              1320, 'Pontuação acumulada', '2026-08-10 10:00:00');
+-- Morador Teste (id 2): registrou as ocorrencias 6, 8, 10 (ainda não resolvidas)
+(2, 6,  'OCORRENCIA_REGISTRADA', 10, 'Ocorrência 2026006', '2026-08-22 07:40:00'),
+(2, 8,  'OCORRENCIA_REGISTRADA', 10, 'Ocorrência 2026008', '2026-08-19 18:05:00'),
+(2, 10, 'OCORRENCIA_REGISTRADA', 10, 'Ocorrência 2026010', '2026-08-23 08:00:00');
 
 -- ---------------------------------------------------------------------
 -- PERFIL KIDS (exemplo; um usuario pode ter varios filhos)

@@ -18,7 +18,7 @@
       <a href="<?= baseUrl() ?>" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
       <div class="kids-nav-right">
         <div class="kids-nav-points"><span id="kidsPointsNav">0</span> pts</div>
-        <button id="themeToggle" class="kids-theme-btn" onclick="toggleTheme()">Tema</button>
+        <button type="button" id="themeToggle" class="kids-theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
         <a href="<?= baseUrl() ?>" class="kids-back-btn">Voltar ao site</a>
         <?php if (empty($usuario)): ?>
           <a href="<?= baseUrl('usuario/login') ?>" class="kids-back-btn">Entrar</a>

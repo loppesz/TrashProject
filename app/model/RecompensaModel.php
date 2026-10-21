@@ -16,6 +16,61 @@ class RecompensaModel extends BaseModel
         );
     }
 
+    /**
+     * Resgate completo e atomico: confere saldo, baixa o estoque (se houver),
+     * grava o resgate e debita os pontos na mesma transacao.
+     * Lanca DomainException com mensagem amigavel quando nao for possivel.
+     *
+     * @return array ['id' => int, 'codigo' => string]
+     */
+    public function resgatarComDebito(int $idUsuario, array $rec): array
+    {
+        $pdo   = $this->db->conecta();
+        $idRec = (int) $rec['id_recompensa'];
+        $custo = (int) $rec['custo_pontos'];
+
+        $pdo->beginTransaction();
+        try {
+            // Trava a linha do usuario: dois cliques simultaneos nao gastam o saldo duas vezes.
+            $this->db->select('SELECT id_usuario FROM usuario WHERE id_usuario = ? FOR UPDATE', [$idUsuario], 'single');
+
+            $s = $this->db->select(
+                'SELECT COALESCE(SUM(quantidade), 0) AS saldo FROM lancamento_pontos WHERE id_usuario = ?',
+                [$idUsuario],
+                'single'
+            );
+            if ((int) ($s['saldo'] ?? 0) < $custo) {
+                throw new DomainException('Pontos insuficientes para este resgate.');
+            }
+
+            // Estoque NULL = ilimitado; senao, baixa 1 unidade so se ainda houver.
+            if ($rec['estoque'] !== null) {
+                $baixou = $this->db->update(
+                    'UPDATE recompensa SET estoque = estoque - 1 WHERE id_recompensa = ? AND estoque > 0',
+                    [$idRec]
+                );
+                if ($baixou === 0) {
+                    throw new DomainException('Esta recompensa esgotou. Aguarde a reposição.');
+                }
+            }
+
+            $resgate = $this->resgatar($idUsuario, $idRec, $custo);
+            $this->db->insert(
+                'INSERT INTO lancamento_pontos (id_usuario, id_resgate, tipo, quantidade, descricao)
+                 VALUES (?, ?, \'RESGATE\', ?, ?)',
+                [$idUsuario, $resgate['id'], -$custo, 'Resgate: ' . $rec['nome']]
+            );
+
+            $pdo->commit();
+            return $resgate;
+        } catch (Throwable $e) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+            throw $e;
+        }
+    }
+
     /** Busca uma recompensa ativa pelo id. */
     public function porId(int $id): array
     {

@@ -31,37 +31,6 @@
           </form>
         </div>
       </div>
-
-      <!-- VIDEO PLACEHOLDER -->
-      <div class="hero-video-wrap animate-in delay-2">
-        <div class="video-container" id="videoContainer">
-          <div class="video-thumb" onclick="playVideo()">
-            <div class="video-overlay">
-              <div class="play-btn">
-                <span>▶</span>
-              </div>
-              <p>Assista: O que é a Coleta Seletiva?</p>
-            </div>
-            <div class="video-placeholder-bg">
-              <span class="video-emoji">♻️</span>
-            </div>
-          </div>
-          <!-- Troque o src pelo link do seu vídeo -->
-          <video id="meuVideo" controls controlslist="nodownload" preload="metadata" playsinline style="display:none; width:100%; border-radius:16px;">
-            <source src="<?= baseUrl('assets/img/video-apresentacao.mp4') ?>" type="video/mp4">
-            Seu navegador não suporta vídeo HTML5.
-          </video>
-          <!-- Controles rápidos de avanço/retrocesso -->
-          <div class="video-quick-controls" id="videoQuickControls" style="display:none;">
-            <button type="button" onclick="seekVideo(-10)" aria-label="Voltar 10 segundos">⏪ 10s</button>
-            <button type="button" onclick="togglePlayPause()" id="playPauseBtn" aria-label="Reproduzir ou pausar">⏸️ Pausar</button>
-            <button type="button" onclick="seekVideo(10)" aria-label="Avançar 10 segundos">10s ⏩</button>
-          </div>
-        </div>
-        <div class="video-caption">
-          <span>🎬</span> Vídeo de apresentação — 2 min
-        </div>
-      </div>
     </div>
   </section>
 
@@ -113,6 +82,40 @@
         </a>
 
       </div>
+
+      <!-- VÍDEO DE APRESENTAÇÃO (logo após os 3 cards) -->
+      <div class="video-passos">
+      <!-- VIDEO PLACEHOLDER -->
+      <div class="hero-video-wrap animate-in delay-2">
+        <div class="video-container" id="videoContainer">
+          <div class="video-thumb" onclick="playVideo()">
+            <div class="video-overlay">
+              <div class="play-btn">
+                <span>▶</span>
+              </div>
+              <p>Assista: O que é a Coleta Seletiva?</p>
+            </div>
+            <div class="video-placeholder-bg">
+              <span class="video-emoji">♻️</span>
+            </div>
+          </div>
+          <!-- Troque o src pelo link do seu vídeo -->
+          <video id="meuVideo" controls controlslist="nodownload" preload="metadata" playsinline style="display:none; width:100%; border-radius:16px;">
+            <source src="<?= baseUrl('assets/img/video-apresentacao.mp4') ?>" type="video/mp4">
+            Seu navegador não suporta vídeo HTML5.
+          </video>
+          <!-- Controles rápidos de avanço/retrocesso -->
+          <div class="video-quick-controls" id="videoQuickControls" style="display:none;">
+            <button type="button" onclick="seekVideo(-10)" aria-label="Voltar 10 segundos">⏪ 10s</button>
+            <button type="button" onclick="togglePlayPause()" id="playPauseBtn" aria-label="Reproduzir ou pausar">⏸️ Pausar</button>
+            <button type="button" onclick="seekVideo(10)" aria-label="Avançar 10 segundos">10s ⏩</button>
+          </div>
+        </div>
+        <div class="video-caption">
+          <span>🎬</span> Vídeo de apresentação — 2 min
+        </div>
+      </div>
+      </div><!-- /.video-passos -->
     </div>
   </section>
 

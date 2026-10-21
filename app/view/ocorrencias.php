@@ -1,4 +1,9 @@
 <?php require_once 'app/view/comuns/cabecalho.php'; ?>
+<?php
+  // Regras de pontos vindas do controller (fonte unica: PontosModel::regras()).
+  $rp = $regrasPontos ?? ['registro' => 10, 'resolvida' => 40, 'foto' => 15, 'limiteDia' => 3, 'maximo' => 65];
+  $restantesHoje = max(0, (int) $rp['limiteDia'] - (int) ($registrosHoje ?? 0));
+?>
 
   <!-- HEADER -->
   <div class="page-header-slim">
@@ -45,7 +50,7 @@
         <div class="oc-form-card">
           <div class="oc-form-header">
             <h2>📝 Registrar nova ocorrência</h2>
-            <div class="pontos-badge">+50 pts ao registrar</div>
+            <div class="pontos-badge">Até <?= (int) $rp['maximo'] ?> pts por ocorrência confirmada</div>
           </div>
 
           <?php if (!empty($erroRegistro)): ?>
@@ -131,7 +136,7 @@
               <div class="foto-upload-area" onclick="document.getElementById('fotoInput').click()" id="fotoArea">
                 <span class="foto-icon">📸</span>
                 <p>Clique para adicionar foto</p>
-                <small>JPG, PNG ou WEBP – máx. 10MB. Foto com evidência vale +20 pts!</small>
+                <small>JPG, PNG ou WEBP – máx. 10MB. Foto de evidência vale +<?= (int) $rp['foto'] ?> pts quando a ocorrência for confirmada.</small>
                 <input type="file" id="fotoInput" name="foto" accept="image/*" style="display:none" onchange="previewFoto(this)">
               </div>
               <div id="fotoPreview" style="display:none;" class="foto-preview-wrap">
@@ -161,15 +166,16 @@
 
             <div class="form-group" style="margin-top:8px;">
               <label class="checkbox-label">
-                <input type="checkbox" id="anonimo" name="anonima" value="1">
+                <input type="checkbox" id="anonimo" name="anonima" value="1" onchange="atualizarTipoInfo()">
                 <span>Registrar anonimamente — não salvamos seu nome, telefone nem e-mail (e a ocorrência não fica vinculada à sua conta).</span>
               </label>
             </div>
 
             <div class="oc-form-footer">
-              <div class="pontos-preview">
-                <span>⭐ Você vai ganhar:</span>
-                <strong id="pontosPreview">50 pts</strong>
+              <div class="pontos-preview" aria-live="polite">
+                <span>⭐ Você pode ganhar:</span>
+                <strong id="pontosPreview">até <?= (int) ($rp['registro'] + $rp['resolvida']) ?> pts</strong>
+                <small id="pontosPreviewDetalhe" class="pontos-preview-detalhe"><?= (int) $rp['registro'] ?> agora + <?= (int) $rp['resolvida'] ?> quando a equipe confirmar</small>
               </div>
               <button type="submit" class="btn-registrar">
                 🚨 Registrar Ocorrência
@@ -211,7 +217,7 @@
               <span class="oc-step-num" style="background:#f59e0b;">⭐</span>
               <div>
                 <strong>Você ganha pontos</strong>
-                <p>Pontos por registrar + bônus quando for resolvida.</p>
+                <p>Uma parte ao registrar e a maior parte quando a equipe confirma e resolve.</p>
               </div>
             </div>
           </div>
@@ -221,10 +227,18 @@
         <div class="oc-info-card">
           <h3>Pontuação</h3>
           <div class="pontos-lista">
-            <div class="pl-item"><span>Ocorrência registrada</span><strong>50 pts</strong></div>
-            <div class="pl-item"><span>Foto anexada</span><strong>+20 pts</strong></div>
-            <div class="pl-item"><span>Quando resolvida</span><strong>+30 pts</strong></div>
+            <div class="pl-item"><span>Ao registrar (até <?= (int) $rp['limiteDia'] ?> por dia)</span><strong>+<?= (int) $rp['registro'] ?> pts</strong></div>
+            <div class="pl-item"><span>Confirmada e resolvida pela equipe</span><strong>+<?= (int) $rp['resolvida'] ?> pts</strong></div>
+            <div class="pl-item"><span>Foto de evidência (na confirmação)</span><strong>+<?= (int) $rp['foto'] ?> pts</strong></div>
           </div>
+          <p class="pontos-regra">Pontos só para quem está logado e não registra como anônimo. Ocorrências repetidas ou falsas são arquivadas e não recebem o bônus.</p>
+          <?php if (!empty($usuarioLogado)): ?>
+            <p class="pontos-regra pontos-regra-hoje">
+              <?= $restantesHoje > 0
+                  ? 'Hoje você ainda pode ganhar pontos de registro em ' . $restantesHoje . ' ocorrência' . ($restantesHoje > 1 ? 's' : '') . '.'
+                  : 'Você já atingiu o limite de pontos de registro de hoje. Os pontos de confirmação continuam valendo.' ?>
+            </p>
+          <?php endif; ?>
           <a href="<?= baseUrl('home/recompensas') ?>" class="link-recompensas">Ver o que fazer com os pontos →</a>
         </div>
 
@@ -399,7 +413,21 @@
         <button onclick="copiarProtocolo()" class="btn-copiar-prot">📋 Copiar</button>
       </div>
       <p class="modal-dica">Guarde este número para acompanhar o status da ocorrência na aba "Consultar Status".</p>
-      <div class="pontos-ganhos">⭐ +<span id="pontosGanhos">50</span> pontos adicionados!</div>
+      <?php
+        // Mensagem de pontos com o valor realmente creditado no registro.
+        $rpRet = $retornoPontos ?? ['agora' => 0, 'foto' => false, 'vinculada' => false];
+        $bonusConfirmacao = (int) $rp['resolvida'] + (!empty($rpRet['foto']) ? (int) $rp['foto'] : 0);
+      ?>
+      <?php if (!empty($rpRet['vinculada'])): ?>
+        <?php if ((int) $rpRet['agora'] > 0): ?>
+          <div class="pontos-ganhos">⭐ +<span id="pontosGanhos"><?= (int) $rpRet['agora'] ?></span> pontos adicionados!</div>
+        <?php else: ?>
+          <div class="pontos-ganhos">Limite diário de pontos de registro atingido.</div>
+        <?php endif; ?>
+        <p class="modal-dica">Quando a equipe confirmar e resolver, você recebe mais <strong>+<?= $bonusConfirmacao ?> pts</strong><?= !empty($rpRet['foto']) ? ' (inclui a foto)' : '' ?>.</p>
+      <?php else: ?>
+        <p class="modal-dica">Ocorrências anônimas ou sem login não somam pontos. <a href="<?= baseUrl('usuario/login') ?>">Entre na sua conta</a> para participar das recompensas.</p>
+      <?php endif; ?>
       <div style="display:flex;gap:10px;justify-content:center;margin-top:20px;flex-wrap:wrap;">
         <button class="btn-primary" onclick="fecharModalSucesso()">Fechar</button>
         <button class="btn-secondary" onclick="switchTab('consultar'); fecharModalSucesso()">Consultar Status</button>
@@ -446,6 +474,14 @@
     window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;
     window.HISTORICO_DB = <?= json_encode($historicoJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
     window.MAPA_OCORRENCIAS = <?= json_encode($mapaOcorrencias ?? [], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    // Regras de pontos (as mesmas do servidor) para a prévia do formulário.
+    window.REGRAS_PONTOS = <?= json_encode([
+        'registro'      => (int) $rp['registro'],
+        'resolvida'     => (int) $rp['resolvida'],
+        'foto'          => (int) $rp['foto'],
+        'restantesHoje' => $restantesHoje,
+        'logado'        => !empty($usuarioLogado),
+    ]) ?>;
   </script>
 
   <?php if (!empty($protocoloCriado)): ?>

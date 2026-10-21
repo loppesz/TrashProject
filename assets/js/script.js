@@ -5,8 +5,11 @@ function atualizarBotaoTema() {
   const btn = document.getElementById('themeToggle');
   if (!btn) return;
   const escuro = document.documentElement.classList.contains('dark');
-  btn.textContent = escuro ? 'Tema claro' : 'Tema escuro';
-  btn.setAttribute('aria-label', escuro ? 'Ativar tema claro' : 'Ativar tema escuro');
+  // Só o emoji: lua no tema claro (ir para o escuro), sol no escuro (voltar ao claro)
+  btn.textContent = escuro ? '☀️' : '🌙';
+  const rotulo = escuro ? 'Ativar tema claro' : 'Ativar tema escuro';
+  btn.setAttribute('aria-label', rotulo);
+  btn.setAttribute('title', rotulo);
 }
 
 function toggleTheme() {
@@ -19,18 +22,7 @@ function toggleTheme() {
 document.addEventListener('DOMContentLoaded', atualizarBotaoTema);
 
 // =============================================
-// NAVBAR MOBILE
-// =============================================
-function toggleMenu() {
-  const menu = document.getElementById('siteNav');
-  const btn = document.querySelector('.menu-btn');
-  if (!menu) return;
-  const aberto = menu.classList.toggle('open');
-  if (btn) btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
-}
-
-// =============================================
-// NAVBAR – DROPDOWNS (Coleta ▾ / 👤)
+// NAVBAR – DROPDOWNS (menu ☰ e Conta)
 // =============================================
 function toggleDropdown(event, id) {
   if (event) event.stopPropagation();

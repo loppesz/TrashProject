@@ -65,6 +65,7 @@ class Home extends BaseController
             'usuario'      => $usuario,
             'saldo'        => $saldo,
             'nivel'        => PontosModel::nivel($saldo),
+            'regrasPontos' => PontosModel::regras(),
             'msgResgate'   => $_GET['resgate'] ?? '',
             'codigoResgate' => $_GET['codigo'] ?? '',
             'erroResgate'  => $_GET['erro'] ?? '',
@@ -90,7 +91,6 @@ class Home extends BaseController
 
         $idRec   = (int) $this->request->post('id_recompensa');
         $recModel = $this->model('Recompensa');
-        $pontos   = $this->model('Pontos');
 
         $rec = $recModel->porId($idRec);
         $base = baseUrl('home/recompensas');
@@ -100,25 +100,13 @@ class Home extends BaseController
             exit;
         }
 
-        $saldo = $pontos->saldo((int) $usuario['id_usuario']);
-        $custo = (int) $rec['custo_pontos'];
-
-        if ($saldo < $custo) {
-            header('Location: ' . $base . '?erro=' . rawurlencode('Pontos insuficientes para este resgate.'));
-            exit;
-        }
-
         try {
-            $resgate = $recModel->resgatar((int) $usuario['id_usuario'], $idRec, $custo);
-            // Debita os pontos (quantidade negativa), referenciando o resgate.
-            $pontos->lancar(
-                (int) $usuario['id_usuario'],
-                'RESGATE',
-                -$custo,
-                'Resgate: ' . $rec['nome'],
-                ['id_resgate' => (int) $resgate['id']]
-            );
+            // Saldo, estoque, resgate e débito na mesma transação.
+            $resgate = $recModel->resgatarComDebito((int) $usuario['id_usuario'], $rec);
             header('Location: ' . $base . '?resgate=ok&codigo=' . rawurlencode($resgate['codigo']));
+            exit;
+        } catch (DomainException $e) {
+            header('Location: ' . $base . '?erro=' . rawurlencode($e->getMessage()));
             exit;
         } catch (Throwable $e) {
             header('Location: ' . $base . '?erro=' . rawurlencode('Não foi possível concluir o resgate.'));

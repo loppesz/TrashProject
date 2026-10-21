@@ -68,20 +68,38 @@ $usuario = auth_user();
         <span class="logo-text">ColetaFácil</span>
       </a>
 
-      <button type="button" class="menu-btn" onclick="toggleMenu()" aria-label="Abrir menu" aria-controls="siteNav">Menu</button>
+      <?php
+        // "Início" fica sempre visível; o restante vai para o menu ☰.
+        [$rotaInicio, $rotuloInicio] = $aMenu['home'];
+        $aMenuLista  = array_diff_key($aMenu, ['home' => true]);
+        $menuNaLista = isset($aMenuLista[$menu]) || in_array($menu, ['kids', 'recompensas'], true);
+      ?>
+      <div class="nav-main">
+        <a href="<?= baseUrl($rotaInicio) ?>" class="nav-main-link <?= $menu === 'home' ? 'active' : '' ?>"><?= $rotuloInicio ?></a>
 
-      <div class="nav-main" id="siteNav">
-        <?php foreach ($aMenu as $chave => [$rota, $rotulo]): ?>
-          <a href="<?= baseUrl($rota) ?>" class="nav-main-link <?= $menu === $chave ? 'active' : '' ?>"><?= $rotulo ?></a>
-        <?php endforeach; ?>
-        <a href="<?= baseUrl('home/kids') ?>" class="nav-main-link nav-mobile-only <?= $menu === 'kids' ? 'active' : '' ?>">Área Kids</a>
-        <a href="<?= baseUrl('home/recompensas') ?>" class="nav-main-link nav-mobile-only <?= $menu === 'recompensas' ? 'active' : '' ?>">Recompensas</a>
+        <div class="nav-dropdown nav-burger" id="navMenuLista">
+          <button type="button" class="nav-burger-btn <?= $menuNaLista ? 'has-active' : '' ?>"
+                  onclick="toggleDropdown(event, 'navMenuLista')"
+                  aria-haspopup="true" aria-expanded="false" aria-controls="navMenuListaPainel"
+                  aria-label="Abrir menu de páginas">
+            <span class="burger-lines" aria-hidden="true"><span></span><span></span><span></span></span>
+          </button>
+          <div class="nav-dd-panel" id="navMenuListaPainel">
+            <?php foreach ($aMenuLista as $chave => [$rota, $rotulo]): ?>
+              <a href="<?= baseUrl($rota) ?>" class="<?= $menu === $chave ? 'active' : '' ?>"<?= $menu === $chave ? ' aria-current="page"' : '' ?>><?= $rotulo ?></a>
+            <?php endforeach; ?>
+            <!-- No celular os botões coloridos saem da barra e aparecem aqui -->
+            <div class="nav-dd-sep nav-mobile-only"></div>
+            <a href="<?= baseUrl('home/kids') ?>" class="nav-mobile-only dd-kids <?= $menu === 'kids' ? 'active' : '' ?>">Área Kids</a>
+            <a href="<?= baseUrl('home/recompensas') ?>" class="nav-mobile-only dd-recompensas <?= $menu === 'recompensas' ? 'active' : '' ?>">Recompensas</a>
+          </div>
+        </div>
       </div>
 
       <div class="nav-actions">
-        <a href="<?= baseUrl('home/kids') ?>" class="nav-utility <?= $menu === 'kids' ? 'active' : '' ?>">Área Kids</a>
-        <a href="<?= baseUrl('home/recompensas') ?>" class="nav-utility nav-utility-accent <?= $menu === 'recompensas' ? 'active' : '' ?>">Recompensas</a>
-        <button id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">Tema</button>
+        <a href="<?= baseUrl('home/kids') ?>" class="nav-btn-cor nav-btn-kids <?= $menu === 'kids' ? 'active' : '' ?>">Área Kids</a>
+        <a href="<?= baseUrl('home/recompensas') ?>" class="nav-btn-cor nav-btn-recompensas <?= $menu === 'recompensas' ? 'active' : '' ?>">Recompensas</a>
+        <button type="button" id="themeToggle" class="theme-toggle-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
 
         <div class="nav-dropdown" id="navUserDropdown">
           <button type="button" class="nav-user-trigger" onclick="toggleDropdown(event, 'navUserDropdown')" aria-haspopup="true" aria-expanded="false" aria-label="Abrir conta">Conta</button>

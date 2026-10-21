@@ -11,15 +11,61 @@ class PontosModel extends BaseModel
     protected string $table = 'lancamento_pontos';
     protected string $pk = 'id_lancamento';
 
-    /** Quanto cada tipo de acao vale (creditos). */
+    /**
+     * Quanto cada acao vale (creditos).
+     *
+     * Regra justa: o registro vale pouco (evita spam de ocorrencias falsas);
+     * a maior parte dos pontos so entra quando a equipe confirma o problema
+     * e marca a ocorrencia como RESOLVIDA. A foto so pontua se a ocorrencia
+     * for confirmada (foto de evidencia valida).
+     */
     public const VALORES = [
-        'OCORRENCIA_REGISTRADA' => 50,
-        'FOTO_APROVADA'         => 20,
-        'OCORRENCIA_RESOLVIDA'  => 30,
-        'QUIZ_KIDS'             => 30,
-        'SEQUENCIA_ACESSO'      => 100,
-        'INDICACAO'             => 80,
+        'OCORRENCIA_REGISTRADA' => 10,  // ao registrar (logado e nao anonimo)
+        'OCORRENCIA_RESOLVIDA'  => 40,  // quando a equipe confirma e resolve
+        'FOTO_APROVADA'         => 15,  // foto de evidencia, creditada na confirmacao
     ];
+
+    /** Maximo de ocorrencias que rendem pontos de registro por dia, por usuario. */
+    public const LIMITE_REGISTROS_DIA = 3;
+
+    /**
+     * Regras de pontuacao prontas para as views (evita numeros fixos no HTML).
+     */
+    public static function regras(): array
+    {
+        $v = self::VALORES;
+        return [
+            'registro'   => $v['OCORRENCIA_REGISTRADA'],
+            'resolvida'  => $v['OCORRENCIA_RESOLVIDA'],
+            'foto'       => $v['FOTO_APROVADA'],
+            'limiteDia'  => self::LIMITE_REGISTROS_DIA,
+            'maximo'     => $v['OCORRENCIA_REGISTRADA'] + $v['OCORRENCIA_RESOLVIDA'] + $v['FOTO_APROVADA'],
+        ];
+    }
+
+    /** Quantos lancamentos de um tipo o usuario recebeu hoje. */
+    public function creditosHoje(int $idUsuario, string $tipo): int
+    {
+        $r = $this->db->select(
+            'SELECT COUNT(*) AS n FROM lancamento_pontos
+             WHERE id_usuario = ? AND tipo = ? AND quantidade > 0 AND criada_em >= CURDATE()',
+            [$idUsuario, $tipo],
+            'single'
+        );
+        return (int) ($r['n'] ?? 0);
+    }
+
+    /**
+     * Credita o registro de uma ocorrencia respeitando o limite diario.
+     * Retorna os pontos creditados (0 se o limite do dia ja foi atingido).
+     */
+    public function creditarRegistroOcorrencia(int $idUsuario, int $idOcorrencia, string $protocolo): int
+    {
+        if ($this->creditosHoje($idUsuario, 'OCORRENCIA_REGISTRADA') >= self::LIMITE_REGISTROS_DIA) {
+            return 0;
+        }
+        return $this->creditarAcaoUnica($idUsuario, 'OCORRENCIA_REGISTRADA', $idOcorrencia, 'Ocorrência ' . $protocolo);
+    }
 
     /** Saldo atual do usuario (SUM dos lancamentos). */
     public function saldo(int $idUsuario): int
@@ -75,7 +121,8 @@ class PontosModel extends BaseModel
     }
 
     /**
-     * Ranking dos usuarios por total de pontos (desc).
+     * Ranking dos moradores por total de pontos (desc).
+     * Administradores ficam fora (são eles que confirmam as ocorrências).
      * Inclui a contagem de ocorrencias de cada um.
      */
     public function ranking(int $limite = 10): array
@@ -86,7 +133,7 @@ class PontosModel extends BaseModel
                     (SELECT COUNT(*) FROM ocorrencia o WHERE o.id_usuario = u.id_usuario) AS ocorrencias
              FROM usuario u
              JOIN lancamento_pontos lp ON lp.id_usuario = u.id_usuario
-             WHERE u.ativo = 1
+             WHERE u.ativo = 1 AND u.tipo <> \'ADMINISTRADOR\'
              GROUP BY u.id_usuario, u.nome
              HAVING pontos > 0
              ORDER BY pontos DESC
@@ -94,16 +141,20 @@ class PontosModel extends BaseModel
         );
     }
 
-    /** Credita uma ação uma única vez por ocorrência. */
+    /**
+     * Credita uma ação uma única vez por ocorrência.
+     * Considera o saldo líquido do tipo (créditos menos estornos): se um
+     * crédito antigo foi estornado, a ação pode voltar a pontuar.
+     */
     public function creditarAcaoUnica(int $idUsuario, string $tipo, int $idOcorrencia, ?string $descricao = null): int
     {
-        $existe = $this->db->select(
-            'SELECT 1 FROM lancamento_pontos
-             WHERE id_usuario = ? AND tipo = ? AND id_ocorrencia = ? LIMIT 1',
+        $r = $this->db->select(
+            'SELECT COALESCE(SUM(quantidade), 0) AS liquido FROM lancamento_pontos
+             WHERE id_usuario = ? AND tipo = ? AND id_ocorrencia = ?',
             [$idUsuario, $tipo, $idOcorrencia],
             'single'
         );
-        if (!empty($existe)) {
+        if ((int) ($r['liquido'] ?? 0) > 0) {
             return 0;
         }
         return $this->creditarAcao($idUsuario, $tipo, $descricao, ['id_ocorrencia' => $idOcorrencia]);
@@ -117,7 +168,7 @@ class PontosModel extends BaseModel
                SELECT u.id_usuario
                FROM usuario u
                JOIN lancamento_pontos lp ON lp.id_usuario = u.id_usuario
-               WHERE u.ativo = 1
+               WHERE u.ativo = 1 AND u.tipo <> \'ADMINISTRADOR\'
                GROUP BY u.id_usuario
                HAVING SUM(lp.quantidade) > 0
              ) participantes',

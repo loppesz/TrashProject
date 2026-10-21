@@ -398,10 +398,15 @@
 /* =============================================
    TEMA KIDS — claro/escuro completo sem perder as cores dos jogos
    ============================================= */
+/* Botão de tema: só o emoji (🌙/☀️), redondo com borda */
 .kids-theme-btn {
-  background: rgba(255,255,255,.1); color: #dbe7f5; border: 1px solid rgba(255,255,255,.22);
-  border-radius: 999px; padding: 7px 12px; font-size: .76rem; font-weight: 800; cursor: pointer;
+  width: 38px; height: 38px; padding: 0; flex-shrink: 0;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,.12); color: #dbe7f5; border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 50%; font-size: 1.1rem; line-height: 1; cursor: pointer;
+  transition: transform .2s, border-color .2s;
 }
+.kids-theme-btn:hover { transform: rotate(20deg) scale(1.06); border-color: #fff; }
 .kids-body { background: var(--bg); color: var(--text); }
 .kids-activities, .kids-section { background: var(--bg); }
 .kids-section-title, .ranking-kids-container h2, .kids-modal h3,
@@ -438,5 +443,6 @@
 @media (max-width: 650px) {
   .kids-nav-right { gap: 6px; }
   .kids-nav-points { display: none; }
-  .kids-back-btn, .kids-theme-btn { padding: 6px 9px; font-size: .7rem; }
+  .kids-back-btn { padding: 6px 9px; font-size: .7rem; }
+  .kids-theme-btn { width: 34px; height: 34px; font-size: 1rem; }
 }

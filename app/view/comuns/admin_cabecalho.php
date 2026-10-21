@@ -63,7 +63,7 @@ $aSidebar = [
       <button class="sidebar-toggle" onclick="toggleSidebar()">☰</button>
       <h1 class="topbar-title"><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') ?></h1>
       <div class="topbar-right">
-        <button id="themeToggle" class="admin-theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">Tema</button>
+        <button type="button" id="themeToggle" class="admin-theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
         <span class="admin-user"><?= htmlspecialchars(auth_user()['nome'] ?? 'Administrador', ENT_QUOTES, 'UTF-8') ?></span>
         <a href="<?= baseUrl('usuario/logout') ?>" class="admin-logout">Sair</a>
       </div>
