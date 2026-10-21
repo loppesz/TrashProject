@@ -49,7 +49,11 @@ class Admin extends BaseController
         // Anexa as fotos (URLs) de cada ocorrencia para exibir no painel.
         $ocorrencias = $ocModel->listaAdmin();
         foreach ($ocorrencias as &$o) {
-            $o['fotos'] = array_column($ocModel->fotos((int) $o['id_ocorrencia']), 'url_arquivo');
+            // URLs da rota que le a foto do banco (restrita ao admin).
+            $o['fotos'] = array_map(
+                static fn($f) => 'ocorrencia/foto/' . (int) $f['id_ocorrencia_foto'],
+                $ocModel->fotos((int) $o['id_ocorrencia'])
+            );
         }
         unset($o);
 

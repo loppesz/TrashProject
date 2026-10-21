@@ -129,24 +129,45 @@ class OcorrenciaModel extends BaseModel
         return $proto;
     }
 
-    /** Grava uma foto de evidencia vinculada a ocorrencia. */
-    public function adicionarFoto(int $idOcorrencia, string $url, ?string $mime, ?int $tamanho): int
+    /**
+     * Grava a foto de evidencia NO BANCO (coluna conteudo, LONGBLOB).
+     * Os bytes ja chegam sem metadados EXIF/GPS (tratados no controller).
+     */
+    public function adicionarFoto(int $idOcorrencia, string $conteudo, string $mime): int
     {
-        return $this->db->insert(
-            'INSERT INTO ocorrencia_foto (id_ocorrencia, url_arquivo, tipo_mime, tamanho_bytes)
-             VALUES (?, ?, ?, ?)',
-            [$idOcorrencia, $url, $mime, $tamanho]
+        $pdo  = $this->db->conecta();
+        $stmt = $pdo->prepare(
+            'INSERT INTO ocorrencia_foto (id_ocorrencia, conteudo, tipo_mime, tamanho_bytes)
+             VALUES (?, ?, ?, ?)'
         );
+        $stmt->bindValue(1, $idOcorrencia, PDO::PARAM_INT);
+        $stmt->bindValue(2, $conteudo, PDO::PARAM_LOB);
+        $stmt->bindValue(3, $mime);
+        $stmt->bindValue(4, strlen($conteudo), PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (int) $pdo->lastInsertId();
     }
 
-    /** Lista as fotos (URLs) vinculadas a uma ocorrencia, em ordem de envio. */
+    /** Lista os ids das fotos de uma ocorrencia (sem carregar os bytes). */
     public function fotos(int $idOcorrencia): array
     {
         return $this->db->select(
-            'SELECT url_arquivo FROM ocorrencia_foto
+            'SELECT id_ocorrencia_foto FROM ocorrencia_foto
              WHERE id_ocorrencia = ?
              ORDER BY id_ocorrencia_foto',
             [$idOcorrencia]
+        );
+    }
+
+    /** Busca uma foto pelo id (bytes + mime; url_arquivo para fotos legadas em disco). */
+    public function foto(int $idFoto): array
+    {
+        return $this->db->select(
+            'SELECT conteudo, tipo_mime, url_arquivo FROM ocorrencia_foto
+             WHERE id_ocorrencia_foto = ? LIMIT 1',
+            [$idFoto],
+            'single'
         );
     }
 
