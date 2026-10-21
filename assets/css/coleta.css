@@ -661,7 +661,59 @@
 .mr-item.mr-aviso { grid-column: 1 / -1; background: var(--warning-bg, #fef3c7); color: var(--warning, #92400e); line-height: 1.5; }
 .mr-item.mr-aviso a { color: inherit; font-weight: 800; }
 
+/* =============================================
+   GRADE DE BAIRROS (cards lado a lado)
+   ============================================= */
+.bairros-grade {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  align-items: stretch;
+}
+.bairro-card {
+  display: flex; flex-direction: column; gap: 12px;
+  background: var(--surface, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-top: 4px solid var(--border-strong, #cbd5e1);
+  border-radius: 14px;
+  padding: 16px 16px 14px;
+  box-shadow: var(--shadow, 0 1px 3px rgba(0,0,0,.06));
+  transition: transform .2s, box-shadow .2s, border-color .2s;
+}
+.bairro-card.tem-seletiva { border-top-color: var(--success, #16a34a); }
+.bairro-card.sem-dados { border-top-color: var(--info, #1d4ed8); }
+.bairro-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-md, 0 8px 24px rgba(0,0,0,.1)); }
+
+.bc-topo { display: flex; align-items: flex-start; justify-content: space-between; gap: 10px; }
+.bc-topo h3 { font-size: 1rem; font-weight: 800; line-height: 1.3; color: var(--text, #0f172a); }
+.bc-tag {
+  flex-shrink: 0; padding: 3px 9px; border-radius: 999px;
+  font-size: .68rem; font-weight: 800; white-space: nowrap;
+}
+.bc-tag.seletiva { background: var(--success-bg, #dcfce7); color: var(--success, #15803d); }
+.bc-tag.comum { background: var(--surface-2, #f1f5f9); color: var(--text-soft, #334155); border: 1px solid var(--border, #e2e8f0); }
+.bc-tag.sem { background: var(--info-bg, #eff6ff); color: var(--info, #1d4ed8); }
+
+.bc-bloco + .bc-bloco { padding-top: 10px; border-top: 1px solid var(--border, #e2e8f0); }
+.bc-titulo {
+  display: flex; align-items: center; gap: 6px; margin-bottom: 6px;
+  font-size: .8rem; font-weight: 800; color: var(--text, #0f172a);
+}
+.bc-titulo small { font-weight: 600; color: var(--text-muted, #64748b); }
+.bc-titulo::before { content: ''; width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.bc-titulo.seletiva::before { background: var(--success, #16a34a); }
+.bc-titulo.comum::before { background: var(--text-muted, #64748b); }
+.bairro-card .hc-vazio { margin: 0; }
+
+.bc-sem-dados { font-size: .86rem; line-height: 1.55; color: var(--text-muted, #64748b); }
+.bc-sem-dados a { color: var(--accent-strong, #15803d); font-weight: 700; }
+
+/* Botão sempre no rodapé do card, mesmo com alturas diferentes */
+.bc-btn { margin-top: auto; align-self: flex-start; }
+.bc-vazio-filtro { padding: 28px; text-align: center; color: var(--text-muted, #64748b); font-style: italic; }
+
 @media (max-width: 640px) {
   .tg-filtros { width: 100%; }
   .tg-filtros .tg-busca { flex: 1 1 180px; }
+  .bairros-grade { grid-template-columns: 1fr; gap: 12px; }
 }

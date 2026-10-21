@@ -259,49 +259,50 @@
           </select>
         </div>
       </div>
-      <div class="tabela-geral-wrap">
-        <table class="tabela-geral" id="tabelaGeral">
-          <thead>
-            <tr>
-              <th>Bairro / Região</th>
-              <th>Coleta seletiva <small>(recicláveis)</small></th>
-              <th>Coleta comum <small>(lixo doméstico)</small></th>
-              <th><span class="sr-only">Ação</span></th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($bairros as $b): ?>
-              <?php
-              $temSeletiva = !empty($b['seletiva']);
-              $temComum    = !empty($b['comum']);
-              ?>
-              <tr data-bairro="<?= htmlspecialchars($semAcento($b['nome']), ENT_QUOTES) ?>" data-seletiva="<?= $temSeletiva ? '1' : '0' ?>">
-                <td><strong><?= htmlspecialchars($b['nome']) ?></strong></td>
-                <?php if (!$temSeletiva && !$temComum): ?>
-                  <td colspan="2" class="hc-sem-dados">
-                    Horário ainda não divulgado pelo <?= htmlspecialchars($fonte['orgao']) ?>.
-                    Informe-se pelo <a href="tel:<?= preg_replace('/\D/', '', $fonte['telefone']) ?>"><?= htmlspecialchars($fonte['telefone']) ?></a>.
-                  </td>
+      <!-- Bairros em grade (cards lado a lado) -->
+      <div class="bairros-grade" id="gradeBairros">
+        <?php foreach ($bairros as $b): ?>
+          <?php
+          $temSeletiva = !empty($b['seletiva']);
+          $temComum    = !empty($b['comum']);
+          $semDados    = !$temSeletiva && !$temComum;
+          $tag = $temSeletiva
+              ? ['seletiva', 'Coleta seletiva']
+              : ($semDados ? ['sem', 'Sem horário'] : ['comum', 'Só coleta comum']);
+          ?>
+          <article class="bairro-card <?= $temSeletiva ? 'tem-seletiva' : '' ?> <?= $semDados ? 'sem-dados' : '' ?>"
+                   data-bairro="<?= htmlspecialchars($semAcento($b['nome']), ENT_QUOTES) ?>" data-seletiva="<?= $temSeletiva ? '1' : '0' ?>">
+            <header class="bc-topo">
+              <h3><?= htmlspecialchars($b['nome']) ?></h3>
+              <span class="bc-tag <?= $tag[0] ?>"><?= $tag[1] ?></span>
+            </header>
+
+            <?php if ($semDados): ?>
+              <p class="bc-sem-dados">
+                Horário ainda não divulgado pelo <?= htmlspecialchars($fonte['orgao']) ?>.
+                Informe-se pelo <a href="tel:<?= preg_replace('/\D/', '', $fonte['telefone']) ?>"><?= htmlspecialchars($fonte['telefone']) ?></a>.
+              </p>
+            <?php else: ?>
+              <div class="bc-bloco">
+                <h4 class="bc-titulo seletiva">Coleta seletiva <small>recicláveis</small></h4>
+                <?php if ($temSeletiva): ?>
+                  <?= $trechos($b['seletiva'], true, 'seletiva') ?>
                 <?php else: ?>
-                  <td>
-                    <?php if ($temSeletiva): ?>
-                      <?= $trechos($b['seletiva'], true, 'seletiva') ?>
-                    <?php else: ?>
-                      <span class="hc-vazio">Sem coleta seletiva porta a porta.
-                        <a href="<?= baseUrl('ponto') ?>">Ver pontos de descarte</a></span>
-                    <?php endif; ?>
-                  </td>
-                  <td>
-                    <?= $temComum ? $trechos($b['comum'], false, 'comum') : '<span class="hc-vazio">Não divulgado</span>' ?>
-                  </td>
+                  <p class="hc-vazio">Sem coleta porta a porta. <a href="<?= baseUrl('ponto') ?>">Ver pontos de descarte</a></p>
                 <?php endif; ?>
-                <td><button type="button" class="btn-ver-coleta" onclick="consultarBairro(<?= (int) $b['id_bairro'] ?>)">Ver detalhes</button></td>
-              </tr>
-            <?php endforeach; ?>
-            <tr id="tgVazio" hidden><td colspan="4" class="hc-sem-dados">Nenhum bairro encontrado com esse filtro.</td></tr>
-          </tbody>
-        </table>
+              </div>
+              <div class="bc-bloco">
+                <h4 class="bc-titulo comum">Coleta comum <small>lixo doméstico</small></h4>
+                <?= $temComum ? $trechos($b['comum'], false, 'comum') : '<p class="hc-vazio">Não divulgado</p>' ?>
+              </div>
+            <?php endif; ?>
+
+            <button type="button" class="btn-ver-coleta bc-btn" onclick="consultarBairro(<?= (int) $b['id_bairro'] ?>)"
+                    aria-label="Ver detalhes da coleta no bairro <?= htmlspecialchars($b['nome'], ENT_QUOTES) ?>">Ver detalhes</button>
+          </article>
+        <?php endforeach; ?>
       </div>
+      <p class="bc-vazio-filtro" id="tgVazio" hidden>Nenhum bairro encontrado com esse filtro.</p>
       <p class="tg-fonte">
         Fonte: <a href="<?= htmlspecialchars($fonte['url'], ENT_QUOTES) ?>" target="_blank" rel="noopener noreferrer">cronograma de coleta do <?= htmlspecialchars($fonte['orgao']) ?></a> (outubro/2026).
         Na coleta comum, o horário é o de passagem aproximada do caminhão e pode variar alguns minutos.

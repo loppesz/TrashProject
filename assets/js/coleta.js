@@ -406,11 +406,12 @@ function filtrarBairros() {
   const termo = semAcento(document.getElementById('buscaBairro')?.value.trim() || '');
   const tipo = document.getElementById('filtroSeletiva')?.value || '';
   let visiveis = 0;
-  document.querySelectorAll('#tabelaGeral tbody tr[data-bairro]').forEach(tr => {
-    const okTexto = !termo || (tr.dataset.bairro || '').includes(termo) || semAcento(tr.textContent).includes(termo);
-    const okTipo = !tipo || tr.dataset.seletiva === tipo;
+  // Filtra pelo nome do bairro (data-bairro já vem sem acento) e pelo tipo de coleta.
+  document.querySelectorAll('#gradeBairros .bairro-card[data-bairro]').forEach(card => {
+    const okTexto = !termo || (card.dataset.bairro || '').includes(termo);
+    const okTipo = !tipo || card.dataset.seletiva === tipo;
     const mostrar = okTexto && okTipo;
-    tr.style.display = mostrar ? '' : 'none';
+    card.style.display = mostrar ? '' : 'none';
     if (mostrar) visiveis++;
   });
   const vazio = document.getElementById('tgVazio');
