@@ -22,8 +22,8 @@ class Admin extends BaseController
 
         $totalOc     = $ocModel->total();
         $resolvidas  = $contagens['RESOLVIDA'] ?? 0;
-        $totalMat    = count($this->model('Material')->lista());
-        $totalPontos = count($this->model('Ponto')->lista());
+        $totalMat    = $this->model('Material')->totalAtivos();
+        $totalPontos = $this->model('Ponto')->totalAtivos();
         $sugestoesPendentes = $this->model('Sugestao')->totalPendentes();
 
         $this->view('admin/dashboard', [
@@ -37,6 +37,8 @@ class Admin extends BaseController
             'recentes'      => $recentes,
             'porBairro'     => $ocModel->contagemPorBairro(),
             'porTipo'       => $ocModel->contagemPorTipo(),
+            'porStatus'     => $contagens,
+            'locaisFrequentes' => $ocModel->locaisDescarteIrregular(10),
         ]);
     }
 
@@ -76,7 +78,18 @@ class Admin extends BaseController
         $admin      = auth_user();
 
         if ($id > 0 && $admin) {
-            $this->model('Ocorrencia')->atualizarStatus($id, $status, $observacao, (int) $admin['id_usuario']);
+            $ocModel = $this->model('Ocorrencia');
+            $anterior = $ocModel->getById($id);
+            $ocModel->atualizarStatus($id, $status, $observacao, (int) $admin['id_usuario']);
+
+            if ($status === 'RESOLVIDA' && ($anterior['status'] ?? '') !== 'RESOLVIDA' && !empty($anterior['id_usuario'])) {
+                $this->model('Pontos')->creditarAcaoUnica(
+                    (int) $anterior['id_usuario'],
+                    'OCORRENCIA_RESOLVIDA',
+                    $id,
+                    'Ocorrência ' . ($anterior['protocolo'] ?? '') . ' resolvida'
+                );
+            }
         }
 
         // Passa o id alterado para o front ocultar essa ocorrencia da lista (triagem).
@@ -370,6 +383,8 @@ class Admin extends BaseController
             'taxa'         => $total > 0 ? (int) round(($resolvidas / $total) * 100) : 0,
             'porBairro'    => $ocModel->contagemPorBairro(),
             'porTipo'      => $ocModel->contagemPorTipo(),
+            'porStatus'    => $contagens,
+            'locaisFrequentes' => $ocModel->locaisDescarteIrregular(10),
         ]);
     }
 }

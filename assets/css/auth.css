@@ -298,3 +298,18 @@ html.dark .strength-bar         { background: #334155; }
   .login-section { padding: 32px 16px; }
   .login-card    { padding: 24px 18px; }
 }
+
+/* Tema de autenticação coerente com a preferência global */
+.login-section { background: linear-gradient(135deg, #edfdf4, #f9fffc 55%, #e8f5ff); }
+.login-brand { color: var(--text); }
+.login-brand p { color: var(--text-muted); }
+.login-feature-item { color: var(--text-soft); }
+.login-card { background: var(--surface); border: 1px solid var(--border); box-shadow: var(--shadow-md); }
+.login-card-header h2 { color: var(--text); }
+.login-card-header p, .login-signup { color: var(--text-muted); }
+.login-row label, .termos-group { color: var(--text-soft); }
+.login-divider::before, .login-divider::after, .form-section-label::after { background: var(--border); }
+.dark .login-section { background: linear-gradient(135deg, #070b14, #101826 60%, #09352b); }
+.dark .login-brand { color: #fff; }
+.dark .login-brand p { color: #aab7c8; }
+.dark .login-feature-item { color: #d5deeb; }

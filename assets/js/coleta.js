@@ -87,9 +87,9 @@ function mostrarResultado(dados) {
   setTxt('resultadoEndereco', 'Bairro ' + dados.nome + ' – Muriaé-MG');
   setTxt('horarioInfo', dados.horario);
 
-  // Equipe responsável
-  const equipeEl = document.querySelector('#diasSemana')?.closest('.resultado-card-rich')?.querySelector('.hr-item:nth-child(2) p');
-  if (equipeEl && dados.equipe) equipeEl.textContent = dados.equipe;
+  // Equipe e contato cadastrados no banco.
+  setTxt('equipeInfo', dados.equipe || 'Não informada');
+  setTxt('telefoneEquipe', dados.telefone || 'Não informado');
 
   // Próxima coleta
   const hoje = new Date();

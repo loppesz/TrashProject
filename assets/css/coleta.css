@@ -556,3 +556,45 @@
   .rhr-countdown { align-self: flex-start; }
   .tg-header { flex-direction: column; align-items: flex-start; }
 }
+
+/* =============================================
+   TEMA SEMÂNTICO — coleta
+   ============================================= */
+.coleta-hero { background: linear-gradient(135deg, #eafbf1, #f9fffc 55%, #e8f5ff); border-bottom: 1px solid var(--border); }
+.coleta-hero-text h1 { color: var(--text); }
+.coleta-hero-text p { color: var(--text-soft); }
+.dark .coleta-hero { background: linear-gradient(135deg, #070b14, #101826 60%, #09352b); }
+.dark .coleta-hero-text h1 { color: #fff; }
+.dark .coleta-hero-text p { color: #cbd5e1; }
+.coleta-form-card, .resultado-header-rich, .resultado-card-rich,
+.calendario-section, .mapa-resultado-section, .tabela-geral-wrap {
+  background: var(--surface); border-color: var(--border); box-shadow: var(--shadow);
+}
+.coleta-form-card h3, .rhr-left h2, .proxima-dia, .resultado-card-rich h3,
+.hr-item p, .calendario-header h3, .mapa-resultado-header h3,
+.mri-item strong { color: var(--text); }
+.rhr-left p, .proxima-data, .hr-item strong, .leg-item, .mri-item p { color: var(--text-muted); }
+.input-with-icon, .coleta-form-card .form-group select, .tg-busca {
+  background: var(--surface-2); border-color: var(--border); color: var(--text) !important;
+  -webkit-text-fill-color: var(--text) !important;
+}
+.coleta-form-card .form-group select option { background: var(--surface); color: var(--text); }
+.coleta-form-card .form-group label { color: var(--text-soft); }
+.resultado-card-rich h3, .nao-recolhidos { border-color: var(--border); }
+.dsv-item.inativo, .cal-nav button, .mri-item { background: var(--surface-2); color: var(--text-muted); }
+.hr-item p, .dica-item p, .tabela-geral td { color: var(--text-soft); }
+.mr-item { background: var(--success-bg); color: var(--success); }
+.nr-chips span { background: var(--danger-bg); color: var(--danger); }
+.nao-recolhidos h4, .dica-item.danger p { color: var(--danger); }
+.dica-num { background: var(--accent); color: #fff; }
+.alerta-proxima { background: var(--warning-bg); color: var(--warning); border-color: var(--warning); }
+.cal-day { color: var(--text-soft); }
+.cal-day.outro-mes { color: var(--border-strong); }
+.cal-day.coleta-dia, .coleta-dia { background: var(--success-bg); color: var(--success); }
+.cal-day.hoje, .hoje-dot { background: var(--text); color: var(--surface) !important; }
+.tabela-geral-section { background: var(--bg-alt); border-color: var(--border); }
+.tg-header h2 { color: var(--text) !important; -webkit-text-fill-color: var(--text) !important; }
+.tabela-geral th { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+.tabela-geral td { border-color: var(--border); }
+.tabela-geral tr:hover td { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+.dia-badge, .btn-ver-coleta { background: var(--success-bg); color: var(--success); border-color: color-mix(in srgb, var(--success) 35%, var(--border)); }

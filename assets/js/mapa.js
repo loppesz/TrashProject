@@ -5,7 +5,9 @@
 // =============================================
 
 // Centro aproximado de Muriaé-MG
-const MURIAE_CENTER = [-21.1306, -42.3664];
+// Limites vêm de window.MURIAE_GEO (definido no cabeçalho a partir do Config.php).
+const MURIAE_CENTER = window.MURIAE_GEO?.center || [-21.1306, -42.3664];
+const MURIAE_BOUNDS = window.MURIAE_GEO?.bounds || [[-21.31, -42.57], [-20.86, -42.25]];
 
 // Guarda os marcadores por id de card para integrar com os filtros
 const mapaMarcadores = {};
@@ -69,7 +71,10 @@ function initMapaPontos() {
   mapaLeaflet = L.map(el, {
     center: MURIAE_CENTER,
     zoom: 14,
-    scrollWheelZoom: false, // evita "sequestrar" o scroll da página
+    maxBounds: MURIAE_BOUNDS,
+    maxBoundsViscosity: 1,
+    minZoom: 11,
+    scrollWheelZoom: false,
   });
 
   // Camada base do OpenStreetMap (gratuita, sem chave de API)
@@ -87,6 +92,8 @@ function initMapaPontos() {
     const lat = parseFloat(card.dataset.lat);
     const lng = parseFloat(card.dataset.lng);
     if (Number.isNaN(lat) || Number.isNaN(lng)) return;
+    if (lat < MURIAE_BOUNDS[0][0] || lat > MURIAE_BOUNDS[1][0] ||
+        lng < MURIAE_BOUNDS[0][1] || lng > MURIAE_BOUNDS[1][1]) return;
 
     const id = card.id;
     const status = (card.dataset.status || 'aberto').toLowerCase();

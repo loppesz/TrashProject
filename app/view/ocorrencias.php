@@ -82,14 +82,21 @@
             <div class="form-group">
               <label>Endereço da ocorrência *</label>
               <div class="input-icon-wrap">
-                <span>📍</span>
-                <input type="text" id="localOcorrencia" name="endereco" placeholder="Rua, número – Bairro" required>
-                <button type="button" class="use-location-btn" onclick="usarLocalizacao()">📡 Usar minha localização</button>
+                <input type="text" id="localOcorrencia" name="endereco" placeholder="Rua e número em Muriaé" required autocomplete="street-address">
+                <button type="button" class="use-location-btn" onclick="usarLocalizacao()">Usar localização atual</button>
               </div>
-              <!-- Coordenadas (uso interno): enviadas separadas, nunca exibidas no histórico público. -->
               <input type="hidden" id="latOcorrencia" name="lat" value="">
               <input type="hidden" id="lngOcorrencia" name="lng" value="">
-              <small id="gpsAviso" class="gps-aviso" style="display:none;color:#64748b;">📍 Localização GPS anexada (uso interno da equipe, não aparece no histórico público). <button type="button" class="gps-limpar" onclick="limparLocalizacao()" style="background:none;border:none;color:#dc2626;cursor:pointer;text-decoration:underline;padding:0;">remover</button></small>
+              <input type="hidden" id="precisaoOcorrencia" name="precisao" value="">
+              <div id="gpsAviso" class="gps-aviso" style="display:none;">
+                <div>
+                  <strong id="gpsStatus">Localização confirmada</strong>
+                  <span id="gpsPrecisao"></span>
+                </div>
+                <button type="button" class="gps-limpar" onclick="limparLocalizacao()">Remover</button>
+              </div>
+              <div id="localizacaoPreview" class="localizacao-preview" style="display:none;" aria-label="Prévia da localização selecionada"></div>
+              <small>O endereço preenchido pelo GPS pode ser editado antes do envio.</small>
             </div>
 
             <div class="form-row-2">
@@ -97,18 +104,20 @@
                 <label>Bairro *</label>
                 <select id="bairroOcorrencia" name="bairro" required>
                   <option value="">Selecione...</option>
-                  <option value="Centro">Centro</option>
-                  <option value="Bairro Novo">Bairro Novo</option>
-                  <option value="Vila Nova">Vila Nova</option>
-                  <option value="Jardim América">Jardim América</option>
-                  <option value="Bairro Escolar">Bairro Escolar</option>
-                  <option value="Outro">Outro</option>
+                  <?php foreach (($bairrosAtivos ?? []) as $bairro): ?>
+                    <option value="<?= htmlspecialchars($bairro['nome'], ENT_QUOTES) ?>"><?= htmlspecialchars($bairro['nome']) ?></option>
+                  <?php endforeach; ?>
                 </select>
               </div>
               <div class="form-group">
-                <label>Data da ocorrência</label>
-                <input type="date" id="dataOcorrencia" name="data_ocorrencia">
+                <label>Cidade *</label>
+                <input type="text" id="cidadeOcorrencia" name="cidade" value="Muriaé - MG" required autocomplete="address-level2">
               </div>
+            </div>
+
+            <div class="form-group form-group-compact">
+              <label>Data da ocorrência</label>
+              <input type="date" id="dataOcorrencia" name="data_ocorrencia">
             </div>
 
             <div class="form-group">
@@ -210,14 +219,11 @@
 
         <!-- TIPOS E PONTOS -->
         <div class="oc-info-card">
-          <h3>💰 Pontuação por tipo</h3>
+          <h3>Pontuação</h3>
           <div class="pontos-lista">
-            <div class="pl-item"><span>🗑️ Descarte irregular</span><strong>50 pts</strong></div>
-            <div class="pl-item"><span>⚠️ Lixo tóxico</span><strong>80 pts</strong></div>
-            <div class="pl-item"><span>🧱 Entulho</span><strong>60 pts</strong></div>
-            <div class="pl-item"><span>🚛 Coleta não realizada</span><strong>40 pts</strong></div>
-            <div class="pl-item"><span>📸 + Foto aprovada</span><strong>+20 pts</strong></div>
-            <div class="pl-item"><span>✅ Quando resolvida</span><strong>+30 pts</strong></div>
+            <div class="pl-item"><span>Ocorrência registrada</span><strong>50 pts</strong></div>
+            <div class="pl-item"><span>Foto anexada</span><strong>+20 pts</strong></div>
+            <div class="pl-item"><span>Quando resolvida</span><strong>+30 pts</strong></div>
           </div>
           <a href="<?= baseUrl('home/recompensas') ?>" class="link-recompensas">Ver o que fazer com os pontos →</a>
         </div>
@@ -276,12 +282,19 @@
           </div>
         </div>
 
-        <!-- PROTOCOLOS RECENTES DO USUÁRIO (SIMULADO) -->
         <div class="consultar-recentes">
-          <h3>📋 Suas ocorrências recentes</h3>
-          <p class="consultar-sub">Registros desta sessão</p>
-          <div id="minhasOcorrencias" class="minhas-oc-lista">
-            <div class="mo-vazio">Você ainda não registrou nenhuma ocorrência nesta sessão.</div>
+          <h3>Suas ocorrências recentes</h3>
+          <p class="consultar-sub">Registros vinculados à sua conta</p>
+          <div class="minhas-oc-lista" id="minhasOcorrencias">
+            <?php foreach (($minhasOcorrencias ?? []) as $minha): ?>
+              <button type="button" class="mo-item" onclick="consultarOcorrenciaDaLista('<?= htmlspecialchars($minha['protocolo'], ENT_QUOTES) ?>')">
+                <strong><?= htmlspecialchars(rotuloTipoOcorrencia($minha['tipo'])) ?> — <?= htmlspecialchars($minha['bairro']) ?></strong>
+                <small><span><?= htmlspecialchars($minha['protocolo']) ?></span><span><?= date('d/m/Y', strtotime($minha['criada_em'])) ?></span></small>
+              </button>
+            <?php endforeach; ?>
+            <?php if (empty($minhasOcorrencias)): ?>
+              <div class="mo-vazio"><?= !empty($usuarioLogado) ? 'Você ainda não registrou ocorrências.' : 'Entre na sua conta para ver seus registros.' ?></div>
+            <?php endif; ?>
           </div>
         </div>
       </div>
@@ -317,22 +330,14 @@
         </select>
         <select id="filtroBairroH" onchange="filtrarHistorico()">
           <option value="">Todos os bairros</option>
-          <option value="Centro">Centro</option>
-          <option value="Bairro Novo">Bairro Novo</option>
-          <option value="Vila Nova">Vila Nova</option>
-          <option value="Jardim América">Jardim América</option>
+          <?php foreach (($bairrosAtivos ?? []) as $bairro): ?>
+            <option value="<?= htmlspecialchars($bairro['nome'], ENT_QUOTES) ?>"><?= htmlspecialchars($bairro['nome']) ?></option>
+          <?php endforeach; ?>
         </select>
       </div>
 
       <!-- LISTA DE OCORRÊNCIAS -->
       <div class="historico-lista" id="historicoLista"></div>
-
-      <!-- PAGINAÇÃO -->
-      <div class="historico-paginacao" id="historicoPage">
-        <button class="page-btn active">1</button>
-        <button class="page-btn">2</button>
-        <button class="page-btn">3</button>
-      </div>
 
     </div>
   </div>
@@ -344,54 +349,39 @@
     <div class="container">
       <div class="mapa-oc-section">
         <div class="mapa-oc-header">
-          <h2>🗺️ Mapa de Ocorrências</h2>
-          <p>Visualize os locais com mais registros de problemas na cidade.</p>
-          <a href="https://www.google.com/maps/search/descarte+irregular+Juiz+de+Fora" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+          <div>
+            <h2>Mapa de ocorrências em Muriaé</h2>
+            <p>Os marcadores usam os registros públicos com localização disponível. Por privacidade, a posição pública é aproximada.</p>
+          </div>
+          <button type="button" class="open-maps-btn" onclick="centralizarMapaNaMinhaLocalizacao()">Minha localização</button>
         </div>
 
-        <!-- LEGENDA RÁPIDA -->
         <div class="mapa-oc-legenda">
-          <span class="mol-item"><span style="color:#ef4444">🔴</span> Alta urgência</span>
-          <span class="mol-item"><span style="color:#f59e0b">🟡</span> Média urgência</span>
-          <span class="mol-item"><span style="color:#22c55e">🟢</span> Resolvida</span>
+          <span class="mol-item"><span class="map-dot alta"></span> Alta urgência</span>
+          <span class="mol-item"><span class="map-dot media"></span> Média urgência</span>
+          <span class="mol-item"><span class="map-dot resolvida"></span> Resolvida</span>
         </div>
 
-        <div class="mapa-oc-embed">
-          <iframe
-            src="https://maps.google.com/maps?q=Juiz+de+Fora+MG+descarte+ilegal&output=embed&z=13"
-            width="100%" height="480"
-            style="border:0; border-radius:16px;"
-            allowfullscreen="" loading="lazy">
-          </iframe>
-        </div>
+        <div id="mapaOcorrencias" class="mapa-oc-leaflet" role="application" aria-label="Mapa de ocorrências ambientais em Muriaé"></div>
+        <p id="mapaOcorrenciasAviso" class="mapa-oc-aviso" hidden></p>
 
-        <!-- STATS DO MAPA -->
         <div class="mapa-oc-stats">
-          <div class="mos-item">
-            <strong>Centro</strong>
-            <div class="mos-bar-wrap"><div class="mos-bar" style="width:80%;background:#ef4444"></div></div>
-            <span>8 ocorrências</span>
-          </div>
-          <div class="mos-item">
-            <strong>Vila Nova</strong>
-            <div class="mos-bar-wrap"><div class="mos-bar" style="width:60%;background:#f59e0b"></div></div>
-            <span>6 ocorrências</span>
-          </div>
-          <div class="mos-item">
-            <strong>Bairro Novo</strong>
-            <div class="mos-bar-wrap"><div class="mos-bar" style="width:40%;background:#eab308"></div></div>
-            <span>4 ocorrências</span>
-          </div>
-          <div class="mos-item">
-            <strong>Jardim América</strong>
-            <div class="mos-bar-wrap"><div class="mos-bar" style="width:30%;background:#22c55e"></div></div>
-            <span>3 ocorrências</span>
-          </div>
-          <div class="mos-item">
-            <strong>Bairro Escolar</strong>
-            <div class="mos-bar-wrap"><div class="mos-bar" style="width:30%;background:#22c55e"></div></div>
-            <span>3 ocorrências</span>
-          </div>
+          <?php
+          $mapaPorBairro = $mapaPorBairro ?? [];
+          $maxMapa = 0;
+          foreach ($mapaPorBairro as $linha) { $maxMapa = max($maxMapa, (int) $linha['total']); }
+          ?>
+          <?php foreach ($mapaPorBairro as $linha): ?>
+            <?php $pctMapa = $maxMapa > 0 ? (int) round(((int) $linha['total'] / $maxMapa) * 100) : 0; ?>
+            <div class="mos-item">
+              <strong><?= htmlspecialchars($linha['bairro']) ?></strong>
+              <div class="mos-bar-wrap"><div class="mos-bar" style="width:<?= $pctMapa ?>%"></div></div>
+              <span><?= (int) $linha['total'] ?> ocorrência(s)</span>
+            </div>
+          <?php endforeach; ?>
+          <?php if (empty($mapaPorBairro)): ?>
+            <p class="empty-state">Ainda não há ocorrências públicas para representar no mapa.</p>
+          <?php endif; ?>
         </div>
       </div>
     </div>
@@ -424,7 +414,7 @@
   // --- Dados reais do historico publico, no formato esperado pelo ocorrencias.js ---
   $statusJs = [
       'NOVA' => 'nova', 'EM_ANALISE' => 'analise',
-      'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'resolvida',
+      'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'arquivada',
   ];
   $tipoSlug = [
       'DESCARTE_IRREGULAR' => 'descarte-irregular', 'COLETA_NAO_REALIZADA' => 'coleta',
@@ -455,6 +445,7 @@
     // Base URL e histórico público vindos do servidor (usados por ocorrencias.js)
     window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;
     window.HISTORICO_DB = <?= json_encode($historicoJs, JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+    window.MAPA_OCORRENCIAS = <?= json_encode($mapaOcorrencias ?? [], JSON_UNESCAPED_UNICODE | JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
   </script>
 
   <?php if (!empty($protocoloCriado)): ?>

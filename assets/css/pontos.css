@@ -460,3 +460,31 @@
   .eco-banner-img { min-height: 160px; }
   .eco-banner-text { padding: 22px 20px; }
 }
+
+/* =============================================
+   TEMA SEMÂNTICO — pontos de descarte
+   ============================================= */
+.filtros-avancados { border-color: var(--border); }
+.busca-wrap, .chip, .ponto-rich-card, .sem-resultados-rich { background: var(--surface); border-color: var(--border); }
+.busca-wrap input { color: var(--text); }
+.busca-wrap input::placeholder { color: var(--text-muted); }
+.busca-clear:hover, .prc-header:hover, .prc-toggle-btn, .mat-chip, .gal-thumb,
+.act-btn.compartilhar, .como-chegar-btn { background: var(--surface-2); color: var(--text-soft); }
+.chip { color: var(--text-soft); }
+.prc-title-row h3, .prc-hoje-hora, .prc-detail-section h4, .prc-map-header h4,
+.prc-avaliacao span:first-child, .gallery-placeholder p { color: var(--text); }
+.prc-endereco, .ct-item, .gallery-placeholder, .gallery-placeholder small,
+.av-count, .sem-resultados-rich p { color: var(--text-muted); }
+.prc-status-dot { border-color: var(--surface); }
+.prc-expanded, .prc-map-section, .horario-table td { border-color: var(--border); }
+.gallery-placeholder { background: color-mix(in srgb, var(--success) 10%, var(--surface-2)); }
+.horario-table td { color: var(--text-soft); }
+.hoje-row { background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.prc-status.aberto, .hst.aberto, .ma-item.aceito, .act-btn.whatsapp { background: var(--success-bg); color: var(--success); }
+.prc-status.fechado, .hst.fechado, .ma-item.nao-aceito, .danger-alert { background: var(--danger-bg); color: var(--danger); }
+.info-alert, .info-extra-box { background: var(--info-bg); color: var(--info); }
+.mapa-geral-section { background: var(--bg-alt); border-color: var(--border); }
+.sugira-card { background: linear-gradient(135deg, color-mix(in srgb, var(--accent) 15%, var(--surface)), color-mix(in srgb, var(--info) 10%, var(--surface))); border: 1px solid var(--border); }
+.sugira-text h3 { color: var(--text); }
+.sugira-text p { color: var(--text-muted); }
+.dark .sugira-card { background: linear-gradient(135deg, #0b111d, #172234); }

@@ -17,9 +17,12 @@
     <div class="container nav-inner">
       <a href="<?= baseUrl() ?>" class="logo kids-logo"><span>🌍</span><span>ColetaFácil Kids</span></a>
       <div class="kids-nav-right">
-        <div class="kids-nav-points">⭐ <span id="kidsPointsNav">0</span> pts</div>
-        <a href="<?= baseUrl() ?>" class="kids-back-btn">← Voltar ao site</a>
-        <a href="<?= baseUrl('usuario/login') ?>">🔑 Entrar</a>
+        <div class="kids-nav-points"><span id="kidsPointsNav">0</span> pts</div>
+        <button id="themeToggle" class="kids-theme-btn" onclick="toggleTheme()">Tema</button>
+        <a href="<?= baseUrl() ?>" class="kids-back-btn">Voltar ao site</a>
+        <?php if (empty($usuario)): ?>
+          <a href="<?= baseUrl('usuario/login') ?>" class="kids-back-btn">Entrar</a>
+        <?php endif; ?>
       </div>
     </div>
   </nav>

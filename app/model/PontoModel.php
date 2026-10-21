@@ -87,6 +87,13 @@ class PontoModel extends BaseModel
         return array_map(static fn($l) => (int) $l['id_material'], $linhas);
     }
 
+    /** Total de pontos ativos publicados no mapa. */
+    public function totalAtivos(): int
+    {
+        $r = $this->db->select('SELECT COUNT(*) AS total FROM ponto_descarte WHERE ativo = 1', [], 'single');
+        return (int) ($r['total'] ?? 0);
+    }
+
     // =================================================================
     // CRUD (area administrativa)
     // =================================================================

@@ -32,3 +32,12 @@
 .sug-chips button { background: var(--surface,#fff); border: 1.5px solid var(--border,#e5e7eb); color: var(--text-muted,#6b7280); padding: 6px 14px; border-radius: 20px; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: all .2s; font-family: inherit; }
 .sug-chips button:hover { background: #dcfce7; border-color: #4ade80; color: #15803d; }
 @media(max-width:640px){.bi-grid{grid-template-columns:repeat(2,1fr)}}
+
+/* Contraste consistente nos dois temas */
+.busca-card:hover, .bi-card:hover, .bi-card.purple:hover {
+  background: color-mix(in srgb, var(--accent) 7%, var(--surface));
+  border-color: var(--accent);
+}
+.busca-card .bc-tag, .sug-chips button:hover {
+  background: var(--success-bg); color: var(--success); border-color: color-mix(in srgb, var(--success) 35%, var(--border));
+}

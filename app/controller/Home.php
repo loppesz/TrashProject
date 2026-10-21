@@ -8,9 +8,25 @@ class Home extends BaseController
 {
     public function index(): void
     {
+        $ocorrencias = $this->model('Ocorrencia');
+        $materiais   = $this->model('Material');
+        $pontos      = $this->model('Ponto');
+        $bairros     = $this->model('Bairro');
+        $programa    = $this->model('Pontos');
+
+        $metricas = $ocorrencias->metricasPublicas();
+
         $this->view('home', [
             'tituloPagina' => 'ColetaFácil – Coleta Seletiva Muriaé-MG',
             'menu'         => 'home',
+            'metricas'     => [
+                'resolvidas'    => $metricas['resolvidas'],
+                'pontos'        => $pontos->totalAtivos(),
+                'participantes' => $programa->totalParticipantes(),
+                'bairros'       => $bairros->totalAtendidos(),
+            ],
+            'totalMateriais' => $materiais->totalAtivos(),
+            'rankingHome'    => $programa->ranking(3),
         ]);
     }
 

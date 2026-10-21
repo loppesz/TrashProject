@@ -94,6 +94,39 @@ class PontosModel extends BaseModel
         );
     }
 
+    /** Credita uma ação uma única vez por ocorrência. */
+    public function creditarAcaoUnica(int $idUsuario, string $tipo, int $idOcorrencia, ?string $descricao = null): int
+    {
+        $existe = $this->db->select(
+            'SELECT 1 FROM lancamento_pontos
+             WHERE id_usuario = ? AND tipo = ? AND id_ocorrencia = ? LIMIT 1',
+            [$idUsuario, $tipo, $idOcorrencia],
+            'single'
+        );
+        if (!empty($existe)) {
+            return 0;
+        }
+        return $this->creditarAcao($idUsuario, $tipo, $descricao, ['id_ocorrencia' => $idOcorrencia]);
+    }
+
+    /** Total de participantes ativos com saldo positivo no programa. */
+    public function totalParticipantes(): int
+    {
+        $r = $this->db->select(
+            'SELECT COUNT(*) AS total FROM (
+               SELECT u.id_usuario
+               FROM usuario u
+               JOIN lancamento_pontos lp ON lp.id_usuario = u.id_usuario
+               WHERE u.ativo = 1
+               GROUP BY u.id_usuario
+               HAVING SUM(lp.quantidade) > 0
+             ) participantes',
+            [],
+            'single'
+        );
+        return (int) ($r['total'] ?? 0);
+    }
+
     /** Extrato (historico de lancamentos) de um usuario. */
     public function extrato(int $idUsuario, int $limite = 50): array
     {

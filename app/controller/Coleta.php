@@ -53,6 +53,7 @@ class Coleta extends BaseController
                 'dias'           => $d['dias'],
                 'horario'        => formataHora($d['inicio']) . ' às ' . formataHora($d['fim']),
                 'equipe'         => $d['equipe'],
+                'telefone'       => $d['telefone'],
                 'materiais'      => array_map(static fn($m) => [
                     'nome'  => $m['nome'],
                     'icone' => $m['icone'],

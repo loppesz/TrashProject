@@ -10,15 +10,15 @@ class Ocorrencia extends BaseController
         $model = $this->model('Ocorrencia');
 
         $historico = $model->historicoPublico();
+        $metricas = $model->metricasPublicas();
+        $mapaOcorrencias = $model->paraMapaPublico();
+        $mapaPorBairro = $model->contagemPublicaPorBairro();
+        $bairrosAtivos = $this->model('Bairro')->listaAtivos();
+        $usuario = auth_user();
+        $minhasOcorrencias = $usuario ? $model->porUsuario((int) $usuario['id_usuario']) : [];
 
-        // Metricas a partir do banco.
-        $registradas = count($historico);
-        $resolvidas  = 0;
-        foreach ($historico as $o) {
-            if ($o['status'] === 'RESOLVIDA') {
-                $resolvidas++;
-            }
-        }
+        $registradas = $metricas['registradas'];
+        $resolvidas  = $metricas['resolvidas'];
         $taxa = $registradas > 0 ? (int) round(($resolvidas / $registradas) * 100) : 0;
 
         // Mensagens de retorno do POST (via query string apos redirect).
@@ -35,6 +35,12 @@ class Ocorrencia extends BaseController
             'ocRegistradas' => $registradas,
             'ocResolvidas'  => $resolvidas,
             'ocTaxa'        => $taxa,
+            'bairrosAtivos'  => $bairrosAtivos,
+            'mapaOcorrencias' => $mapaOcorrencias,
+            'mapaPorBairro'  => $mapaPorBairro,
+            'minhasOcorrencias' => $minhasOcorrencias,
+            'usuarioLogado'  => $usuario !== null,
+            'usaLeaflet'     => true,
             'protocoloCriado' => $protocoloCriado,
             'erroRegistro'  => $erro,
         ]);
@@ -62,7 +68,7 @@ class Ocorrencia extends BaseController
 
         $statusJs = [
             'NOVA' => 'nova', 'EM_ANALISE' => 'analise',
-            'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'resolvida',
+            'EM_ANDAMENTO' => 'andamento', 'RESOLVIDA' => 'resolvida', 'ARQUIVADA' => 'arquivada',
         ];
 
         // Historico real de status (timeline da consulta).
@@ -107,6 +113,7 @@ class Ocorrencia extends BaseController
         $urgSlug  = (string) $this->request->post('urgencia', 'media');
         $endereco = trim((string) $this->request->post('endereco'));
         $bairro   = trim((string) $this->request->post('bairro'));
+        $cidade   = trim((string) $this->request->post('cidade', 'Muriaé'));
         $descricao = trim((string) $this->request->post('descricao'));
         $data     = trim((string) $this->request->post('data_ocorrencia'));
         $nome     = trim((string) $this->request->post('nome_contato'));
@@ -125,7 +132,9 @@ class Ocorrencia extends BaseController
         } elseif ($endereco === '') {
             $erro = 'Informe o endereço da ocorrência.';
         } elseif (!$idBairro) {
-            $erro = 'Selecione um bairro válido.';
+            $erro = 'Selecione um bairro válido de Muriaé.';
+        } elseif ($cidade === '' || !preg_match('/^muria[eé](?:\s*-?\s*mg)?$/iu', $cidade)) {
+            $erro = 'As ocorrências desta plataforma devem estar localizadas em Muriaé-MG.';
         } elseif ($descricao === '') {
             $erro = 'Descreva a ocorrência.';
         }
@@ -152,6 +161,11 @@ class Ocorrencia extends BaseController
             // A geolocalizacao NAO vai para o campo publico; fica, no maximo, nas
             // colunas latitude/longitude destinadas ao uso interno do admin.
             [$enderecoLimpo, $lat, $lng] = $this->extrairCoordenadas($endereco);
+
+            if ($lat !== null && !$this->coordenadaEmMuriae($lat, (float) $lng)) {
+                header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('A localização GPS informada está fora da área de Muriaé-MG. Revise o endereço.'));
+                exit;
+            }
 
             $res = $model->registrar([
                 'id_usuario'       => $idUsuario,
@@ -240,6 +254,14 @@ class Ocorrencia extends BaseController
         }
 
         return [trim($endereco), $lat, $lng];
+    }
+
+    /** Limites operacionais aproximados do município de Muriaé-MG. */
+    private function coordenadaEmMuriae(float $lat, float $lng): bool
+    {
+        $g = MURIAE_GEO;
+        return $lat >= $g['lat_min'] && $lat <= $g['lat_max']
+            && $lng >= $g['lng_min'] && $lng <= $g['lng_max'];
     }
 
     /**

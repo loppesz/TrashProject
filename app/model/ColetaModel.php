@@ -21,7 +21,7 @@ class ColetaModel extends BaseModel
             'SELECT DISTINCT b.id_bairro, b.nome
              FROM coleta c
              JOIN bairro b ON b.id_bairro = c.id_bairro
-             WHERE c.ativo = 1
+             WHERE c.ativo = 1 AND b.ativo = 1
              ORDER BY b.nome'
         );
 
@@ -70,7 +70,7 @@ class ColetaModel extends BaseModel
     public function detalheBairro(int $idBairro): ?array
     {
         $bairro = $this->db->select(
-            'SELECT id_bairro, nome FROM bairro WHERE id_bairro = ? LIMIT 1',
+            'SELECT id_bairro, nome FROM bairro WHERE id_bairro = ? AND ativo = 1 LIMIT 1',
             [$idBairro],
             'single'
         );
@@ -79,7 +79,7 @@ class ColetaModel extends BaseModel
         }
 
         $linhas = $this->db->select(
-            'SELECT dia_semana, horario_inicio, horario_fim, equipe_responsavel
+            'SELECT dia_semana, horario_inicio, horario_fim, equipe_responsavel, telefone_contato
              FROM coleta WHERE id_bairro = ? AND ativo = 1
              ORDER BY dia_semana',
             [$idBairro]
@@ -113,6 +113,7 @@ class ColetaModel extends BaseModel
             'inicio'         => $linhas[0]['horario_inicio'] ?? null,
             'fim'            => $linhas[0]['horario_fim'] ?? null,
             'equipe'         => $linhas[0]['equipe_responsavel'] ?? '',
+            'telefone'       => $linhas[0]['telefone_contato'] ?? '',
             'materiais'      => $mats,
             'nao_recolhidos' => $naoRecolhidos,
         ];
@@ -125,7 +126,7 @@ class ColetaModel extends BaseModel
             'SELECT DISTINCT b.id_bairro, b.nome
              FROM coleta c
              JOIN bairro b ON b.id_bairro = c.id_bairro
-             WHERE c.ativo = 1
+             WHERE c.ativo = 1 AND b.ativo = 1
              ORDER BY b.nome'
         );
     }

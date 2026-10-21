@@ -14,6 +14,7 @@ class Ponto extends BaseController
             'descricao'    => 'Encontre pontos de descarte de materiais especiais em Muriaé-MG: pilhas, eletrônicos, óleo, medicamentos e mais.',
             'cssPagina'    => ['pontos.css'],
             'jsPagina'     => ['pontos.js', 'mapa.js'],
+            'usaLeaflet'    => true,
             'menu'         => 'pontos',
             'pontos'       => $pontos,
             'sugestaoOk'   => isset($_GET['sugestao']) && $_GET['sugestao'] === 'ok',

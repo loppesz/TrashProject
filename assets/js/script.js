@@ -1,54 +1,32 @@
 ﻿// =============================================
 // DARK MODE
 // =============================================
+function atualizarBotaoTema() {
+  const btn = document.getElementById('themeToggle');
+  if (!btn) return;
+  const escuro = document.documentElement.classList.contains('dark');
+  btn.textContent = escuro ? 'Tema claro' : 'Tema escuro';
+  btn.setAttribute('aria-label', escuro ? 'Ativar tema claro' : 'Ativar tema escuro');
+}
+
 function toggleTheme() {
   const isDark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  const btn = document.getElementById('themeToggle');
-  if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+  document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+  atualizarBotaoTema();
 }
 
-// Inicializa ícone do botão no load
-document.addEventListener('DOMContentLoaded', () => {
-  const btn = document.getElementById('themeToggle');
-  if (btn) btn.textContent = document.documentElement.classList.contains('dark') ? '☀️' : '🌙';
-
-  const segmenter = typeof Intl.Segmenter === 'function'
-    ? new Intl.Segmenter(undefined, { granularity: 'grapheme' })
-    : null;
-  if (!segmenter) return;
-
-  const emojiPattern = /[\p{Extended_Pictographic}\p{Regional_Indicator}]/u;
-  document.querySelectorAll('h1, h2, h3, h4, h5, h6').forEach(heading => {
-    const walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT);
-    const textNodes = [];
-    while (walker.nextNode()) textNodes.push(walker.currentNode);
-
-    textNodes.forEach(textNode => {
-      const fragment = document.createDocumentFragment();
-      let hasEmoji = false;
-      for (const { segment } of segmenter.segment(textNode.nodeValue || '')) {
-        if (emojiPattern.test(segment) || segment.includes('\u20e3')) {
-          const emoji = document.createElement('span');
-          emoji.className = 'title-emoji';
-          emoji.textContent = segment;
-          fragment.append(emoji);
-          hasEmoji = true;
-        } else {
-          fragment.append(document.createTextNode(segment));
-        }
-      }
-      if (hasEmoji) textNode.replaceWith(fragment);
-    });
-  });
-});
+document.addEventListener('DOMContentLoaded', atualizarBotaoTema);
 
 // =============================================
 // NAVBAR MOBILE
 // =============================================
 function toggleMenu() {
-  const menu = document.getElementById('mobileMenu');
-  if (menu) menu.classList.toggle('open');
+  const menu = document.getElementById('siteNav');
+  const btn = document.querySelector('.menu-btn');
+  if (!menu) return;
+  const aberto = menu.classList.toggle('open');
+  if (btn) btn.setAttribute('aria-expanded', aberto ? 'true' : 'false');
 }
 
 // =============================================
@@ -100,7 +78,8 @@ function irParaBusca(event) {
   const input = document.getElementById('globalSearchInput') || document.getElementById('enderecoInput');
   const q = input?.value.trim();
   if (!q) return;
-  window.location.href = 'busca.php?q=' + encodeURIComponent(q);
+  const base = (window.BASEURL || '/').replace(/\/+$/, '') + '/';
+  window.location.href = base + 'busca?q=' + encodeURIComponent(q);
 }
 
 // =============================================
@@ -305,6 +284,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // =============================================
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js').catch(() => {});
+    const base = (window.BASEURL || '/').replace(/\/+$/, '') + '/';
+    navigator.serviceWorker.register(base + 'sw.js').catch(() => {});
   });
 }

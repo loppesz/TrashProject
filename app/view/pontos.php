@@ -1,8 +1,5 @@
 <?php require_once 'app/view/comuns/cabecalho.php'; ?>
 
-  <!-- Leaflet (mapa interativo, OpenStreetMap) -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-
   <!-- PAGE HEADER (breadcrumb enxuto) -->
   <div class="page-header-slim">
     <div class="container">
@@ -194,7 +191,7 @@
                   <?php endif; ?>
                   <div class="prc-action-btns">
                     <?php if (!empty($p['whatsapp'])): ?>
-                      <a href="https://wa.me/<?= htmlspecialchars($p['whatsapp']) ?>" target="_blank" class="act-btn whatsapp">💬 WhatsApp</a>
+                      <a href="https://wa.me/<?= htmlspecialchars($p['whatsapp']) ?>" target="_blank" rel="noopener noreferrer" class="act-btn whatsapp">💬 WhatsApp</a>
                     <?php endif; ?>
                     <button class="act-btn compartilhar" onclick="compartilhar('<?= htmlspecialchars($p['nome'], ENT_QUOTES) ?>', '<?= htmlspecialchars($p['endereco'], ENT_QUOTES) ?>')">🔗 Compartilhar</button>
                   </div>
@@ -205,15 +202,15 @@
               <div class="prc-map-section">
                 <div class="prc-map-header">
                   <h4>🗺️ Localização</h4>
-                  <a href="https://www.google.com/maps/search/<?= $enderecoMaps ?>" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+                  <a href="https://www.google.com/maps/search/<?= $enderecoMaps ?>" target="_blank" rel="noopener noreferrer" class="open-maps-btn">Abrir no Google Maps ↗</a>
                 </div>
                 <div class="prc-map-embed">
                   <iframe src="https://maps.google.com/maps?q=<?= $enderecoMaps ?>&output=embed&z=16" width="100%" height="280" style="border:0;border-radius:12px;" loading="lazy"></iframe>
                 </div>
                 <div class="prc-como-chegar">
-                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>" target="_blank" class="como-chegar-btn">🧭 Como chegar de carro</a>
-                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=transit" target="_blank" class="como-chegar-btn">🚌 Ônibus</a>
-                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=walking" target="_blank" class="como-chegar-btn">🚶 A pé</a>
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>" target="_blank" rel="noopener noreferrer" class="como-chegar-btn">🧭 Como chegar de carro</a>
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=transit" target="_blank" rel="noopener noreferrer" class="como-chegar-btn">🚌 Ônibus</a>
+                  <a href="https://www.google.com/maps/dir//<?= $enderecoMaps ?>&travelmode=walking" target="_blank" rel="noopener noreferrer" class="como-chegar-btn">🚶 A pé</a>
                 </div>
               </div>
 
@@ -238,7 +235,7 @@
     <div class="container">
       <div class="mapa-geral-header">
         <h2>🗺️ Todos os pontos no mapa</h2>
-        <a href="https://www.google.com/maps/search/pontos+de+reciclagem+Muriae+MG" target="_blank" class="btn-outline-green">Ver no Google Maps ↗</a>
+        <a href="https://www.google.com/maps/search/pontos+de+reciclagem+Muriae+MG" target="_blank" rel="noopener noreferrer" class="btn-outline-green">Ver no Google Maps ↗</a>
       </div>
 
       <div class="mapa-legenda">
@@ -294,7 +291,5 @@
 
   <!-- TOAST -->
   <div id="toastMsg" style="display:none;position:fixed;bottom:24px;right:24px;background:#1e293b;color:#fff;padding:14px 22px;border-radius:12px;font-weight:600;font-size:.9rem;z-index:9999;box-shadow:0 4px 16px rgba(0,0,0,.2);"></div>
-
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
 
 <?php require_once 'app/view/comuns/rodape.php'; ?>

@@ -583,3 +583,65 @@
   .civica-img { min-height: 160px; order: -1; }
   .civica-text { padding: 22px 20px; }
 }
+
+/* =============================================
+   TEMA SEMÂNTICO + GEOLOCALIZAÇÃO
+   ============================================= */
+.oc-panel-call, .oc-panel-dash { background: var(--surface); border-color: var(--border); }
+.oc-panel-call h1, .oc-metric strong { color: var(--text); }
+.oc-panel-call p, .oc-dash-progress-top span { color: var(--text-soft); }
+.oc-dash-title, .oc-metric span, .oc-dash-empty { color: var(--text-muted); }
+.oc-metric, .oc-progress-track { background: var(--surface-2); border-color: var(--border); }
+.dark .oc-panel-call, .dark .oc-panel-dash { background: #101826; border-color: #2a3a50; }
+.dark .oc-panel-call h1, .dark .oc-metric strong { color: #fff; }
+.dark .oc-panel-call p, .dark .oc-dash-progress-top span { color: #cbd5e1; }
+.oc-tabs { border-color: var(--border); }
+.oc-tab { color: var(--text-muted); }
+.oc-tab.active { color: var(--accent-strong); border-color: var(--accent); }
+.pontos-badge, .pontos-ganhos { background: var(--warning-bg); color: var(--warning); border-color: var(--warning); }
+.sr-badge.nova, .hc-status.nova, .hc-urgencia.alta { background: var(--danger-bg); color: var(--danger); }
+.sr-badge.analise, .hc-status.analise, .hc-urgencia.media { background: var(--warning-bg); color: var(--warning); }
+.sr-badge.andamento, .hc-status.andamento { background: var(--info-bg); color: var(--info); }
+.sr-badge.resolvida, .hc-status.resolvida { background: var(--success-bg); color: var(--success); }
+.hc-type-icon { background: var(--surface-2) !important; color: var(--accent-strong); font-weight: 900; }
+.mo-item { width: 100%; text-align: left; color: inherit; font: inherit; }
+
+.gps-aviso {
+  align-items: center; justify-content: space-between; gap: 12px;
+  margin-top: 10px; padding: 10px 12px; border: 1px solid color-mix(in srgb, var(--success) 35%, var(--border));
+  border-radius: 10px; background: var(--success-bg); color: var(--success);
+}
+.gps-aviso div { display: flex; flex-direction: column; gap: 2px; }
+.gps-aviso strong { font-size: .82rem; }
+.gps-aviso span { font-size: .74rem; color: var(--text-muted); }
+.gps-limpar { background: transparent; border: 0; color: var(--danger); font-size: .76rem; font-weight: 750; cursor: pointer; }
+.localizacao-preview { height: 220px; margin-top: 10px; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; z-index: 1; }
+.form-group-compact { max-width: 260px; }
+
+.mapa-oc-header { justify-content: space-between; }
+.mapa-oc-header > div { flex: 1; min-width: 240px; }
+.mapa-oc-header p { width: auto; order: initial; margin: 4px 0 0; }
+.mapa-oc-leaflet { height: 480px; border: 1px solid var(--border); border-radius: 16px; overflow: hidden; box-shadow: var(--shadow-md); margin-bottom: 14px; z-index: 1; }
+.mapa-oc-aviso { padding: 10px 12px; border-radius: 10px; background: var(--warning-bg); color: var(--warning); margin-bottom: 14px; }
+.map-dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; box-shadow: 0 0 0 3px color-mix(in srgb, currentColor 14%, transparent); }
+.map-dot.alta { color: var(--danger); background: var(--danger); }
+.map-dot.media { color: var(--warning); background: var(--warning); }
+.map-dot.resolvida { color: var(--success); background: var(--success); }
+.mos-bar { background: linear-gradient(90deg, var(--accent), #22c7a9); }
+.oc-map-popup { display: grid; gap: 5px; min-width: 160px; }
+.oc-map-popup strong { text-transform: lowercase; color: #0f172a; }
+.oc-map-popup strong::first-letter { text-transform: uppercase; }
+.oc-map-popup span, .oc-map-popup small { color: #475569; }
+.dark .mapa-oc-leaflet .leaflet-tile, .dark .localizacao-preview .leaflet-tile { filter: brightness(.78) contrast(1.08) saturate(.85); }
+
+@media (max-width: 640px) {
+  .mapa-oc-leaflet { height: 360px; }
+  .form-group-compact { max-width: none; }
+}
+
+/* Bairro não identificado pelo GPS: destaca o campo para escolha manual */
+.form-group select.campo-atencao {
+  border-color: var(--warning);
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--warning) 22%, transparent);
+  background: var(--warning-bg);
+}

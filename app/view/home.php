@@ -65,44 +65,6 @@
     </div>
   </section>
 
-  <!-- RESULTADO DA CONSULTA -->
-  <div class="container" id="resultadoColeta" style="display:none;">
-    <div class="resultado-card-v2">
-      <div class="resultado-header">
-        <span class="resultado-icon">📍</span>
-        <div>
-          <h2>Coleta para: <strong id="enderecoResultado"></strong></h2>
-          <p>Informações encontradas para a sua região</p>
-        </div>
-      </div>
-      <div class="coleta-info-v2">
-        <div class="info-block">
-          <span class="info-emoji">📅</span>
-          <strong>Dias</strong>
-          <p>Terça e Sexta-feira</p>
-        </div>
-        <div class="info-block">
-          <span class="info-emoji">🕐</span>
-          <strong>Horário</strong>
-          <p>07h às 12h</p>
-        </div>
-        <div class="info-block">
-          <span class="info-emoji">♻️</span>
-          <strong>Materiais</strong>
-          <p>Papel, Plástico, Metal, Vidro</p>
-        </div>
-        <div class="info-block">
-          <span class="info-emoji">📞</span>
-          <strong>Contato</strong>
-          <p>(32) 3333-0000</p>
-        </div>
-      </div>
-      <div class="alerta-v2">
-        ⚠️ Coloque os materiais na calçada <strong>até às 06h30</strong> no dia da coleta, devidamente separados e ensacados.
-      </div>
-    </div>
-  </div>
-
   <!-- ================================================
        FUNCIONALIDADES PRINCIPAIS
   ================================================ -->
@@ -119,9 +81,9 @@
           <h3>Quando passa a coleta?</h3>
           <p>Informe seu endereço e veja os dias e horários exatos para o seu bairro.</p>
           <div class="fc-chips">
-            <span>8 bairros</span>
-            <span>06h às 11h</span>
-            <span>4 materiais</span>
+            <span><?= (int) ($metricas['bairros'] ?? 0) ?> bairros atendidos</span>
+            <span>Calendário atualizado</span>
+            <span>Dados do município</span>
           </div>
           <span class="fc-link">Consultar agora →</span>
         </a>
@@ -131,9 +93,9 @@
           <h3>Guia de Materiais</h3>
           <p>Saiba o que reciclar, como preparar e quais materiais oferecem risco.</p>
           <div class="fc-chips">
-            <span>8 guias</span>
+            <span><?= (int) ($totalMateriais ?? 0) ?> materiais ativos</span>
             <span>Como preparar</span>
-            <span>Riscos</span>
+            <span>Descarte seguro</span>
           </div>
           <span class="fc-link">Ver materiais →</span>
         </a>
@@ -143,9 +105,9 @@
           <h3>Pontos de Descarte</h3>
           <p>Encontre o local mais próximo para descartar pilhas, eletrônicos e mais.</p>
           <div class="fc-chips">
-            <span>6 pontos</span>
-            <span>Pilhas e eletrônicos</span>
+            <span><?= (int) ($metricas['pontos'] ?? 0) ?> pontos ativos</span>
             <span>Busca por material</span>
+            <span>Mapa de Muriaé</span>
           </div>
           <span class="fc-link">Ver pontos →</span>
         </a>
@@ -161,20 +123,20 @@
     <div class="container">
       <div class="impact-grid">
         <div class="impact-item">
-          <span class="impact-number" data-target="1240">0</span>
-          <span class="impact-label">Ocorrências Resolvidas</span>
+          <span class="impact-number" data-target="<?= (int) ($metricas['resolvidas'] ?? 0) ?>">0</span>
+          <span class="impact-label">Ocorrências resolvidas</span>
         </div>
         <div class="impact-item">
-          <span class="impact-number" data-target="5830">0</span>
-          <span class="impact-label">Consultas Realizadas</span>
+          <span class="impact-number" data-target="<?= (int) ($metricas['pontos'] ?? 0) ?>">0</span>
+          <span class="impact-label">Pontos de descarte ativos</span>
         </div>
         <div class="impact-item">
-          <span class="impact-number" data-target="342">0</span>
-          <span class="impact-label">Heróis da Reciclagem</span>
+          <span class="impact-number" data-target="<?= (int) ($metricas['participantes'] ?? 0) ?>">0</span>
+          <span class="impact-label">Participantes com pontos</span>
         </div>
         <div class="impact-item">
-          <span class="impact-number" data-target="18">0</span>
-          <span class="impact-label">Bairros Atendidos</span>
+          <span class="impact-number" data-target="<?= (int) ($metricas['bairros'] ?? 0) ?>">0</span>
+          <span class="impact-label">Bairros atendidos</span>
         </div>
       </div>
     </div>
@@ -194,9 +156,9 @@
         <article class="impacto-card">
           <div class="impacto-img" style="background-image:url('<?= baseUrl('assets/img/poluicao-residuos.jpg') ?>')" role="img" aria-label="Resíduos plásticos acumulados na água"></div>
           <div class="impacto-body">
-            <span class="impacto-dado">+80 mil ton/dia</span>
+            <span class="impacto-dado">Impacto ambiental</span>
             <h3>O crescimento da poluição</h3>
-            <p>O Brasil gera mais de 80 mil toneladas de lixo por dia e cerca de 40% ainda vai para destinos irregulares. Resíduos sem tratamento poluem rios, mares e o ar das cidades.</p>
+            <p>Quando resíduos seguem para destinos irregulares, podem contaminar o solo, a água e o ar. Separar e encaminhar corretamente reduz danos e facilita o reaproveitamento.</p>
           </div>
         </article>
 
@@ -254,11 +216,18 @@
         <div class="kr2-card kr2-reward">
           <div class="kr2-icon">🏆</div>
           <h3>Heróis da Reciclagem</h3>
-          <p>Ganhe pontos reciclando e reportando. Veja quem lidera o ranking da cidade este mês.</p>
+          <p>Participação acumulada no programa de recompensas de Muriaé.</p>
           <ul class="kr2-rank">
-            <li><span class="kr2-pos pos-1">1º</span> <span class="kr2-name">Maria Silva</span> <span class="kr2-pts">2.450 pts</span></li>
-            <li><span class="kr2-pos pos-2">2º</span> <span class="kr2-name">João Ferreira</span> <span class="kr2-pts">2.190 pts</span></li>
-            <li><span class="kr2-pos pos-3">3º</span> <span class="kr2-name">Ana Costa</span> <span class="kr2-pts">1.870 pts</span></li>
+            <?php foreach (($rankingHome ?? []) as $i => $pessoa): ?>
+              <li>
+                <span class="kr2-pos pos-<?= $i + 1 ?>"><?= $i + 1 ?>º</span>
+                <span class="kr2-name"><?= htmlspecialchars($pessoa['nome']) ?></span>
+                <span class="kr2-pts"><?= number_format((int) $pessoa['pontos'], 0, ',', '.') ?> pts</span>
+              </li>
+            <?php endforeach; ?>
+            <?php if (empty($rankingHome)): ?>
+              <li class="kr2-empty">O ranking será exibido quando houver participação registrada.</li>
+            <?php endif; ?>
           </ul>
           <a href="<?= baseUrl('home/recompensas') ?>" class="kr2-link kr2-link-reward">Ver ranking completo →</a>
         </div>

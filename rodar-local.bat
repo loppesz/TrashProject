@@ -12,8 +12,11 @@ REM  Requisito: WAMP instalado (usa o PHP do WAMP e o MySQL na 3306).
 REM  Para encerrar: feche esta janela ou pressione Ctrl+C.
 REM ============================================================
 
-set "PHP=C:\wamp64\bin\php\php8.3.22\php.exe"
+REM Usa o PHP 8.3 instalado no WAMP (pega a versao 8.3.x disponivel).
+set "PHP="
+for /d %%D in ("C:\wamp64\bin\php\php8.3*") do set "PHP=%%D\php.exe"
 
+if not defined PHP set "PHP=C:\wamp64\bin\php\php8.3\php.exe"
 if not exist "%PHP%" (
   echo [ERRO] PHP do WAMP nao encontrado em:
   echo        %PHP%

@@ -394,3 +394,49 @@
   background: transparent;
   border-style: dashed;
 }
+
+/* =============================================
+   TEMA KIDS — claro/escuro completo sem perder as cores dos jogos
+   ============================================= */
+.kids-theme-btn {
+  background: rgba(255,255,255,.1); color: #dbe7f5; border: 1px solid rgba(255,255,255,.22);
+  border-radius: 999px; padding: 7px 12px; font-size: .76rem; font-weight: 800; cursor: pointer;
+}
+.kids-body { background: var(--bg); color: var(--text); }
+.kids-activities, .kids-section { background: var(--bg); }
+.kids-section-title, .ranking-kids-container h2, .kids-modal h3,
+.quiz-header h2, .memory-header h2, .separar-header h2, .caca-header h2,
+.vm-header h2, .lixeiras-game-container h2, .aprenda-container h2 { color: var(--text); }
+.quiz-container, .memory-win, .sep-instructions, .vm-card, .rk-podium-card,
+.ranking-kids-table, .reciclagem-facts-ranking, .lx-item {
+  background: var(--surface); border-color: var(--border); color: var(--text); box-shadow: var(--shadow);
+}
+.quiz-stat, .sep-lixeiras-preview span, .sep-arena, .sep-lixeira,
+.caca-cell, .caca-lista ul li, .lx-itens-area, .quiz-option, .nivel-btn {
+  background: var(--surface-2); border-color: var(--border); color: var(--text-soft);
+}
+.quiz-q-text, .vm-afirmacao, .sep-nome, .caca-lista h4,
+.rk-podium-card h4, .seu-info strong { color: var(--text); }
+.quiz-result p, .vm-result p, .sep-result p, .memory-stats, .separar-stats,
+.caca-stats, .lx-sub, .rk-row, #fatoIndicador { color: var(--text-muted); }
+.rk-row { border-color: var(--border); }
+.rk-row:first-child { background: var(--surface-2); color: var(--text-muted); }
+.rk-row:hover, .rk-row.rk-meu, .ranking-seu-lugar, .rf-item { background: var(--success-bg); }
+.dark .quiz-card { background: linear-gradient(135deg,#33250b,#4a350b); }
+.dark .memoria-card { background: linear-gradient(135deg,#24163f,#332256); }
+.dark .separar-card { background: linear-gradient(135deg,#3b151b,#551e27); }
+.dark .palavras-card { background: linear-gradient(135deg,#3a1321,#52182c); }
+.dark .verdadeiro-card { background: linear-gradient(135deg,#0d2b1a,#123b24); }
+.dark .lixeiras-card { background: linear-gradient(135deg,#0b2c35,#10404b); }
+.dark .aprenda-card { background: linear-gradient(135deg,#102b45,#173d5c); }
+.dark .ranking-card-btn { background: linear-gradient(135deg,#332c0b,#4b4010); }
+.dark .activity-card h3 { color: #f8fafc; }
+.dark .activity-card p { color: #d3deeb; }
+.dark .kids-modal p { color: var(--text-muted); }
+.dark .kids-modal input { background: var(--surface-2); color: var(--text); border-color: var(--border); }
+
+@media (max-width: 650px) {
+  .kids-nav-right { gap: 6px; }
+  .kids-nav-points { display: none; }
+  .kids-back-btn, .kids-theme-btn { padding: 6px 9px; font-size: .7rem; }
+}

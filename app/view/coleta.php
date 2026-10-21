@@ -90,14 +90,14 @@
               <span class="hr-icon">🚛</span>
               <div>
                 <strong>Equipe responsável</strong>
-                <p>Cooperativa ReciclaVida</p>
+                <p id="equipeInfo">Equipe municipal cadastrada</p>
               </div>
             </div>
             <div class="hr-item">
               <span class="hr-icon">📞</span>
               <div>
                 <strong>Contato da equipe</strong>
-                <p>(32) 3333-7700</p>
+                <p id="telefoneEquipe">Não informado</p>
               </div>
             </div>
           </div>
@@ -177,27 +177,18 @@
       <div class="mapa-resultado-section">
         <div class="mapa-resultado-header">
           <h3>🗺️ Sua região no mapa</h3>
-          <a id="linkMapaEndereco" href="#" target="_blank" class="open-maps-btn">Abrir no Google Maps ↗</a>
+          <a id="linkMapaEndereco" href="#" target="_blank" rel="noopener noreferrer" class="open-maps-btn">Abrir no Google Maps ↗</a>
         </div>
         <div id="mapaResultado" class="mapa-resultado-embed">
           <!-- preenchido por JS -->
         </div>
         <div class="mapa-resultado-info">
           <div class="mri-item">
-            <span>📍</span>
             <div>
-              <strong>Ponto de descarte mais próximo</strong>
-              <p>Ecoponto Centro – Rua das Flores, 123 (0,3km)</p>
+              <strong>Encontre pontos próximos</strong>
+              <p>Consulte os pontos de descarte ativos cadastrados em Muriaé.</p>
             </div>
-            <a href="<?= baseUrl('ponto') ?>#ponto1" class="mri-link">Ver →</a>
-          </div>
-          <div class="mri-item">
-            <span>🏥</span>
-            <div>
-              <strong>Para materiais especiais</strong>
-              <p>UBS Central – Rua da Saúde, 10 (0,8km)</p>
-            </div>
-            <a href="<?= baseUrl('ponto') ?>#ponto4" class="mri-link">Ver →</a>
+            <a href="<?= baseUrl('ponto') ?>" class="mri-link">Ver pontos</a>
           </div>
         </div>
       </div>

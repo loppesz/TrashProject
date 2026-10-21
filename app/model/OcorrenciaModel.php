@@ -48,6 +48,20 @@ class OcorrenciaModel extends BaseModel
         );
     }
 
+    /** Ocorrências recentes vinculadas a um usuário autenticado. */
+    public function porUsuario(int $idUsuario, int $limite = 5): array
+    {
+        return $this->db->select(
+            'SELECT o.protocolo, o.tipo, o.status, o.criada_em, b.nome AS bairro
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             WHERE o.id_usuario = ?
+             ORDER BY o.criada_em DESC
+             LIMIT ' . (int) $limite,
+            [$idUsuario]
+        );
+    }
+
     /** Consulta uma ocorrencia pelo protocolo. */
     public function porProtocolo(string $protocolo): array
     {
@@ -139,12 +153,81 @@ class OcorrenciaModel extends BaseModel
     /** Resolve o id do bairro pelo nome (para o form que envia nome). */
     public function idBairroPorNome(string $nome): ?int
     {
+        // Só aceita bairros ativos (lista oficial de Muriaé).
         $r = $this->db->select(
-            'SELECT id_bairro FROM bairro WHERE nome = ? LIMIT 1',
+            'SELECT id_bairro FROM bairro WHERE nome = ? AND ativo = 1 LIMIT 1',
             [$nome],
             'single'
         );
         return !empty($r) ? (int) $r['id_bairro'] : null;
+    }
+
+    /** Métricas públicas reais, calculadas diretamente no banco. */
+    public function metricasPublicas(): array
+    {
+        $r = $this->db->select(
+            "SELECT COUNT(*) AS registradas,
+                    SUM(CASE WHEN status = 'RESOLVIDA' THEN 1 ELSE 0 END) AS resolvidas
+             FROM ocorrencia
+             WHERE visivel_publicamente = 1",
+            [],
+            'single'
+        );
+        return [
+            'registradas' => (int) ($r['registradas'] ?? 0),
+            'resolvidas' => (int) ($r['resolvidas'] ?? 0),
+        ];
+    }
+
+    /**
+     * Ocorrências públicas com coordenadas para o mapa.
+     * A coordenada é arredondada para 4 casas para reduzir exposição do local exato.
+     */
+    public function paraMapaPublico(int $limite = 200): array
+    {
+        $g = MURIAE_GEO;
+        return $this->db->select(
+            "SELECT o.id_ocorrencia, o.protocolo, o.tipo, o.urgencia, o.status,
+                    ROUND(o.latitude, 4) AS latitude, ROUND(o.longitude, 4) AS longitude,
+                    DATE(o.criada_em) AS data, b.nome AS bairro
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             WHERE o.visivel_publicamente = 1
+               AND o.latitude IS NOT NULL AND o.longitude IS NOT NULL
+               AND o.latitude BETWEEN ? AND ?
+               AND o.longitude BETWEEN ? AND ?
+             ORDER BY o.criada_em DESC
+             LIMIT " . (int) $limite,
+            [$g['lat_min'], $g['lat_max'], $g['lng_min'], $g['lng_max']]
+        );
+    }
+
+    /** Contagem pública real por bairro para acompanhar o mapa. */
+    public function contagemPublicaPorBairro(): array
+    {
+        return $this->db->select(
+            'SELECT b.nome AS bairro, COUNT(*) AS total
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             WHERE o.visivel_publicamente = 1
+             GROUP BY b.id_bairro, b.nome
+             ORDER BY total DESC, b.nome'
+        );
+    }
+
+    /** Locais reais com mais relatos de descarte irregular. */
+    public function locaisDescarteIrregular(int $limite = 10): array
+    {
+        return $this->db->select(
+            "SELECT o.endereco_descricao AS local, b.nome AS bairro,
+                    COUNT(*) AS total, MAX(o.criada_em) AS ultima
+             FROM ocorrencia o
+             JOIN bairro b ON b.id_bairro = o.id_bairro
+             WHERE o.tipo = 'DESCARTE_IRREGULAR'
+             GROUP BY o.endereco_descricao, b.id_bairro, b.nome
+             ORDER BY total DESC, ultima DESC
+             LIMIT " . (int) $limite
+        );
     }
 
     // =================================================================

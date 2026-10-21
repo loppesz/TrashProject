@@ -3,28 +3,28 @@
       <!-- MÉTRICAS RÁPIDAS -->
       <div class="metrics-grid">
         <div class="metric-card">
-          <div class="metric-icon laranja">🚨</div>
+          <div class="metric-icon laranja">OC</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalOc ?? 0) ?></span>
             <span class="metric-label">Total de Ocorrências</span>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon verde">✅</div>
+          <div class="metric-icon verde">OK</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($resolvidas ?? 0) ?></span>
             <span class="metric-label">Ocorrências Resolvidas</span>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon azul">⏳</div>
+          <div class="metric-icon azul">TR</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($emAndamento ?? 0) ?></span>
-            <span class="metric-label">Em Andamento</span>
+            <span class="metric-label">Em tratamento</span>
           </div>
         </div>
         <div class="metric-card">
-          <div class="metric-icon roxo">📊</div>
+          <div class="metric-icon roxo">%</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($taxa ?? 0) ?>%</span>
             <span class="metric-label">Taxa de Resolução</span>
@@ -37,7 +37,7 @@
         <!-- BAIRROS COM MAIS OCORRÊNCIAS -->
         <div class="dashboard-card">
           <div class="card-header">
-            <h2>📍 Bairros com Mais Ocorrências</h2>
+            <h2>Bairros com mais ocorrências</h2>
           </div>
           <div class="bairro-list">
             <?php
@@ -65,7 +65,7 @@
         <!-- TIPOS DE OCORRÊNCIA -->
         <div class="dashboard-card dashboard-card-small">
           <div class="card-header">
-            <h2>🗂️ Tipos Mais Frequentes</h2>
+            <h2>Tipos mais frequentes</h2>
           </div>
           <div class="tipo-list">
             <?php
@@ -86,25 +86,19 @@
           </div>
 
           <div class="card-header" style="margin-top:24px;">
-            <h2>❓ Materiais que Geram Mais Dúvidas</h2>
+            <h2>Situação atual</h2>
           </div>
           <div class="tipo-list">
-            <div class="tipo-item">
-              <span>🍶 Vidro</span>
-              <strong>34 consultas</strong>
-            </div>
-            <div class="tipo-item">
-              <span>🔋 Pilhas</span>
-              <strong>28 consultas</strong>
-            </div>
-            <div class="tipo-item">
-              <span>💊 Medicamentos</span>
-              <strong>21 consultas</strong>
-            </div>
-            <div class="tipo-item">
-              <span>🫙 Óleo de cozinha</span>
-              <strong>18 consultas</strong>
-            </div>
+            <?php
+            $porStatus = $porStatus ?? [];
+            $statusOrdem = ['NOVA', 'EM_ANALISE', 'EM_ANDAMENTO', 'RESOLVIDA', 'ARQUIVADA'];
+            ?>
+            <?php foreach ($statusOrdem as $status): ?>
+              <div class="tipo-item">
+                <span><?= htmlspecialchars(rotuloStatusOcorrencia($status)) ?></span>
+                <strong><?= (int) ($porStatus[$status] ?? 0) ?></strong>
+              </div>
+            <?php endforeach; ?>
           </div>
         </div>
 
@@ -113,7 +107,7 @@
       <!-- TABELA DE LOCAIS COM DESCARTE IRREGULAR -->
       <div class="dashboard-card">
         <div class="card-header">
-          <h2>🗑️ Locais com Mais Relatos de Descarte Irregular</h2>
+          <h2>Locais com mais relatos de descarte irregular</h2>
         </div>
         <table class="admin-table">
           <thead>
@@ -125,30 +119,17 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Rua das Palmeiras</td>
-              <td>Centro</td>
-              <td><strong>5</strong></td>
-              <td>20/08/2026</td>
-            </tr>
-            <tr>
-              <td>Av. Brasil (próx. ao mercado)</td>
-              <td>Bairro Novo</td>
-              <td><strong>3</strong></td>
-              <td>19/08/2026</td>
-            </tr>
-            <tr>
-              <td>Rua do Comércio</td>
-              <td>Vila Nova</td>
-              <td><strong>2</strong></td>
-              <td>21/08/2026</td>
-            </tr>
-            <tr>
-              <td>Praça da Amizade</td>
-              <td>Jardim América</td>
-              <td><strong>2</strong></td>
-              <td>18/08/2026</td>
-            </tr>
+            <?php foreach (($locaisFrequentes ?? []) as $local): ?>
+              <tr>
+                <td><?= htmlspecialchars($local['local']) ?></td>
+                <td><?= htmlspecialchars($local['bairro']) ?></td>
+                <td><strong><?= (int) $local['total'] ?></strong></td>
+                <td><?= date('d/m/Y', strtotime($local['ultima'])) ?></td>
+              </tr>
+            <?php endforeach; ?>
+            <?php if (empty($locaisFrequentes)): ?>
+              <tr><td colspan="4" class="admin-empty">Nenhum relato de descarte irregular registrado.</td></tr>
+            <?php endif; ?>
           </tbody>
         </table>
       </div>

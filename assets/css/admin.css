@@ -150,7 +150,7 @@
    ============================================= */
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
@@ -731,3 +731,56 @@
 
 .dark .toggle-ocultas { color: #cbd5e1; }
 .dark .toggle-ocultas:hover { background: #1e293b; }
+
+/* =============================================
+   TEMA ADMINISTRATIVO — superfícies semânticas claro/escuro
+   ============================================= */
+.admin-body { background: var(--bg); color: var(--text); font-family: 'Inter','Segoe UI',system-ui,sans-serif; }
+.admin-topbar { background: var(--surface); border-color: var(--border); box-shadow: var(--shadow); }
+.topbar-title, .card-header h2, .metric-value, .bairro-count { color: var(--text); }
+.admin-user, .metric-label, .total-label { color: var(--text-muted); }
+.admin-logout { color: var(--danger); font-size: .82rem; font-weight: 750; }
+.admin-theme-btn {
+  background: var(--surface-2); color: var(--text-soft); border: 1px solid var(--border);
+  border-radius: 9px; padding: 7px 10px; font-size: .76rem; font-weight: 800; cursor: pointer;
+}
+.admin-theme-btn:hover { border-color: var(--accent); color: var(--accent-strong); }
+.metric-card, .dashboard-card { background: var(--surface); border-color: var(--border); box-shadow: var(--shadow); }
+.metric-card-link:hover { border-color: var(--accent); box-shadow: var(--shadow-md); }
+.metric-icon { font-size: .72rem; font-weight: 900; letter-spacing: .04em; color: var(--text); }
+.metric-icon.laranja { background: color-mix(in srgb, var(--orange) 18%, var(--surface)); color: var(--orange); }
+.metric-icon.verde { background: var(--success-bg); color: var(--success); }
+.metric-icon.azul { background: var(--info-bg); color: var(--info); }
+.metric-icon.roxo { background: color-mix(in srgb, var(--purple) 17%, var(--surface)); color: color-mix(in srgb, var(--purple) 75%, var(--text)); }
+.metric-icon.amarelo { background: var(--warning-bg); color: var(--warning); }
+.admin-table th { background: var(--surface-2); color: var(--text-muted); border-color: var(--border); }
+.admin-table td { color: var(--text-soft); border-color: var(--border); }
+.admin-table tr:hover td { background: color-mix(in srgb, var(--accent) 6%, var(--surface)); }
+.status-select, .filtros-admin input, .filtros-admin select,
+.modal-content input, .modal-content select, .modal-content textarea {
+  background: var(--surface-2); color: var(--text); border-color: var(--border);
+}
+.filtros-admin input::placeholder, .modal-content textarea::placeholder { color: var(--text-muted); }
+.bairro-nome, .tipo-item, .dias-check label, .oc-det-desc p { color: var(--text-soft); }
+.bairro-bar-wrap { background: var(--surface-2); }
+.tipo-item { background: var(--surface-2); border-color: var(--border); }
+.modal-top h3, .oc-det-item strong, .oc-fotos-admin > strong { color: var(--text); }
+.modal-close { color: var(--text-muted); }
+.modal-close:hover, .toggle-ocultas:hover { background: var(--surface-2); }
+.oc-det-desc p { background: var(--surface-2); border-color: var(--border); }
+.oc-fotos-admin { border-color: var(--border); }
+.oc-fotos-grid a, .oc-thumb { background: var(--surface-2); border-color: var(--border); }
+.admin-add-bar { border-color: var(--border); }
+.admin-empty { text-align: center; padding: 24px !important; color: var(--text-muted) !important; }
+.status-badge.nova { background: var(--danger-bg); color: var(--danger); }
+.status-badge.analise { background: var(--warning-bg); color: var(--warning); }
+.status-badge.andamento { background: var(--info-bg); color: var(--info); }
+.status-badge.resolvida { background: var(--success-bg); color: var(--success); }
+.status-badge.arquivada { background: var(--surface-2); color: var(--text-muted); }
+
+@media (max-width: 700px) {
+  .admin-topbar { padding-inline: 14px; }
+  .admin-user { display: none; }
+  .dashboard-card { padding: 16px; overflow-x: auto; }
+  .admin-table { min-width: 720px; }
+}

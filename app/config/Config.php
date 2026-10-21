@@ -38,9 +38,18 @@ define('DB_CONF_CONEXAO', [
     'charset'  => 'utf8mb4',
 ]);
 
+// Area geografica do municipio de Muriae-MG (limites do OpenStreetMap,
+// relacao 315428). Usada para validar GPS e limitar os mapas, incluindo
+// os distritos rurais (Belisario, Vermelho, Boa Familia, Pirapanema...).
+define('MURIAE_GEO', [
+    'centro' => [-21.1306, -42.3664],
+    'lat_min' => -21.31, 'lat_max' => -20.86,
+    'lng_min' => -42.57, 'lng_max' => -42.25,
+]);
+
 // Versao dos assets (CSS/JS) para controle de cache do navegador.
 // Incremente ao publicar mudancas de estilo/script.
-define('ASSET_VER', '20');
+define('ASSET_VER', '22');
 
 // Fuso horario padrao da aplicacao.
 date_default_timezone_set('America/Sao_Paulo');

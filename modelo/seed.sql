@@ -51,21 +51,74 @@ INSERT INTO usuario (id_usuario, nome, email, senha_hash, telefone, tipo, ativo)
 (7, 'Paula Rocha',   'paula@coletafacil.com',   '$2y$10$4PMfgpAQ/Eofwo1I2wOQD.BlIaSlhkxD9jJ1Ikw8qtJsm7KoASLmC', NULL, 'MORADOR', TRUE);
 
 -- ---------------------------------------------------------------------
--- BAIRROS (uniao dos bairros usados na coleta e nos pontos/admin)
+-- BAIRROS — lista oficial de Muriaé-MG.
+-- Os ids 1-12 são mantidos porque coletas, pontos e ocorrências de exemplo
+-- referenciam esses ids. Os bairros 2, 4-8, 11 e 12 ficam INATIVOS: não
+-- fazem parte da lista oficial, mas preservam o histórico de exemplo.
 -- ---------------------------------------------------------------------
 INSERT INTO bairro (id_bairro, nome, ativo) VALUES
 (1,  'Centro', TRUE),
-(2,  'Padre Eustáquio', TRUE),
+(2,  'Padre Eustáquio', FALSE),
 (3,  'Santa Terezinha', TRUE),
-(4,  'Nossa Senhora de Fátima', TRUE),
-(5,  'Laranjeiras', TRUE),
-(6,  'Granjas Betânia', TRUE),
-(7,  'Dom Silvério', TRUE),
-(8,  'Mauá', TRUE),
-(9,  'Bairro Novo', TRUE),
-(10, 'Vila Nova', TRUE),
-(11, 'Jardim América', TRUE),
-(12, 'Bairro Escolar', TRUE);
+(4,  'Nossa Senhora de Fátima', FALSE),
+(5,  'Laranjeiras', FALSE),
+(6,  'Granjas Betânia', FALSE),
+(7,  'Dom Silvério', FALSE),
+(8,  'Mauá', FALSE),
+(9,  'Dornelas', TRUE),
+(10, 'Porto', TRUE),
+(11, 'José Cirilo', FALSE),
+(12, 'Inconfidência', FALSE),
+(13, 'Santa Laura', TRUE),
+(14, 'Villa Real', TRUE),
+(15, 'Belisário', TRUE),
+(16, 'Gaspar', TRUE),
+(17, 'Gávea', TRUE),
+(18, 'Prefeito Hélio Araújo', TRUE),
+(19, 'Santana III', TRUE),
+(20, 'Barra', TRUE),
+(21, 'Planalto', TRUE),
+(22, 'São Vicente de Paulo', TRUE),
+(23, 'Joanópolis', TRUE),
+(24, 'Área Rural de Muriaé', TRUE),
+(25, 'Alto do Castelo', TRUE),
+(26, 'Quinta das Flores', TRUE),
+(27, 'São Joaquim', TRUE),
+(28, 'Chácara Doutor Brum', TRUE),
+(29, 'João VI', TRUE),
+(30, 'Colety', TRUE),
+(31, 'Santo Antônio', TRUE),
+(32, 'São Cristóvão', TRUE),
+(33, 'Vermelho', TRUE),
+(34, 'Cerâmica', TRUE),
+(35, 'União', TRUE),
+(36, 'Vale do Castelo', TRUE),
+(37, 'Zona Rural', TRUE),
+(38, 'João XXIII', TRUE),
+(39, 'Chalé', TRUE),
+(40, 'São Francisco', TRUE),
+(41, 'Padre Tiago', TRUE),
+(42, 'Sofoco', TRUE),
+(43, 'Napoleão', TRUE),
+(44, 'Franco Suíço', TRUE),
+(45, 'Porto Belo', TRUE),
+(46, 'Safira', TRUE),
+(47, 'Distrito Industrial', TRUE),
+(48, 'São Gotardo', TRUE),
+(49, 'Primavera', TRUE),
+(50, 'Chácara da Gávea', TRUE),
+(51, 'Recreio', TRUE),
+(52, 'Boa Família', TRUE),
+(53, 'Alterosa', TRUE),
+(54, 'Pirapanema', TRUE),
+(55, 'Santana', TRUE),
+(56, 'Vila Conceição', TRUE),
+(57, 'Aeroporto', TRUE),
+(58, 'Santa Helena', TRUE),
+(59, 'Boa Vista', TRUE),
+(60, 'Recanto Verde', TRUE),
+(61, 'Cardoso de Melo', TRUE),
+(62, 'São Pedro', TRUE);
 
 -- ---------------------------------------------------------------------
 -- MATERIAIS (guia de materiais)
@@ -147,18 +200,18 @@ INSERT INTO ponto_descarte
   (id_ponto, id_bairro, nome, endereco, horario_funcionamento, status_funcionamento,
    telefone, email, whatsapp, acessivel_pcd, tem_estacionamento,
    avaliacao_media, avaliacao_total, icone, cor, observacao, latitude, longitude, ativo) VALUES
-(1, 1,  'Ecoponto Centro',               'Rua das Flores, 123 – Centro',        'Seg–Sex 08h–17h / Sáb 08h–12h', 'ABERTO',
+(1, 1,  'Ecoponto Centro',               'Rua Coronel Amador Pinheiro de Barros, 123 – Centro',        'Seg–Sex 08h–17h / Sáb 08h–12h', 'ABERTO',
    '(32) 3333-1001', 'ecoponto@muriae.mg.gov.br', '5532999990001', TRUE, TRUE,  4.7, 38, '🏭', 'verde',    NULL, -21.1306000, -42.3664000, TRUE),
-(2, 9,  'Farmácia Saúde Total',          'Av. Brasil, 456 – Bairro Novo',       'Seg–Sáb 07h–22h / Dom 08h–20h', 'ABERTO',
+(2, 9,  'Farmácia Saúde Total',          'Rua João Dornelas, 456 – Dornelas',       'Seg–Sáb 07h–22h / Dom 08h–20h', 'ABERTO',
    '(32) 3333-2002', NULL,                        NULL,            TRUE, FALSE, 4.5, 24, '💊', 'azul',     NULL, -21.1358000, -42.3721000, TRUE),
-(3, 10, 'Supermercado Boa Compra',       'Rua Dom Pedro, 789 – Vila Nova',      'Seg–Sáb 07h–21h / Dom 08h–14h', 'ABERTO',
+(3, 10, 'Supermercado Boa Compra',       'Rua Coronel Pereira Sobrinho, 789 – Porto',      'Seg–Sáb 07h–21h / Dom 08h–14h', 'ABERTO',
    '(32) 3333-3003', NULL,                        NULL,            TRUE, TRUE,  4.2, 19, '🛒', 'laranja',  'O coletor de óleo fica na entrada lateral (portão 2).', -21.1251000, -42.3598000, TRUE),
 (4, 1,  'UBS – Posto de Saúde Central',  'Rua da Saúde, 10 – Centro',           'Seg–Sex 07h–17h / Sáb 07h–12h', 'ABERTO',
    '(32) 3333-4004', NULL,                        NULL,            TRUE, FALSE, 4.8, 51, '🏥', 'vermelho', 'Seringas e perfurocortantes devem ser entregues na recepção em caixa coletora própria.', -21.1289000, -42.3627000, TRUE),
-(5, 11, 'Ponto Recicle – Jardim América','Praça da Amizade – Jardim América',   'Ter, Qui, Sáb 08h–14h',         'FECHADO',
+(5, 62, 'Ponto de Entrega São Pedro',   'Bairro São Pedro – Muriaé',   'Ter, Qui, Sáb 08h–14h',         'FECHADO',
    '(32) 3333-5005', NULL,                        NULL,            FALSE, FALSE, 4.3, 16, '♻️', 'verde',    'Funciona apenas às terças, quintas e sábados. Área ao ar livre.', -21.1402000, -42.3589000, TRUE),
-(6, 12, 'E.M. Prof. Souza',              'Rua da Educação, 55 – Bairro Escolar','Seg–Sex (letivo) 07h–17h',      'ABERTO',
-   '(32) 3333-6006', NULL,                        NULL,            TRUE, FALSE, 4.6, 12, '🏫', 'roxo',     'Apenas em período letivo (fev–nov). Férias de julho: fechado.', -21.1223000, -42.3702000, TRUE);
+(6, 20, 'Ponto de Entrega Barra',        'Bairro Barra – Muriaé','Seg–Sex 07h–17h',              'ABERTO',
+   '(32) 3333-6006', NULL,                        NULL,            TRUE, FALSE, NULL, 0, '♻️', 'roxo',     NULL, -21.1223000, -42.3702000, TRUE);
 
 -- Materiais aceitos por ponto
 INSERT INTO ponto_material (id_ponto, id_material) VALUES
@@ -190,8 +243,8 @@ INSERT INTO ponto_foto (id_ponto, url_arquivo, legenda, ordem) VALUES
 (2, 'assets/img/pontos/farmacia-saude-total.jpg', 'Ponto de coleta na entrada', 1),
 (3, 'assets/img/pontos/supermercado-boa-compra.jpg', 'Coletores na entrada do mercado', 1),
 (4, 'assets/img/pontos/ubs-central.jpg', 'Coletor de perfurocortantes na recepção', 1),
-(5, 'assets/img/pontos/ponto-recicle.jpg', 'Contêineres na Praça da Amizade', 1),
-(6, 'assets/img/pontos/escola-souza.jpg', 'Ponto de coleta de papel na escola', 1);
+(5, 'assets/img/pontos/ponto-recicle.jpg', 'Contêineres na Rua São Pedro', 1),
+(6, 'assets/img/pontos/escola-souza.jpg', 'Ponto de entrega de papel no bairro Barra', 1);
 
 -- ---------------------------------------------------------------------
 -- RECOMPENSAS (pagina Recompensas)
@@ -209,13 +262,13 @@ INSERT INTO recompensa (id_recompensa, nome, descricao, parceiro, custo_pontos, 
 -- tipos conforme ENUM; bairros mapeados aos ids acima
 -- ---------------------------------------------------------------------
 INSERT INTO ocorrencia (id_ocorrencia, protocolo, id_usuario, id_bairro, tipo, urgencia, endereco_descricao, descricao, anonima, visivel_publicamente, status, criada_em) VALUES
-(1, '2026001', NULL, 1,  'DESCARTE_IRREGULAR',      'ALTA',  'Rua das Palmeiras, 50',        'Descarte irregular de entulho na calçada.',        TRUE,  TRUE, 'EM_ANDAMENTO', '2026-08-20 09:00:00'),
-(2, '2026002', NULL, 9,  'COLETA_NAO_REALIZADA',    'MEDIA', 'Av. Brasil, 200',              'Coleta seletiva não passou no dia previsto.',      TRUE,  TRUE, 'RESOLVIDA',    '2026-08-18 10:30:00'),
-(3, '2026003', NULL, 10, 'DESCARTE_IRREGULAR',      'MEDIA', 'Rua do Comércio, 15',          'Lixo acumulado em terreno baldio.',                TRUE,  TRUE, 'NOVA',         '2026-08-21 08:15:00'),
-(4, '2026004', NULL, 11, 'MATERIAL_NAO_RECOLHIDO',  'BAIXA', 'Praça da Amizade',             'Material reciclável deixado e não recolhido.',     TRUE,  TRUE, 'EM_ANALISE',   '2026-08-21 14:45:00'),
+(1, '2026001', NULL, 1,  'DESCARTE_IRREGULAR',      'ALTA',  'Rua Doutor Alves Pequeno, 50',        'Descarte irregular de entulho na calçada.',        TRUE,  TRUE, 'EM_ANDAMENTO', '2026-08-20 09:00:00'),
+(2, '2026002', NULL, 9,  'COLETA_NAO_REALIZADA',    'MEDIA', 'Rua João Dornelas, 200',              'Coleta seletiva não passou no dia previsto.',      TRUE,  TRUE, 'RESOLVIDA',    '2026-08-18 10:30:00'),
+(3, '2026003', NULL, 10, 'DESCARTE_IRREGULAR',      'MEDIA', 'Rua Barão do Monte Alto, 15',          'Lixo acumulado em terreno baldio.',                TRUE,  TRUE, 'NOVA',         '2026-08-21 08:15:00'),
+(4, '2026004', NULL, 11, 'MATERIAL_NAO_RECOLHIDO',  'BAIXA', 'Rua São Pedro',             'Material reciclável deixado e não recolhido.',     TRUE,  TRUE, 'EM_ANALISE',   '2026-08-21 14:45:00'),
 (5, '2026005', NULL, 1,  'PONTO_INADEQUADO',        'BAIXA', 'Rua da Saúde, 10',             'Ponto de descarte em local inadequado.',           TRUE,  TRUE, 'RESOLVIDA',    '2026-08-17 16:20:00'),
-(6, '2026006', 2,    10, 'ENTULHO',                 'ALTA',  'Rua Dom Pedro, 400',           'Entulho de obra descartado na esquina há dias.',   FALSE, TRUE, 'NOVA',         '2026-08-22 07:40:00'),
-(7, '2026007', NULL, 8,  'LIXO_TOXICO',             'ALTA',  'Rua do Comércio, 88 – Mauá',   'Latas de tinta e solvente abandonadas na via.',    TRUE,  TRUE, 'EM_ANALISE',   '2026-08-22 11:10:00'),
+(6, '2026006', 2,    10, 'ENTULHO',                 'ALTA',  'Rua Coronel Pereira Sobrinho, 400',           'Entulho de obra descartado na esquina há dias.',   FALSE, TRUE, 'NOVA',         '2026-08-22 07:40:00'),
+(7, '2026007', NULL, 8,  'LIXO_TOXICO',             'ALTA',  'Rua Barão do Monte Alto, 88 – Mauá',   'Latas de tinta e solvente abandonadas na via.',    TRUE,  TRUE, 'EM_ANALISE',   '2026-08-22 11:10:00'),
 (8, '2026008', 2,    1,  'DESCARTE_IRREGULAR',      'MEDIA', 'Praça Central',                'Sacos de lixo fora do horário da coleta.',         FALSE, TRUE, 'EM_ANDAMENTO', '2026-08-19 18:05:00'),
 (9, '2026009', NULL, 11, 'COLETA_NAO_REALIZADA',    'MEDIA', 'Rua das Acácias, 30',          'Coleta atrasada há dois dias no bairro.',          TRUE,  TRUE, 'RESOLVIDA',    '2026-08-15 09:25:00'),
 (10,'2026010', 2,    12, 'OUTROS',                  'BAIXA', 'Av. da Educação, 120',         'Lixeira pública danificada e transbordando.',      FALSE, TRUE, 'NOVA',         '2026-08-23 08:00:00');

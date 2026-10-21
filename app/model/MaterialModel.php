@@ -50,6 +50,13 @@ class MaterialModel extends BaseModel
         );
     }
 
+    /** Total de materiais ativos publicados no guia. */
+    public function totalAtivos(): int
+    {
+        $r = $this->db->select('SELECT COUNT(*) AS total FROM material WHERE ativo = 1', [], 'single');
+        return (int) ($r['total'] ?? 0);
+    }
+
     // =================================================================
     // CRUD (area administrativa)
     // =================================================================

@@ -70,7 +70,7 @@ function strFloat(string $valor): float
  */
 function themeHeadScript(): string
 {
-    return "<script>(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>";
+    return "<script>(function(){try{var t=localStorage.getItem('theme')||(window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');document.documentElement.style.colorScheme=t;if(t==='dark')document.documentElement.classList.add('dark');}catch(e){}})();</script>";
 }
 
 /**

@@ -1,30 +1,16 @@
-﻿// =============================================
-// DADOS HISTÓRICO FAKE
-// =============================================
-const HISTORICO_FAKE = [
-  { id:'CF-2026-0001', tipo:'descarte-irregular', tipoLabel:'Descarte irregular', bairro:'Centro',       local:'Rua das Palmeiras, 50',    urgencia:'alta',  status:'andamento', data:'20/08/2026', desc:'Lixo hospitalar descartado na calçada, bloqueando passagem.' },
-  { id:'CF-2026-0002', tipo:'coleta',            tipoLabel:'Coleta não realizada', bairro:'Bairro Novo',  local:'Av. Brasil, 200',           urgencia:'media', status:'resolvida', data:'18/08/2026', desc:'Coleta seletiva não passou no dia previsto (quinta-feira).' },
-  { id:'CF-2026-0003', tipo:'descarte',           tipoLabel:'Descarte irregular', bairro:'Vila Nova',    local:'Rua do Comércio, 15',        urgencia:'alta',  status:'nova',      data:'21/08/2026', desc:'Entulho de obra depositado em área pública.' },
-  { id:'CF-2026-0004', tipo:'entulho',            tipoLabel:'Entulho/Móveis',     bairro:'Jardim América',local:'Praça da Amizade',          urgencia:'media', status:'analise',   data:'21/08/2026', desc:'Móveis velhos e entulho abandonados na praça.' },
-  { id:'CF-2026-0005', tipo:'toxico',             tipoLabel:'Lixo tóxico',        bairro:'Centro',       local:'Rua da Saúde, 80',           urgencia:'alta',  status:'resolvida', data:'17/08/2026', desc:'Embalagens de produto químico jogadas em terreno baldio.' },
-  { id:'CF-2026-0006', tipo:'coleta',             tipoLabel:'Coleta não realizada',bairro:'Bairro Escolar',local:'Rua da Educação',         urgencia:'baixa', status:'resolvida', data:'16/08/2026', desc:'Caminhão passou mas não recolheu todo o material.' },
-  { id:'CF-2026-0007', tipo:'descarte',           tipoLabel:'Descarte irregular', bairro:'Centro',       local:'Av. Central, 300',           urgencia:'media', status:'analise',   data:'19/08/2026', desc:'Descarte de lixo doméstico fora do dia da coleta.' },
-  { id:'CF-2026-0008', tipo:'entulho',            tipoLabel:'Entulho/Móveis',     bairro:'Vila Nova',    local:'Rua do Progresso, 120',      urgencia:'baixa', status:'nova',      data:'21/08/2026', desc:'Sofá e camas descartados na calçada há 3 dias.' },
-];
+﻿// Dados do histórico e do mapa são fornecidos pelo servidor.
+// Banco vazio deve permanecer vazio: não exibimos ocorrências demonstrativas como fatos reais.
 
-const TIPO_ICONS = { 'descarte-irregular':'🗑️', 'coleta':'🚛', 'descarte':'🗑️', 'entulho':'🧱', 'toxico':'⚠️', 'default':'📋' };
-const TIPO_CORES = { 'descarte-irregular':'#fee2e2', 'coleta':'#dbeafe', 'entulho':'#fef3c7', 'toxico':'#fff7ed', 'default':'#f1f5f9' };
+const TIPO_ICONS = { 'descarte-irregular':'!', 'coleta':'C', 'descarte':'D', 'entulho':'E', 'toxico':'!', 'default':'•' };
 const TIPO_INFO  = {
-  'descarte-irregular': '⚡ Ocorrência frequente. Fotos ajudam muito na resolução!',
-  'coleta-nao-realizada': '📅 Verifique o <a href="coleta.php">calendário de coleta</a> antes de registrar.',
-  'material-nao-recolhido': '♻️ Materiais deixados para trás geralmente são recolhidos no próximo turno.',
-  'ponto-inadequado': '📍 Inclua o endereço exato do ponto de descarte com problema.',
-  'entulho': '🧱 Entulho de obras requer coleta especial — informe tamanho aproximado.',
-  'lixo-toxico': '⚠️ URGENTE! Produtos tóxicos oferecem risco de saúde. Considere ligar 156.',
-  'outros': '💬 Detalhe ao máximo na descrição.',
+  'descarte-irregular': 'Fotos e localização precisa ajudam a equipe a verificar o relato.',
+  'coleta-nao-realizada': 'Verifique o calendário de coleta de Muriaé antes de registrar.',
+  'material-nao-recolhido': 'Informe quais materiais ficaram no local e o horário aproximado.',
+  'ponto-inadequado': 'Inclua o endereço exato do ponto de descarte com problema.',
+  'entulho': 'Informe o volume aproximado e se o material bloqueia a passagem.',
+  'lixo-toxico': 'Situação de risco: evite contato e, se necessário, ligue 156.',
+  'outros': 'Descreva a situação com o máximo de detalhes.',
 };
-
-let minhasOcorrenciasArr = JSON.parse(sessionStorage.getItem('minhasOc') || '[]');
 
 // =============================================
 // ABAS
@@ -35,6 +21,10 @@ function switchTab(tab, btn) {
   document.getElementById('tab-' + tab).style.display = 'block';
   if (btn) btn.classList.add('active');
   if (tab === 'historico') renderHistorico();
+  if (tab === 'mapa') {
+    initMapaOcorrencias();
+    setTimeout(() => mapaOcorrencias?.invalidateSize(), 80);
+  }
 }
 
 // =============================================
@@ -51,7 +41,7 @@ function atualizarTipoInfo() {
     box.style.display = 'none';
   }
   // Atualiza pontos
-  const pts = val === 'lixo-toxico' ? 80 : val === 'entulho' ? 60 : val === 'coleta-nao-realizada' ? 40 : 50;
+  const pts = 50;
   const fotoExtra = document.getElementById('fotoInput')?.files?.length > 0 ? 20 : 0;
   const el = document.getElementById('pontosPreview');
   if (el) el.textContent = (pts + fotoExtra) + ' pts';
@@ -90,104 +80,237 @@ document.getElementById('descricaoOcorrencia')?.addEventListener('input', functi
 // =============================================
 // USAR LOCALIZAÇÃO
 // =============================================
+let mapaLocalizacao = null;
+let marcadorLocalizacao = null;
+let circuloPrecisao = null;
+let gpsWatchId = null;
+let gpsTimeoutId = null;
+
+function dentroDeMuriae(lat, lng) {
+  const limites = window.MURIAE_GEO?.bounds || [[-21.31, -42.57], [-20.86, -42.25]];
+  return lat >= limites[0][0] && lat <= limites[1][0] && lng >= limites[0][1] && lng <= limites[1][1];
+}
+
+function normalizarTexto(valor) {
+  return String(valor || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
+}
+
+// Remove prefixos que o mapa às vezes acrescenta ("Bairro Centro", "Distrito de Vermelho").
+function limparNomeBairro(valor) {
+  return normalizarTexto(valor)
+    .replace(/^(bairro|distrito( de| do| da)?|comunidade( de| do| da)?|loteamento)\s+/, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function contemPalavras(texto, trecho) {
+  const esc = trecho.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp('(^|\\s)' + esc + '(\\s|$)').test(texto);
+}
+
+/**
+ * Procura, entre as opções do select de bairros (lista oficial do banco),
+ * o bairro que corresponde a algum dos nomes devolvidos pelo mapa.
+ * Ordem de confiança: nome idêntico > bairro contido no nome do mapa
+ * (o mais longo vence: "Porto Belo" antes de "Porto") > nome do mapa
+ * contido em um único bairro.
+ */
+function encontrarBairro(candidatos) {
+  const select = document.getElementById('bairroOcorrencia');
+  if (!select) return null;
+  const opcoes = Array.from(select.options)
+    .filter(o => o.value)
+    .map(o => ({ valor: o.value, nome: limparNomeBairro(o.value) }));
+  const nomes = candidatos.map(limparNomeBairro).filter(n => n.length >= 3);
+
+  for (const n of nomes) {
+    const exata = opcoes.find(o => o.nome === n);
+    if (exata) return exata.valor;
+  }
+  for (const n of nomes) {
+    const contidas = opcoes.filter(o => contemPalavras(n, o.nome)).sort((a, b) => b.nome.length - a.nome.length);
+    if (contidas.length) return contidas[0].valor;
+  }
+  for (const n of nomes) {
+    const contem = opcoes.filter(o => contemPalavras(o.nome, n));
+    if (contem.length === 1) return contem[0].valor;
+  }
+  return null;
+}
+
+// Mostra ao usuário se o bairro foi identificado ou se precisa escolher.
+function sinalizarBairro(encontrado) {
+  const select = document.getElementById('bairroOcorrencia');
+  const status = document.getElementById('gpsStatus');
+  if (select) select.classList.toggle('campo-atencao', !encontrado);
+  if (status) {
+    status.textContent = encontrado
+      ? 'Localização confirmada · bairro ' + encontrado + ' (confira)'
+      : 'Localização confirmada · selecione o bairro na lista';
+  }
+  if (!encontrado && select) select.focus({ preventScroll: true });
+}
+
+function atualizarPreviewLocalizacao(lat, lng, accuracy) {
+  const el = document.getElementById('localizacaoPreview');
+  if (!el || typeof L === 'undefined') return;
+  el.style.display = 'block';
+  if (!mapaLocalizacao) {
+    mapaLocalizacao = L.map(el, {
+      center: [lat, lng], zoom: 17, maxBounds: window.MURIAE_GEO?.bounds,
+      maxBoundsViscosity: 1, scrollWheelZoom: false, attributionControl: true,
+    });
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19, attribution: '&copy; OpenStreetMap'
+    }).addTo(mapaLocalizacao);
+  }
+  if (marcadorLocalizacao) mapaLocalizacao.removeLayer(marcadorLocalizacao);
+  if (circuloPrecisao) mapaLocalizacao.removeLayer(circuloPrecisao);
+  marcadorLocalizacao = L.marker([lat, lng], { draggable: true }).addTo(mapaLocalizacao);
+  circuloPrecisao = L.circle([lat, lng], { radius: accuracy || 20, color: '#2563eb', fillOpacity: 0.12 }).addTo(mapaLocalizacao);
+  mapaLocalizacao.setView([lat, lng], Math.min(18, accuracy > 80 ? 16 : 18));
+  marcadorLocalizacao.on('dragend', function () {
+    const p = marcadorLocalizacao.getLatLng();
+    if (!dentroDeMuriae(p.lat, p.lng)) {
+      showOcToast('O ponto precisa permanecer dentro da área de Muriaé.');
+      marcadorLocalizacao.setLatLng([lat, lng]);
+      return;
+    }
+    aplicarCoordenadas(p.lat, p.lng, Math.max(accuracy || 20, 20), true);
+  });
+  setTimeout(() => mapaLocalizacao.invalidateSize(), 100);
+}
+
+async function preencherEnderecoPorCoordenadas(lat, lng) {
+  const url = 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=' +
+    encodeURIComponent(lat) + '&lon=' + encodeURIComponent(lng) + '&zoom=18&addressdetails=1&accept-language=pt-BR';
+  const resposta = await fetch(url, { headers: { 'Accept': 'application/json' } });
+  if (!resposta.ok) throw new Error('geocodificacao');
+  const dados = await resposta.json();
+  const a = dados.address || {};
+  const cidade = a.city || a.town || a.municipality || '';
+  if (cidade && !normalizarTexto(cidade).includes('muriae')) throw new Error('fora_muriae');
+
+  const rua = a.road || a.pedestrian || a.footway || a.residential || '';
+  const numero = a.house_number || '';
+  const endereco = [rua, numero].filter(Boolean).join(', ');
+
+  const enderecoEl = document.getElementById('localOcorrencia');
+  const cidadeEl = document.getElementById('cidadeOcorrencia');
+  if (enderecoEl && endereco) enderecoEl.value = endereco;
+  if (cidadeEl) cidadeEl.value = 'Muriaé - MG';
+
+  // Todos os campos em que o OpenStreetMap costuma informar o bairro/distrito,
+  // do mais específico para o mais genérico, mais as partes do endereço completo.
+  const ignorar = ['muriae', 'minas gerais', 'brasil', 'regiao sudeste'];
+  const partes = String(dados.display_name || '').split(',')
+    .map(p => p.trim())
+    .filter(p => p && !/^\d/.test(p) && !ignorar.some(i => normalizarTexto(p).includes(i)));
+  const candidatos = [
+    a.suburb, a.neighbourhood, a.quarter, a.city_district, a.residential,
+    a.village, a.hamlet, a.isolated_dwelling, a.allotments,
+    ...partes,
+  ].filter(Boolean);
+
+  const bairro = encontrarBairro(candidatos);
+  const select = document.getElementById('bairroOcorrencia');
+  if (bairro && select) select.value = bairro;
+  sinalizarBairro(bairro);
+  return bairro;
+}
+
+async function aplicarCoordenadas(lat, lng, accuracy, geocodificar) {
+  if (!dentroDeMuriae(lat, lng)) {
+    showOcToast('A localização encontrada está fora da área de Muriaé-MG.');
+    limparLocalizacao(false);
+    return;
+  }
+  document.getElementById('latOcorrencia').value = Number(lat).toFixed(7);
+  document.getElementById('lngOcorrencia').value = Number(lng).toFixed(7);
+  document.getElementById('precisaoOcorrencia').value = Math.round(accuracy || 0);
+  const aviso = document.getElementById('gpsAviso');
+  const precisaoEl = document.getElementById('gpsPrecisao');
+  if (aviso) aviso.style.display = 'flex';
+  if (precisaoEl) precisaoEl.textContent = 'Precisão aproximada: ' + Math.round(accuracy || 0) + ' m';
+  atualizarPreviewLocalizacao(lat, lng, accuracy);
+
+  if (geocodificar) {
+    try { await preencherEnderecoPorCoordenadas(lat, lng); }
+    catch (e) {
+      if (e.message === 'fora_muriae') showOcToast('O serviço de endereço indicou uma cidade diferente de Muriaé.');
+      else showOcToast('Localização obtida. Revise e preencha o endereço manualmente.');
+    }
+  }
+}
+
+function pararBuscaGps() {
+  if (gpsWatchId !== null) navigator.geolocation.clearWatch(gpsWatchId);
+  if (gpsTimeoutId) clearTimeout(gpsTimeoutId);
+  gpsWatchId = null;
+  gpsTimeoutId = null;
+}
+
 function usarLocalizacao() {
   const btn = document.querySelector('.use-location-btn');
-  const resetBtn = () => { if (btn) { btn.textContent = '📡 Usar minha localização'; btn.disabled = false; } };
-
-  // A API de geolocalização só funciona em contexto seguro (HTTPS ou localhost).
-  // Em http://host (ex.: VirtualHost), o navegador bloqueia e o botão "não funciona".
   if (!navigator.geolocation || (typeof isSecureContext !== 'undefined' && !isSecureContext)) {
-    showOcToast('📍 A localização automática exige HTTPS. Digite o endereço manualmente.');
-    resetBtn();
+    showOcToast('A localização automática exige HTTPS ou localhost.');
     return;
   }
 
-  if (btn) { btn.textContent = '📡 Buscando...'; btn.disabled = true; }
+  pararBuscaGps();
+  if (btn) { btn.textContent = 'Buscando sinal preciso...'; btn.disabled = true; }
+  let melhor = null;
 
-  navigator.geolocation.getCurrentPosition(
-    (pos) => {
-      // Privacidade: a coordenada vai para campos ocultos (uso interno da
-      // equipe) e NUNCA é colada no endereço, que é exibido publicamente.
-      const lat = pos.coords.latitude.toFixed(6);
-      const lng = pos.coords.longitude.toFixed(6);
-      const latEl = document.getElementById('latOcorrencia');
-      const lngEl = document.getElementById('lngOcorrencia');
-      if (latEl) latEl.value = lat;
-      if (lngEl) lngEl.value = lng;
-      const aviso = document.getElementById('gpsAviso');
-      if (aviso) aviso.style.display = 'block';
-      if (btn) { btn.textContent = '✅ Localização anexada'; btn.disabled = false; }
-      showOcToast('📍 Localização anexada (uso interno).');
-    },
-    (err) => {
-      resetBtn();
-      // Mensagem específica conforme o motivo da falha.
-      let msg = 'Não foi possível obter a localização. Preencha o endereço manualmente.';
-      if (err) {
-        if (err.code === 1) msg = '🚫 Permissão de localização negada. Libere no ícone do navegador ou digite o endereço.';
-        else if (err.code === 2) msg = '📡 Localização indisponível no momento. Tente novamente ou digite o endereço.';
-        else if (err.code === 3) msg = '⏱️ A busca pela localização demorou demais. Tente de novo.';
-      }
-      showOcToast(msg);
-    },
-    { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
-  );
-}
-
-// Remove a localização GPS anexada.
-function limparLocalizacao() {
-  const latEl = document.getElementById('latOcorrencia');
-  const lngEl = document.getElementById('lngOcorrencia');
-  if (latEl) latEl.value = '';
-  if (lngEl) lngEl.value = '';
-  const aviso = document.getElementById('gpsAviso');
-  if (aviso) aviso.style.display = 'none';
-  const btn = document.querySelector('.use-location-btn');
-  if (btn) btn.textContent = '📡 Usar minha localização';
-  showOcToast('Localização removida.');
-}
-
-// =============================================
-// REGISTRAR OCORRÊNCIA
-// =============================================
-function registrarOcorrencia(event) {
-  event.preventDefault();
-
-  const tipo      = document.getElementById('tipoOcorrencia').value;
-  const local     = document.getElementById('localOcorrencia').value;
-  const bairro    = document.getElementById('bairroOcorrencia').value;
-  const urgencia  = document.getElementById('urgencia').value;
-  const descricao = document.getElementById('descricaoOcorrencia').value;
-  const temFoto   = document.getElementById('fotoInput').files?.length > 0;
-
-  const protocolo = 'CF-' + new Date().getFullYear() + '-' + String(Math.floor(Math.random() * 9000) + 1000);
-  const pts = (tipo === 'lixo-toxico' ? 80 : tipo === 'entulho' ? 60 : tipo === 'coleta-nao-realizada' ? 40 : 50) + (temFoto ? 20 : 0);
-
-  // Salva na sessão
-  const novaOc = {
-    id: protocolo,
-    tipo, local, bairro, urgencia,
-    status: 'nova',
-    data: new Date().toLocaleDateString('pt-BR'),
-    desc: descricao,
+  const finalizar = async () => {
+    pararBuscaGps();
+    if (btn) { btn.textContent = 'Atualizar localização'; btn.disabled = false; }
+    if (!melhor) {
+      showOcToast('Não foi possível obter a localização. Preencha o endereço manualmente.');
+      return;
+    }
+    await aplicarCoordenadas(melhor.coords.latitude, melhor.coords.longitude, melhor.coords.accuracy, true);
+    const bairroSel = document.getElementById('bairroOcorrencia')?.value;
+    showOcToast(bairroSel
+      ? 'Rua e bairro preenchidos. Revise antes de enviar.'
+      : 'Rua preenchida. Selecione o bairro na lista.');
   };
-  minhasOcorrenciasArr.unshift(novaOc);
-  sessionStorage.setItem('minhasOc', JSON.stringify(minhasOcorrenciasArr));
 
-  // Exibe modal
-  document.getElementById('protocoloGerado').textContent = protocolo;
-  document.getElementById('pontosGanhos').textContent = pts;
-  document.getElementById('modalSucesso').style.display = 'flex';
+  gpsWatchId = navigator.geolocation.watchPosition(
+    pos => {
+      if (!melhor || pos.coords.accuracy < melhor.coords.accuracy) melhor = pos;
+      if (pos.coords.accuracy <= 25) finalizar();
+    },
+    err => {
+      pararBuscaGps();
+      if (btn) { btn.textContent = 'Usar localização atual'; btn.disabled = false; }
+      const mensagens = {
+        1: 'Permissão de localização negada. Libere-a no navegador ou digite o endereço.',
+        2: 'Localização indisponível. Tente novamente em uma área aberta.',
+        3: 'A busca demorou demais. Tente novamente.'
+      };
+      showOcToast(mensagens[err.code] || 'Não foi possível obter a localização.');
+    },
+    { enableHighAccuracy: true, timeout: 12000, maximumAge: 0 }
+  );
+  gpsTimeoutId = setTimeout(finalizar, 9000);
+}
 
-  // Reseta form
-  document.getElementById('ocorrenciaForm').reset();
-  document.getElementById('tipoInfo').style.display = 'none';
-  removerFoto();
+function limparLocalizacao(mostrarMensagem = true) {
+  pararBuscaGps();
+  ['latOcorrencia', 'lngOcorrencia', 'precisaoOcorrencia'].forEach(id => {
+    const el = document.getElementById(id); if (el) el.value = '';
+  });
+  const aviso = document.getElementById('gpsAviso');
+  const preview = document.getElementById('localizacaoPreview');
+  if (aviso) aviso.style.display = 'none';
+  if (preview) preview.style.display = 'none';
+  const btn = document.querySelector('.use-location-btn');
+  if (btn) { btn.textContent = 'Usar localização atual'; btn.disabled = false; }
+  if (mostrarMensagem) showOcToast('Localização removida. Você pode editar o endereço manualmente.');
 }
 
 function fecharModalSucesso() {
   document.getElementById('modalSucesso').style.display = 'none';
-  renderMinhasOcorrencias();
 }
 
 function copiarProtocolo() {
@@ -198,14 +321,6 @@ function copiarProtocolo() {
 // =============================================
 // CONSULTAR STATUS
 // =============================================
-const STATUS_DATA = {
-  'CF-2026-0001': HISTORICO_FAKE[0],
-  'CF-2026-0002': HISTORICO_FAKE[1],
-  'CF-2026-0003': HISTORICO_FAKE[2],
-  'CF-2026-0004': HISTORICO_FAKE[3],
-  'CF-2026-0005': HISTORICO_FAKE[4],
-};
-
 function consultarProtocolo() {
   const prot = document.getElementById('protocoloInput').value.trim().toUpperCase();
   document.getElementById('statusResultado').style.display = 'none';
@@ -225,10 +340,10 @@ function consultarProtocolo() {
       document.getElementById('srLocal').textContent  = d.local || '–';
       document.getElementById('srTipo').textContent   = d.tipo || '–';
       document.getElementById('srData').textContent   = d.data || '–';
-      document.getElementById('srEquipe').textContent = 'Equipe ReciclaVida';
+      document.getElementById('srEquipe').textContent = 'Atendimento municipal de Muriaé';
 
       const badge = document.getElementById('srBadge');
-      const badgeMap = { nova:'🔴 Nova', analise:'🟡 Em análise', andamento:'🔵 Em atendimento', resolvida:'🟢 Resolvida' };
+      const badgeMap = { nova:'Nova', analise:'Em análise', andamento:'Em atendimento', resolvida:'Resolvida', arquivada:'Arquivada' };
       badge.textContent = badgeMap[d.status] || d.status;
       badge.className   = 'sr-badge ' + d.status;
 
@@ -297,37 +412,18 @@ function renderTimeline(status, historico) {
   document.getElementById('srTimeline').innerHTML = html;
 }
 
-// =============================================
-// MINHAS OCORRÊNCIAS (SESSÃO)
-// =============================================
-function renderMinhasOcorrencias() {
-  const container = document.getElementById('minhasOcorrencias');
-  if (!container) return;
-
-  if (minhasOcorrenciasArr.length === 0) {
-    container.innerHTML = '<div class="mo-vazio">Você ainda não registrou nenhuma ocorrência nesta sessão.</div>';
-    return;
-  }
-
-  container.innerHTML = minhasOcorrenciasArr.slice(0, 5).map(oc => `
-    <div class="mo-item" onclick="document.getElementById('protocoloInput').value='${oc.id}'; switchTab('consultar', document.querySelectorAll('.oc-tab')[1])">
-      <strong>${oc.tipo || 'Ocorrência'} – ${oc.bairro}</strong>
-      <small>
-        <span>${oc.id}</span>
-        <span>${oc.data}</span>
-      </small>
-    </div>
-  `).join('');
+function consultarOcorrenciaDaLista(protocolo) {
+  const input = document.getElementById('protocoloInput');
+  if (input) input.value = protocolo;
+  switchTab('consultar', document.querySelectorAll('.oc-tab')[1]);
+  consultarProtocolo();
 }
 
 // =============================================
 // HISTÓRICO PÚBLICO
 // =============================================
-// Usa os dados reais do banco (window.HISTORICO_DB) quando disponiveis;
-// caso contrario, recai nos dados de exemplo.
-const HISTORICO_BASE = (Array.isArray(window.HISTORICO_DB) && window.HISTORICO_DB.length)
-  ? window.HISTORICO_DB
-  : HISTORICO_FAKE;
+// Usa somente os dados reais enviados pelo servidor.
+const HISTORICO_BASE = Array.isArray(window.HISTORICO_DB) ? window.HISTORICO_DB : [];
 let historicoFiltrado = [...HISTORICO_BASE];
 
 function renderHistorico() {
@@ -341,10 +437,9 @@ function renderHistorico() {
 
   lista.innerHTML = historicoFiltrado.map(oc => {
     const icon = TIPO_ICONS[oc.tipo] || TIPO_ICONS.default;
-    const bg   = TIPO_CORES[oc.tipo] || TIPO_CORES.default;
     return `
       <div class="hc-item">
-        <div class="hc-type-icon" style="background:${bg}">${icon}</div>
+        <div class="hc-type-icon ${oc.tipo || 'default'}">${icon}</div>
         <div class="hc-body">
           <div class="hc-title-row">
             <strong>${oc.tipoLabel}</strong>
@@ -364,11 +459,11 @@ function renderHistorico() {
 }
 
 function statusLabel(s) {
-  return { nova:'🔴 Nova', analise:'🟡 Em análise', andamento:'🔵 Atendimento', resolvida:'🟢 Resolvida' }[s] || s;
+  return { nova:'Nova', analise:'Em análise', andamento:'Em atendimento', resolvida:'Resolvida', arquivada:'Arquivada' }[s] || s;
 }
 
 function urgLabel(u) {
-  return { alta:'🔴 Alta', media:'🟡 Média', baixa:'🟢 Baixa' }[u] || u;
+  return { alta:'Alta', media:'Média', baixa:'Baixa' }[u] || u;
 }
 
 function filtrarHistorico() {
@@ -406,11 +501,90 @@ document.addEventListener('click', e => {
 });
 
 // =============================================
+// MAPA DE OCORRÊNCIAS — Muriaé + localização atual
+// =============================================
+let mapaOcorrencias = null;
+let marcadorUsuarioMapa = null;
+let circuloUsuarioMapa = null;
+
+function escaparHtml(valor) {
+  return String(valor == null ? '' : valor)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+}
+
+function initMapaOcorrencias() {
+  const el = document.getElementById('mapaOcorrencias');
+  if (!el || typeof L === 'undefined' || mapaOcorrencias) return;
+  const centro = window.MURIAE_GEO?.center || [-21.1306, -42.3664];
+  const limites = window.MURIAE_GEO?.bounds || [[-21.31, -42.57], [-20.86, -42.25]];
+  mapaOcorrencias = L.map(el, {
+    center: centro, zoom: 13, maxBounds: limites, maxBoundsViscosity: 1,
+    scrollWheelZoom: false,
+  });
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19, attribution: '&copy; OpenStreetMap'
+  }).addTo(mapaOcorrencias);
+
+  const pontos = Array.isArray(window.MAPA_OCORRENCIAS) ? window.MAPA_OCORRENCIAS : [];
+  const bounds = [];
+  pontos.forEach(item => {
+    const lat = Number(item.latitude);
+    const lng = Number(item.longitude);
+    if (!Number.isFinite(lat) || !Number.isFinite(lng) || !dentroDeMuriae(lat, lng)) return;
+    const resolvida = item.status === 'RESOLVIDA';
+    const cor = resolvida ? '#16a34a' : item.urgencia === 'ALTA' ? '#dc2626' : item.urgencia === 'MEDIA' ? '#d97706' : '#2563eb';
+    const marker = L.circleMarker([lat, lng], {
+      radius: 9, color: '#ffffff', weight: 2, fillColor: cor, fillOpacity: 0.95,
+    }).addTo(mapaOcorrencias);
+    marker.bindPopup(
+      '<div class="oc-map-popup"><strong>' + escaparHtml(item.tipo ? item.tipo.replaceAll('_', ' ') : 'Ocorrência') + '</strong>' +
+      '<span>' + escaparHtml(item.bairro) + '</span>' +
+      '<small>Status: ' + escaparHtml(item.status ? item.status.replaceAll('_', ' ') : '') + '</small></div>'
+    );
+    bounds.push([lat, lng]);
+  });
+  if (bounds.length) mapaOcorrencias.fitBounds(bounds, { padding: [36, 36], maxZoom: 15 });
+}
+
+function centralizarMapaNaMinhaLocalizacao() {
+  const aviso = document.getElementById('mapaOcorrenciasAviso');
+  initMapaOcorrencias();
+  if (!mapaOcorrencias || !navigator.geolocation) {
+    if (aviso) { aviso.hidden = false; aviso.textContent = 'Localização não disponível neste navegador.'; }
+    return;
+  }
+  navigator.geolocation.getCurrentPosition(pos => {
+    const lat = pos.coords.latitude;
+    const lng = pos.coords.longitude;
+    if (!dentroDeMuriae(lat, lng)) {
+      if (aviso) { aviso.hidden = false; aviso.textContent = 'Sua localização atual está fora da área de Muriaé. O mapa foi mantido no município.'; }
+      mapaOcorrencias.setView(window.MURIAE_GEO.center, 13);
+      return;
+    }
+    if (marcadorUsuarioMapa) mapaOcorrencias.removeLayer(marcadorUsuarioMapa);
+    if (circuloUsuarioMapa) mapaOcorrencias.removeLayer(circuloUsuarioMapa);
+    marcadorUsuarioMapa = L.marker([lat, lng]).addTo(mapaOcorrencias).bindPopup('Sua localização aproximada').openPopup();
+    circuloUsuarioMapa = L.circle([lat, lng], { radius: pos.coords.accuracy || 30, color: '#2563eb', fillOpacity: 0.1 }).addTo(mapaOcorrencias);
+    mapaOcorrencias.setView([lat, lng], 16);
+    if (aviso) aviso.hidden = true;
+  }, () => {
+    if (aviso) { aviso.hidden = false; aviso.textContent = 'Não foi possível acessar sua localização. Verifique a permissão do navegador.'; }
+  }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 });
+}
+
+// =============================================
 // INIT
 // =============================================
 window.addEventListener('DOMContentLoaded', () => {
-  renderMinhasOcorrencias();
   renderHistorico();
+
+  // Ao escolher o bairro manualmente, remove o destaque de atenção.
+  document.getElementById('bairroOcorrencia')?.addEventListener('change', function () {
+    this.classList.remove('campo-atencao');
+    const status = document.getElementById('gpsStatus');
+    if (status && this.value) status.textContent = 'Localização confirmada · bairro ' + this.value;
+  });
 
   // Preenche data de hoje
   const hoje = new Date().toISOString().split('T')[0];

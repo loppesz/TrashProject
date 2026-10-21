@@ -2,13 +2,8 @@
   <footer class="footer">
     <div class="container footer-inner">
       <div class="footer-brand">
-        <span class="logo" style="color:#4ade80; font-size:1.3rem;">♻️ ColetaFácil</span>
-        <p>Promovendo a coleta seletiva e a conscientização ambiental na nossa comunidade.</p>
-        <div class="footer-social">
-          <a href="#" title="Instagram">📸</a>
-          <a href="#" title="Facebook">📘</a>
-          <a href="#" title="WhatsApp">💬</a>
-        </div>
+        <a href="<?= baseUrl() ?>" class="logo footer-logo"><span class="logo-icon" aria-hidden="true">♻️</span><span class="logo-text">ColetaFácil</span></a>
+        <p>Informação e participação para uma Muriaé mais limpa, segura e sustentável.</p>
       </div>
       <div class="footer-links">
         <h4>Plataforma</h4>
@@ -39,6 +34,9 @@
   </footer>
 
   <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
+  <?php if (!empty($usaLeaflet)): ?>
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <?php endif; ?>
   <script src="<?= baseUrl('assets/js/script.js') ?>?v=<?= $assetV ?>"></script>
   <?php foreach (($jsPagina ?? []) as $js): ?>
   <script src="<?= baseUrl('assets/js/' . $js) ?>?v=<?= $assetV ?>"></script>

@@ -3,35 +3,35 @@
       <!-- CARDS DE MÉTRICAS (clicáveis) -->
       <div class="metrics-grid">
         <a href="<?= baseUrl('admin/ocorrencias') ?>" class="metric-card metric-card-link">
-          <div class="metric-icon laranja">🚨</div>
+          <div class="metric-icon laranja">OC</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalOc ?? 0) ?></span>
             <span class="metric-label">Ocorrências Registradas</span>
           </div>
         </a>
         <a href="<?= baseUrl('admin/ocorrencias') ?>" class="metric-card metric-card-link">
-          <div class="metric-icon verde">✅</div>
+          <div class="metric-icon verde">OK</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($resolvidas ?? 0) ?></span>
             <span class="metric-label">Ocorrências Resolvidas</span>
           </div>
         </a>
         <a href="<?= baseUrl('admin/materiais') ?>" class="metric-card metric-card-link">
-          <div class="metric-icon azul">📦</div>
+          <div class="metric-icon azul">MT</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalMat ?? 0) ?></span>
             <span class="metric-label">Materiais Cadastrados</span>
           </div>
         </a>
         <a href="<?= baseUrl('admin/pontos') ?>" class="metric-card metric-card-link">
-          <div class="metric-icon roxo">📍</div>
+          <div class="metric-icon roxo">PD</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($totalPontos ?? 0) ?></span>
             <span class="metric-label">Pontos de Descarte</span>
           </div>
         </a>
         <a href="<?= baseUrl('admin/sugestoes') ?>" class="metric-card metric-card-link">
-          <div class="metric-icon amarelo">💡</div>
+          <div class="metric-icon amarelo">SG</div>
           <div class="metric-info">
             <span class="metric-value"><?= (int) ($sugestoesPendentes ?? 0) ?></span>
             <span class="metric-label">Sugestões Pendentes</span>
