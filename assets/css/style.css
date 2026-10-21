@@ -289,6 +289,7 @@ h6:hover .title-emoji,
   z-index: 0;
   background:
     linear-gradient(135deg, rgba(5,46,22,0.82) 0%, rgba(15,23,42,0.78) 45%, rgba(19,78,74,0.72) 100%),
+    url('../img/hero-separacao.jpg') center / cover no-repeat,
     url('../img/hero-coletor.jpg') center / cover no-repeat;
   pointer-events: none;
 }
@@ -1381,7 +1382,10 @@ button, input, select, textarea { font: inherit; }
 /* Tema claro realmente claro; tema escuro com contraste alto */
 .hero-v2 { background: linear-gradient(135deg, #ecfdf3 0%, #f7fffb 48%, #e6f7ff 100%); }
 .hero-v2::before {
-  background: linear-gradient(90deg, rgba(247,250,248,.96) 0%, rgba(247,250,248,.88) 48%, rgba(247,250,248,.55) 100%),
+  /* Foto do topo: hero-separacao.jpg (moradora separando o lixo).
+     Se o arquivo não existir, cai para a foto antiga (hero-coletor.jpg). */
+  background: linear-gradient(90deg, rgba(247,250,248,.96) 0%, rgba(247,250,248,.86) 45%, rgba(247,250,248,.35) 100%),
+              url('../img/hero-separacao.jpg') 70% center / cover no-repeat,
               url('../img/hero-coletor.jpg') center / cover no-repeat;
 }
 .hero-v2-title { color: var(--text); }
@@ -1391,7 +1395,8 @@ button, input, select, textarea { font: inherit; }
 .quick-link:hover { background: var(--surface-2); color: var(--text); }
 .dark .hero-v2 { background: var(--grad-hero); }
 .dark .hero-v2::before {
-  background: linear-gradient(135deg, rgba(2,6,23,.9), rgba(11,18,32,.84), rgba(5,46,35,.8)),
+  background: linear-gradient(135deg, rgba(2,6,23,.9), rgba(11,18,32,.82), rgba(5,46,35,.62)),
+              url('../img/hero-separacao.jpg') 70% center / cover no-repeat,
               url('../img/hero-coletor.jpg') center / cover no-repeat;
 }
 .dark .hero-v2-title { color: #fff; }
