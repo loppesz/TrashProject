@@ -11,6 +11,9 @@
 require_once 'app/config/Config.php';
 require_once 'app/library/Request.php';
 require_once 'app/helper/Auth.php';
+// Funcoes das views (baseUrl, themeHeadScript...). Carregado aqui tambem para a
+// pagina 404 funcionar quando o controller nem chega a ser criado.
+require_once 'app/helper/Utilits.php';
 require_once 'app/controller/BaseController.php';
 require_once 'app/model/BaseModel.php';
 
