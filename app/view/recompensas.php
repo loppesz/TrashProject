@@ -152,7 +152,8 @@
             <?php elseif ($saldo < $custo): ?>
               <button class="btn-resgatar disabled" disabled>Faltam <?= number_format($custo - $saldo, 0, ',', '.') ?> pts</button>
             <?php else: ?>
-              <form method="POST" action="<?= baseUrl('home/resgatar') ?>" onsubmit="return confirm('Resgatar &quot;<?= htmlspecialchars($r['nome'], ENT_QUOTES) ?>&quot; por <?= $custo ?> pts?');">
+              <form method="POST" action="<?= baseUrl('home/resgatar') ?>" onsubmit="return confirm(<?= jsAttr('Resgatar "' . $r['nome'] . '" por ' . $custo . ' pts?') ?>);">
+                <?= csrf_campo() ?>
                 <input type="hidden" name="id_recompensa" value="<?= (int) $r['id_recompensa'] ?>">
                 <button type="submit" class="btn-resgatar">Resgatar</button>
               </form>
@@ -194,7 +195,7 @@
           ?>
           <div class="rt-row <?= $linha ?>">
             <span><?= $pos ?></span>
-            <span>👤 <?= htmlspecialchars($u['nome']) ?></span>
+            <span>👤 <?= htmlspecialchars(nomePublico($u['nome'])) ?></span>
             <span><?= (int) $u['ocorrencias'] ?></span>
             <span><strong><?= number_format((int) $u['pontos'], 0, ',', '.') ?></strong></span>
             <span class="nivel-badge <?= $niv['classe'] ?>"><?= $niv['icone'] ?> <?= $niv['nome'] ?></span>

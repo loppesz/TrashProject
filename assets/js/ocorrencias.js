@@ -378,6 +378,10 @@ function consultarProtocolo() {
   fetch(base + 'ocorrencia/consultarJson?protocolo=' + encodeURIComponent(prot))
     .then(function (r) { return r.json(); })
     .then(function (d) {
+      if (d && d.motivo === 'limite') {
+        showOcToast('Muitas consultas seguidas. Aguarde alguns minutos e tente de novo.');
+        return;
+      }
       if (!d || !d.ok) {
         document.getElementById('statusNotFound').style.display = 'block';
         return;
@@ -437,8 +441,8 @@ function renderTimeline(status, historico) {
       return `<div class="str-item">
         <div class="str-dot ${atual ? 'active' : 'done'}">${meta.icon}</div>
         <div class="str-content">
-          <strong>${meta.label}</strong>
-          <span>${h.data || ''}${h.data && detalhe ? ' • ' : ''}${detalhe}</span>
+          <strong>${escaparHtml(meta.label)}</strong>
+          <span>${escaparHtml(h.data || '')}${h.data && detalhe ? ' • ' : ''}${escaparHtml(detalhe)}</span>
         </div>
       </div>`;
     }).join('');
@@ -493,24 +497,27 @@ function renderHistorico() {
     return;
   }
 
+  // Tudo que veio do formulário público é escapado antes de ir para o HTML
+  // (evita que alguém registre um endereço com código malicioso).
+  const esc = escaparHtml;
+  const classe = v => String(v || '').replace(/[^a-z0-9-]/gi, '');
   lista.innerHTML = historicoFiltrado.map(oc => {
     const icon = TIPO_ICONS[oc.tipo] || TIPO_ICONS.default;
     return `
       <div class="hc-item">
-        <div class="hc-type-icon ${oc.tipo || 'default'}">${icon}</div>
+        <div class="hc-type-icon ${classe(oc.tipo) || 'default'}">${icon}</div>
         <div class="hc-body">
           <div class="hc-title-row">
-            <strong>${oc.tipoLabel}</strong>
-            <span class="hc-status ${oc.status}">${statusLabel(oc.status)}</span>
+            <strong>${esc(oc.tipoLabel)}</strong>
+            <span class="hc-status ${classe(oc.status)}">${esc(statusLabel(oc.status))}</span>
           </div>
           <div class="hc-meta">
-            <span>📍 ${oc.local} – ${oc.bairro}</span>
-            <span>💬 ${oc.desc.substring(0, 60)}...</span>
+            <span>📍 ${esc(oc.local)} – ${esc(oc.bairro)}</span>
           </div>
         </div>
         <div class="hc-side">
-          <span class="hc-data">${oc.data}</span>
-          <span class="hc-urgencia ${oc.urgencia}">${urgLabel(oc.urgencia)}</span>
+          <span class="hc-data">${esc(oc.data)}</span>
+          <span class="hc-urgencia ${classe(oc.urgencia)}">${esc(urgLabel(oc.urgencia))}</span>
         </div>
       </div>`;
   }).join('');
@@ -531,7 +538,7 @@ function filtrarHistorico() {
   const bairro  = document.getElementById('filtroBairroH')?.value || '';
 
   historicoFiltrado = HISTORICO_BASE.filter(oc => {
-    const txt = (oc.bairro + oc.local + oc.tipoLabel + oc.desc).toLowerCase();
+    const txt = [oc.bairro, oc.local, oc.tipoLabel].join(' ').toLowerCase();
     return (!busca  || txt.includes(busca))
         && (!status || oc.status === status)
         && (!tipo   || oc.tipo.includes(tipo))

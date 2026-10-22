@@ -1,6 +1,29 @@
+# Sem listagem de pastas.
+Options -Indexes
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # ---------------------------------------------------------------
+    # SEGURANCA: bloqueia acesso direto a codigo, banco e arquivos internos.
+    # ---------------------------------------------------------------
+    # Pastas internas: codigo PHP, scripts/backups do banco, documentos,
+    # fotos legadas de ocorrencias (servidas so pelo admin via PHP),
+    # configuracoes de editor e o repositorio git.
+    RewriteRule ^(app|modelo|docs|assets/uploads|\.git|\.kiro|\.vscode)(/|$) - [F,L,NC]
+
+    # Arquivos ocultos (.htaccess, .gitignore, .env...), exceto .well-known.
+    RewriteRule (^|/)\.(?!well-known/) - [F,L]
+
+    # Tipos de arquivo que nunca devem ser baixados pelo navegador.
+    RewriteRule \.(md|sql|bat|cmd|sh|mwb|bak|log|ini|env|lock|dist|txt)$ - [F,L,NC]
+
+    # Scripts de desenvolvimento e diagnostico na raiz.
+    RewriteRule ^(serve-local\.php|_[^/]*)$ - [F,L,NC]
+
+    # ---------------------------------------------------------------
+    # Front Controller
+    # ---------------------------------------------------------------
     # Nao reescreve se o alvo for um arquivo real (-f) ou diretorio real (-d).
     # Isso permite servir assets (css/js/img), o manifest e o sw.js diretamente.
     RewriteCond %{REQUEST_FILENAME} !-f
@@ -8,4 +31,12 @@
 
     # Todas as demais requisicoes vao para o Front Controller.
     RewriteRule ^(.*)$ index.php?url=$1 [QSA,L]
+</IfModule>
+
+# Cabecalhos de seguranca tambem para os arquivos estaticos (css, js, imagens).
+<IfModule mod_headers.c>
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set X-Frame-Options "SAMEORIGIN"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    Header always unset X-Powered-By
 </IfModule>

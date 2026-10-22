@@ -30,7 +30,7 @@ require_once 'app/view/comuns/cabecalho.php';
           <div class="login-feature-item"><div class="lfi-icon">🏆</div><span>Entre no ranking dos heróis da reciclagem</span></div>
           <div class="login-feature-item"><div class="lfi-icon">🎁</div><span>Troque pontos por recompensas reais</span></div>
           <div class="login-feature-item"><div class="lfi-icon">🚨</div><span>Reporte ocorrências e acompanhe o status</span></div>
-          <div class="login-feature-item"><div class="lfi-icon">🔔</div><span>Receba avisos da coleta no seu bairro</span></div>
+          <div class="login-feature-item"><div class="lfi-icon">🔒</div><span>Baixe ou exclua seus dados quando quiser</span></div>
         </div>
       </div>
 
@@ -50,6 +50,8 @@ require_once 'app/view/comuns/cabecalho.php';
         <?php endif; ?>
 
         <form method="POST" action="<?= baseUrl('usuario/cadastro') ?>" id="cadastroForm" novalidate>
+          <?= csrf_campo() ?>
+          <?= honeypot_campo() ?>
 
           <p class="form-section-label">Dados pessoais</p>
 
@@ -61,7 +63,7 @@ require_once 'app/view/comuns/cabecalho.php';
                 type="text" id="nome" name="nome"
                 placeholder="Ex: Maria Silva"
                 value="<?= htmlspecialchars($form['nome']) ?>"
-                autocomplete="name" required autofocus
+                autocomplete="name" maxlength="120" required autofocus
               >
             </div>
           </div>
@@ -93,10 +95,10 @@ require_once 'app/view/comuns/cabecalho.php';
                 type="email" id="email" name="email"
                 placeholder="seu@email.com"
                 value="<?= htmlspecialchars($form['email']) ?>"
-                autocomplete="email" required
+                autocomplete="email" maxlength="150" required
               >
             </div>
-            <small>Será usado para entrar na sua conta.</small>
+            <small>Usado apenas para entrar na sua conta. Não enviamos propaganda nem compartilhamos o seu e-mail.</small>
           </div>
 
           <div class="form-row-2">
@@ -106,8 +108,8 @@ require_once 'app/view/comuns/cabecalho.php';
                 <span class="field-icon">🔒</span>
                 <input
                   type="password" id="senha" name="senha"
-                  placeholder="Min. 8 caracteres"
-                  autocomplete="new-password" required
+                  placeholder="8+ caracteres, letras e números"
+                  autocomplete="new-password" minlength="8" maxlength="72" required
                   oninput="avaliarSenha(this.value)"
                 >
                 <button type="button" class="senha-toggle"
@@ -151,10 +153,10 @@ require_once 'app/view/comuns/cabecalho.php';
             <input type="checkbox" name="termos" id="termos" required>
             <span>
               Li e concordo com os
-              <a href="#" onclick="return false;" title="Termos de uso em breve">Termos de Uso</a>
+              <a href="<?= baseUrl('home/termos') ?>" target="_blank" rel="noopener">Termos de Uso</a>
               e a
-              <a href="#" onclick="return false;" title="Política de privacidade em breve">Política de Privacidade</a>
-              do ColetaFácil.
+              <a href="<?= baseUrl('home/privacidade') ?>" target="_blank" rel="noopener">Política de Privacidade</a>
+              do ColetaFácil (versão <?= htmlspecialchars(TERMOS_VERSAO) ?>).
             </span>
           </label>
 

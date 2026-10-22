@@ -18,7 +18,10 @@ $aSidebar = [
     'pontos'      => ['admin/pontos',       'PD', 'Pontos de Descarte'],
     'sugestoes'   => ['admin/sugestoes',    'SG', 'Sugestões'],
     'indicadores' => ['admin/indicadores',  'IN', 'Indicadores'],
+    'privacidade' => ['admin/privacidade',  'LG', 'Privacidade (LGPD)'],
 ];
+// Paginas do painel trazem dados pessoais: nunca guardar em cache.
+seguranca_sem_cache();
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -27,6 +30,8 @@ $aSidebar = [
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') ?></title>
+  <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
+  <meta name="robots" content="noindex, nofollow">
   <script>window.BASEURL = <?= json_encode(baseUrl(), JSON_UNESCAPED_SLASHES) ?>;</script>
   <link rel="icon" type="image/svg+xml" href="<?= baseUrl('assets/img/favicon.svg') ?>">
   <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
@@ -66,7 +71,10 @@ $aSidebar = [
       <div class="topbar-right">
         <button type="button" id="themeToggle" class="admin-theme-btn" onclick="toggleTheme()" aria-label="Alternar tema">🌙</button>
         <span class="admin-user"><?= htmlspecialchars(auth_user()['nome'] ?? 'Administrador', ENT_QUOTES, 'UTF-8') ?></span>
-        <a href="<?= baseUrl('usuario/logout') ?>" class="admin-logout">Sair</a>
+        <form method="POST" action="<?= baseUrl('usuario/logout') ?>" style="display:inline;margin:0;">
+          <?= csrf_campo() ?>
+          <button type="submit" class="admin-logout">Sair</button>
+        </form>
       </div>
     </header>
 

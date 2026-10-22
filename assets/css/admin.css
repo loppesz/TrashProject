@@ -746,7 +746,13 @@
 .admin-topbar { background: var(--surface); border-color: var(--border); box-shadow: var(--shadow); }
 .topbar-title, .card-header h2, .metric-value, .bairro-count { color: var(--text); }
 .admin-user, .metric-label, .total-label { color: var(--text-muted); }
-.admin-logout { color: var(--danger); font-size: .82rem; font-weight: 750; }
+.admin-logout { color: var(--danger); font-size: .82rem; font-weight: 750; background: none; border: 0; padding: 0; cursor: pointer; font-family: inherit; }
+.admin-logout:hover { text-decoration: underline; }
+/* Tela Privacidade (LGPD) */
+.lgpd-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.lgpd-item { padding: 12px 14px; border-radius: 12px; background: var(--surface-2); border: 1px solid var(--border); }
+.lgpd-item strong { display: block; font-size: 1.4rem; font-weight: 900; color: var(--text); }
+.lgpd-item span { font-size: .8rem; color: var(--text-muted); }
 /* Botão de tema: só o emoji (🌙/☀️), redondo com borda */
 .admin-theme-btn {
   width: 38px; height: 38px; padding: 0; flex-shrink: 0;

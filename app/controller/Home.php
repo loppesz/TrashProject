@@ -38,6 +38,31 @@ class Home extends BaseController
         ]);
     }
 
+    /** Política de Privacidade (LGPD). */
+    public function privacidade(): void
+    {
+        $this->view('privacidade', [
+            'tituloPagina' => 'Política de Privacidade – ColetaFácil',
+            'descricao'    => 'Como o ColetaFácil coleta, usa, protege e elimina dados pessoais, conforme a LGPD (Lei 13.709/2018).',
+            'cssPagina'    => ['legal.css'],
+            'menu'         => '',
+            'retencao'     => RETENCAO_DIAS,
+            'contato'      => LGPD_CONTATO,
+        ]);
+    }
+
+    /** Termos de Uso. */
+    public function termos(): void
+    {
+        $this->view('termos', [
+            'tituloPagina' => 'Termos de Uso – ColetaFácil',
+            'descricao'    => 'Regras de uso do ColetaFácil: contas, ocorrências, pontos, recompensas e responsabilidades.',
+            'cssPagina'    => ['legal.css'],
+            'menu'         => '',
+            'contato'      => LGPD_CONTATO,
+        ]);
+    }
+
     public function materiais(): void
     {
         $materiais = $this->model('Material')->listaCompleta();
@@ -169,11 +194,17 @@ class Home extends BaseController
 
         $idUsuario = (int) $usuario['id_usuario'];
         $idPerfil  = (int) $this->request->post('id_perfil');
-        $apelido   = (string) $this->request->post('apelido', 'Eco Herói');
-        $pontos    = (int) $this->request->post('pontos');
-        $jogos     = (int) $this->request->post('jogos');
+        // Apelido curto e sem marcação; pontos/jogos dentro de faixas plausíveis.
+        $apelido   = trim(strip_tags((string) $this->request->post('apelido', 'Eco Herói')));
+        $pontos    = min(1000000, max(0, (int) $this->request->post('pontos')));
+        $jogos     = min(10000, max(0, (int) $this->request->post('jogos')));
 
+        // Limite de perfis por responsável (evita criação em massa).
         $model = $this->model('PerfilKids');
+        if ($idPerfil <= 0 && count($model->porUsuario($idUsuario)) >= 10) {
+            echo json_encode(['ok' => false, 'motivo' => 'limite_perfis']);
+            exit;
+        }
 
         if ($idPerfil > 0 && !empty($model->doUsuario($idPerfil, $idUsuario))) {
             $model->atualiza($idPerfil, $idUsuario, $apelido, $pontos, $jogos);

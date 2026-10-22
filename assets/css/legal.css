@@ -1,0 +1,78 @@
+/* =============================================
+   Páginas de privacidade: Política, Termos e Minha conta
+   ============================================= */
+.legal-page { padding: 40px 0 64px; background: var(--bg); }
+.legal-wrap { max-width: 1040px; }
+.legal-texto { max-width: 860px; }
+
+.legal-header { margin-bottom: 22px; }
+.legal-tag {
+  display: inline-block; margin-bottom: 8px; padding: 4px 10px; border-radius: 999px;
+  font-size: .74rem; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  background: var(--success-bg, #dcfce7); color: var(--success, #15803d);
+}
+.legal-header h1 { font-size: clamp(1.6rem, 3vw, 2.2rem); font-weight: 900; color: var(--text); margin-bottom: 6px; }
+.legal-header p { color: var(--text-muted); }
+
+.legal-indice { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 24px; }
+.legal-indice a {
+  padding: 6px 11px; border-radius: 999px; border: 1px solid var(--border);
+  background: var(--surface); color: var(--text-soft); font-size: .8rem; font-weight: 700;
+}
+.legal-indice a:hover { border-color: var(--accent); color: var(--accent-strong); }
+
+.legal-secao { margin-bottom: 28px; scroll-margin-top: 90px; }
+.legal-secao h2 { font-size: 1.15rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+.legal-secao p, .legal-card p { color: var(--text-soft); line-height: 1.7; margin-bottom: 10px; }
+.legal-secao a, .legal-card a { color: var(--accent-strong, #15803d); font-weight: 700; text-decoration: underline; }
+.legal-lista { padding-left: 20px; display: grid; gap: 7px; color: var(--text-soft); line-height: 1.6; }
+
+.legal-tabela-wrap { overflow-x: auto; margin-bottom: 12px; border: 1px solid var(--border); border-radius: 12px; }
+.legal-tabela { width: 100%; border-collapse: collapse; font-size: .88rem; min-width: 620px; }
+.legal-tabela th { text-align: left; padding: 10px 12px; background: var(--surface-2); color: var(--text); font-weight: 800; }
+.legal-tabela td { padding: 10px 12px; border-top: 1px solid var(--border); color: var(--text-soft); vertical-align: top; line-height: 1.5; }
+
+.legal-direitos { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin-bottom: 12px; }
+.legal-direitos div { padding: 12px 14px; border-radius: 12px; background: var(--surface); border: 1px solid var(--border); }
+.legal-direitos strong { display: block; color: var(--text); margin-bottom: 3px; }
+.legal-direitos span { font-size: .85rem; color: var(--text-muted); }
+
+.legal-alerta { padding: 12px 16px; border-radius: 12px; margin-bottom: 18px; font-weight: 700; }
+.legal-alerta.ok { background: var(--success-bg, #dcfce7); color: var(--success, #15803d); }
+.legal-alerta.erro { background: var(--danger-bg, #fee2e2); color: var(--danger, #b91c1c); }
+
+/* Minha conta */
+.conta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; }
+.legal-card {
+  background: var(--surface); border: 1px solid var(--border); border-radius: 16px;
+  padding: 20px; box-shadow: var(--shadow);
+}
+.legal-card h2 { font-size: 1.05rem; font-weight: 800; color: var(--text); margin-bottom: 12px; }
+.legal-card.perigo { border-color: color-mix(in srgb, var(--danger, #dc2626) 40%, var(--border)); }
+.conta-form { display: grid; gap: 6px; }
+.conta-form label { font-size: .82rem; font-weight: 700; color: var(--text-soft); margin-top: 6px; }
+.conta-form label small { font-weight: 500; color: var(--text-muted); }
+.conta-form input {
+  padding: 10px 12px; border-radius: 10px; border: 1.5px solid var(--border);
+  background: var(--surface-2); color: var(--text); font: inherit;
+}
+.conta-form input:focus { outline: none; border-color: var(--accent); }
+.conta-form input:disabled { opacity: .7; cursor: not-allowed; }
+.legal-btn {
+  margin-top: 10px; padding: 10px 16px; border-radius: 10px; border: 0; cursor: pointer;
+  background: var(--green, #16a34a); color: #fff; font: inherit; font-weight: 800;
+}
+.legal-btn:hover { filter: brightness(1.05); }
+.legal-btn.secundario { background: var(--surface-2); color: var(--text); border: 1.5px solid var(--border); }
+.legal-btn.perigo { background: var(--danger, #dc2626); }
+.legal-nota { font-size: .84rem; color: var(--text-muted) !important; }
+.legal-link-btn { background: none; border: 0; padding: 0; color: var(--danger, #dc2626); font: inherit; font-weight: 700; cursor: pointer; text-decoration: underline; }
+.conta-info { margin-top: 14px; display: grid; gap: 6px; font-size: .84rem; }
+.conta-info div { display: flex; justify-content: space-between; gap: 10px; }
+.conta-info dt { color: var(--text-muted); }
+.conta-info dd { color: var(--text); font-weight: 700; text-align: right; }
+.conta-resumo { list-style: none; padding: 0; display: grid; gap: 6px; margin-bottom: 10px; color: var(--text-soft); }
+.conta-resumo strong { color: var(--text); }
+.conta-kids { list-style: none; padding: 0; display: grid; gap: 8px; }
+.conta-kids li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 10px; background: var(--surface-2); }
+.conta-kids form { margin: 0; }

@@ -16,6 +16,8 @@ CREATE TABLE usuario (
   tipo ENUM('MORADOR','ADMINISTRADOR') NOT NULL DEFAULT 'MORADOR',
   ativo BOOLEAN NOT NULL DEFAULT TRUE,
   email_verificado_em DATETIME NULL,
+  termos_aceitos_em DATETIME NULL,   -- LGPD: prova do aceite dos Termos/Política
+  termos_versao VARCHAR(10) NULL,
   criado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB;
@@ -300,3 +302,30 @@ CREATE TABLE lancamento_pontos (
   INDEX idx_lancamento_ocorrencia (id_ocorrencia)
 ) ENGINE=InnoDB;
 
+
+-- LGPD e segurança (ver migration_07_lgpd_seguranca.sql).
+-- Controle de tentativas: guarda só o HMAC do IP; apagado após 24 horas.
+CREATE TABLE registro_acao (
+  id_registro BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  acao VARCHAR(30) NOT NULL,
+  chave CHAR(64) NOT NULL,
+  criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_registro_acao (acao, chave, criada_em),
+  INDEX idx_registro_data (criada_em)
+) ENGINE=InnoDB;
+
+CREATE TABLE config_sistema (
+  chave VARCHAR(60) NOT NULL PRIMARY KEY,
+  valor VARCHAR(255) NULL,
+  atualizado_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB;
+
+-- Trilha de auditoria de ações sobre dados pessoais (sem o conteúdo dos dados).
+CREATE TABLE registro_privacidade (
+  id_registro BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  acao VARCHAR(40) NOT NULL,
+  id_usuario INT UNSIGNED NULL,
+  detalhes VARCHAR(255) NULL,
+  criada_em DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  INDEX idx_privacidade_data (criada_em)
+) ENGINE=InnoDB;

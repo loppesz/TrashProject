@@ -62,9 +62,10 @@
                         "equipe"    => $b["equipe"],
                         "trecho"    => $b["trecho"] ?? '',
                         "mats"      => $b["materiais_ids"] ?? [],
-                    ], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>✏️ Editar</button>
+                    ], JSON_SEGURO) ?>)'>✏️ Editar</button>
                   <form method="POST" action="<?= baseUrl('admin/excluirColeta') ?>" style="display:inline"
-                        onsubmit="return confirm('Remover a coleta seletiva de &quot;<?= htmlspecialchars($b['nome'], ENT_QUOTES) ?>&quot;? A coleta comum do bairro continua.');">
+                        onsubmit="return confirm(<?= jsAttr('Remover a coleta seletiva de "' . $b['nome'] . '"? A coleta comum do bairro continua.') ?>);">
+                    <?= csrf_campo() ?>
                     <input type="hidden" name="id_bairro" value="<?= (int) $b['id_bairro'] ?>">
                     <button type="submit" class="btn-acao excluir">🗑️ Excluir</button>
                   </form>
@@ -86,6 +87,7 @@
         <button class="modal-close" onclick="fecharModalAdmin()">✕</button>
       </div>
       <form method="POST" action="<?= baseUrl('admin/salvarColeta') ?>">
+        <?= csrf_campo() ?>
         <div class="form-group">
           <label>Bairro / Região *</label>
           <select name="id_bairro" id="coletaBairro" required>
@@ -130,7 +132,7 @@
           <label>Materiais Recolhidos</label>
           <div class="dias-check">
             <?php foreach (($materiaisTodos ?? []) as $m): ?>
-              <label><input type="checkbox" name="materiais[]" value="<?= (int) $m['id_material'] ?>" class="chk-coleta-mat"> <?= $m['icone'] ?? '' ?> <?= htmlspecialchars($m['nome']) ?></label>
+              <label><input type="checkbox" name="materiais[]" value="<?= (int) $m['id_material'] ?>" class="chk-coleta-mat"> <?= htmlspecialchars((string) ($m['icone'] ?? '')) ?> <?= htmlspecialchars($m['nome']) ?></label>
             <?php endforeach; ?>
           </div>
         </div>

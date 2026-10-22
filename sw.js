@@ -35,7 +35,9 @@ self.addEventListener('fetch', e => {
   // fallback para a página offline — senão o cliente receberia HTML e o
   // JSON.parse falharia. Ex.: coleta/consultarJson, ocorrencia/consultarJson.
   // O painel admin também vai sempre à rede (nunca servir versão em cache).
-  if (/consultarJson|kidsSalvar/i.test(url.pathname) || url.pathname.indexOf('/admin') !== -1) {
+  // Páginas da conta (dados pessoais) também nunca passam pelo cache.
+  if (/consultarJson|kidsSalvar/i.test(url.pathname) || url.pathname.indexOf('/admin') !== -1
+      || url.pathname.indexOf('/usuario/') !== -1 || url.pathname.indexOf('/ocorrencia/foto') !== -1) {
     return; // deixa o navegador tratar a requisição normalmente
   }
 

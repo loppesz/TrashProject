@@ -58,6 +58,8 @@
           <?php endif; ?>
 
           <form id="ocorrenciaForm" method="POST" action="<?= baseUrl('ocorrencia/registrar') ?>" enctype="multipart/form-data">
+            <?= csrf_campo() ?>
+            <?= honeypot_campo() ?>
 
             <div class="form-row-2">
               <div class="form-group">
@@ -127,7 +129,8 @@
 
             <div class="form-group">
               <label>Descrição detalhada *</label>
-              <textarea id="descricaoOcorrencia" name="descricao" rows="4" maxlength="500" placeholder="Descreva o que aconteceu com o máximo de detalhes. Ex: 'Lixo hospitalar descartado na calçada da Rua X, próximo à escola. Material incluindo seringas expostas.'" required></textarea>
+              <textarea id="descricaoOcorrencia" name="descricao" rows="4" maxlength="500" aria-describedby="descricaoDica" placeholder="Descreva o que aconteceu com o máximo de detalhes. Ex: 'Lixo hospitalar descartado na calçada da Rua X, próximo à escola. Material incluindo seringas expostas.'" required></textarea>
+              <small id="descricaoDica">Descreva o problema, não as pessoas: evite nomes, placas de veículos ou telefones de terceiros.</small>
               <span class="char-counter"><span id="charCount">0</span>/500 caracteres</span>
             </div>
 
@@ -151,17 +154,17 @@
             <div class="form-row-2">
               <div class="form-group">
                 <label>Seu nome</label>
-                <input type="text" id="nomeContato" name="nome_contato" placeholder="Para receber atualizações">
+                <input type="text" id="nomeContato" name="nome_contato" placeholder="Para receber atualizações" maxlength="120" autocomplete="name">
               </div>
               <div class="form-group">
                 <label>Telefone / WhatsApp</label>
-                <input type="tel" id="telContato" name="telefone_contato" placeholder="(32) 9 0000-0000">
+                <input type="tel" id="telContato" name="telefone_contato" placeholder="(32) 9 0000-0000" maxlength="20" autocomplete="tel">
               </div>
             </div>
 
             <div class="form-group">
               <label>E-mail</label>
-              <input type="email" id="emailContato" name="email_contato" placeholder="Para acompanhar via e-mail">
+              <input type="email" id="emailContato" name="email_contato" placeholder="Para acompanhar via e-mail" maxlength="150" autocomplete="email">
             </div>
 
             <div class="form-group" style="margin-top:8px;">
@@ -169,7 +172,17 @@
                 <input type="checkbox" id="anonimo" name="anonima" value="1" onchange="atualizarTipoInfo()">
                 <span>Registrar anonimamente — não salvamos seu nome, telefone nem e-mail (e a ocorrência não fica vinculada à sua conta).</span>
               </label>
+              <label class="checkbox-label">
+                <input type="checkbox" id="publicoOcorrencia" name="publico" value="1" checked>
+                <span>Exibir no histórico público — aparecem só o tipo, o bairro, a rua sem número e o status. Descrição, foto e contato nunca são públicos.</span>
+              </label>
             </div>
+
+            <p class="aviso-lgpd-form">
+              🔒 Ao enviar, você concorda com o uso destes dados para registrar e acompanhar a ocorrência.
+              O contato opcional é visto só pela equipe e é apagado <?= (int) RETENCAO_DIAS['contato_ocorrencia'] ?> dias após o encerramento.
+              <a href="<?= baseUrl('home/privacidade') ?>" target="_blank" rel="noopener">Política de Privacidade</a>
+            </p>
 
             <div class="oc-form-footer">
               <div class="pontos-preview" aria-live="polite">
@@ -468,10 +481,10 @@
       'MATERIAL_NAO_RECOLHIDO' => 'Material deixado', 'PONTO_INADEQUADO' => 'Ponto inadequado',
       'ENTULHO' => 'Entulho/Móveis', 'LIXO_TOXICO' => 'Lixo tóxico', 'OUTROS' => 'Outros',
   ];
+  // Histórico público mínimo (LGPD): sem protocolo, descrição, contato ou GPS.
   $historicoJs = [];
   foreach (($historico ?? []) as $o) {
       $historicoJs[] = [
-          'id'        => $o['protocolo'],
           'tipo'      => $tipoSlug[$o['tipo']] ?? 'outros',
           'tipoLabel' => $tipoLabel[$o['tipo']] ?? 'Ocorrência',
           'bairro'    => $o['bairro'],
@@ -479,7 +492,6 @@
           'urgencia'  => strtolower($o['urgencia']),
           'status'    => $statusJs[$o['status']] ?? 'nova',
           'data'      => date('d/m/Y', strtotime($o['criada_em'])),
-          'desc'      => $o['descricao'],
       ];
   }
   ?>

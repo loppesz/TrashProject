@@ -35,12 +35,15 @@ function popupPonto(id, nome, endereco, status) {
   const statusLabel = status === 'fechado'
     ? '<span class="cf-popup-status fechado">🔴 Fechado agora</span>'
     : '<span class="cf-popup-status aberto">🟢 Aberto agora</span>';
+  // Nome e endereço vêm do banco: escapados antes de ir para o HTML do popup.
+  const esc = typeof escapeHTML === 'function' ? escapeHTML : (v => String(v));
+  const idSeguro = String(id).replace(/[^a-z0-9_-]/gi, '');
   return `
     <div class="cf-popup">
-      <strong class="cf-popup-nome">${nome}</strong>
+      <strong class="cf-popup-nome">${esc(nome)}</strong>
       ${statusLabel}
-      <p class="cf-popup-end">📍 ${endereco}</p>
-      <button type="button" class="cf-popup-btn" onclick="verPontoNoMapa('${id}')">
+      <p class="cf-popup-end">📍 ${esc(endereco)}</p>
+      <button type="button" class="cf-popup-btn" onclick="verPontoNoMapa('${idSeguro}')">
         Ver detalhes do ponto →
       </button>
     </div>`;

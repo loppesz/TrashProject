@@ -112,6 +112,7 @@
                 <td><?= date('d/m/Y', strtotime($o['criada_em'])) ?></td>
                 <td>
                   <form method="POST" action="<?= baseUrl('admin/atualizarStatus') ?>" class="form-status-inline">
+                    <?= csrf_campo() ?>
                     <input type="hidden" name="id_ocorrencia" value="<?= (int) $o['id_ocorrencia'] ?>">
                     <input type="hidden" name="aba" class="input-aba" value="<?= $abaAtual ?>">
                     <select class="status-select" name="status" onchange="this.form.submit()" aria-label="Status da ocorrência #<?= htmlspecialchars($o['protocolo'], ENT_QUOTES) ?>">
@@ -133,6 +134,10 @@
                     data-descricao="<?= htmlspecialchars($o['descricao'], ENT_QUOTES) ?>"
                     data-status="<?= htmlspecialchars($o['status'], ENT_QUOTES) ?>"
                     data-obs="<?= htmlspecialchars((string) $o['observacao_admin'], ENT_QUOTES) ?>"
+                    data-anonima="<?= !empty($o['anonima']) ? '1' : '0' ?>"
+                    data-contato-nome="<?= htmlspecialchars((string) ($o['nome_contato'] ?? ''), ENT_QUOTES) ?>"
+                    data-contato-tel="<?= htmlspecialchars((string) ($o['telefone_contato'] ?? ''), ENT_QUOTES) ?>"
+                    data-contato-email="<?= htmlspecialchars((string) ($o['email_contato'] ?? ''), ENT_QUOTES) ?>"
                     data-fotos="<?= htmlspecialchars(json_encode(array_map(static fn($u) => baseUrl($u), $o['fotos'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">👁 Ver</button>
                 </td>
               </tr>
@@ -162,6 +167,7 @@
 
       <!-- Gestão: status + observação do administrador (editável, grava no banco) -->
       <form method="POST" action="<?= baseUrl('admin/atualizarStatus') ?>">
+        <?= csrf_campo() ?>
         <input type="hidden" name="id_ocorrencia" id="modalIdOc" value="">
         <input type="hidden" name="aba" class="input-aba" value="<?= $abaAtual ?>">
         <div class="form-group">

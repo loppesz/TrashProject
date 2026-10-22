@@ -1480,3 +1480,41 @@ button, input, select, textarea { font: inherit; }
   border-radius: 10px; font-size: .8rem; font-weight: 800; cursor: pointer;
 }
 .open-maps-btn:hover { filter: brightness(1.08); transform: translateY(-1px); }
+
+/* =============================================
+   SEGURANÇA E PRIVACIDADE (LGPD)
+   ============================================= */
+/* Campo isca contra robôs: fora da tela, invisível para pessoas e leitores de tela */
+.campo-isca { position: absolute !important; left: -10000px !important; width: 1px; height: 1px; overflow: hidden; }
+
+/* "Sair" virou botão de formulário (POST + token): mesmo visual dos links do menu */
+.nav-dd-form { margin: 0; }
+.nav-dd-panel .nav-dd-btn {
+  display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px;
+  background: none; border: 0; cursor: pointer; font: inherit; font-size: 0.9rem; font-weight: 600;
+  color: var(--text-soft); transition: all 0.2s;
+}
+.nav-dd-panel .nav-dd-btn:hover { background: color-mix(in srgb, var(--accent) 12%, transparent); color: var(--accent); }
+
+/* Aviso de privacidade (cookies essenciais) */
+.aviso-privacidade {
+  position: fixed; left: 16px; right: 16px; bottom: 16px; z-index: 1200;
+  max-width: 720px; margin: 0 auto; padding: 14px 16px;
+  display: flex; align-items: center; gap: 14px; flex-wrap: wrap;
+  background: var(--surface); color: var(--text-soft);
+  border: 1px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-md);
+  font-size: .86rem; line-height: 1.5;
+}
+.aviso-privacidade[hidden] { display: none; }
+.aviso-privacidade p { flex: 1 1 320px; margin: 0; }
+.aviso-privacidade a { color: var(--accent-strong, #15803d); font-weight: 700; text-decoration: underline; }
+.aviso-privacidade-btn {
+  padding: 9px 18px; border-radius: 10px; border: 0; cursor: pointer;
+  background: var(--green, #16a34a); color: #fff; font: inherit; font-weight: 800;
+}
+
+/* Avisos de privacidade dentro de formulários */
+.aviso-lgpd-form { margin: 6px 0 14px; padding: 10px 12px; border-radius: 10px; background: var(--surface-2); color: var(--text-muted); font-size: .8rem; line-height: 1.5; }
+.aviso-lgpd-form a, .login-ajuda a { color: var(--accent-strong, #15803d); font-weight: 700; }
+.login-ajuda { margin: 4px 0 14px; font-size: .8rem; color: var(--text-muted); line-height: 1.5; }
+.kids-privacidade-dica { margin: 8px 0 12px; font-size: .8rem; color: var(--text-muted); }

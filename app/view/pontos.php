@@ -105,7 +105,7 @@
 
           <div class="prc-header" onclick="togglePonto('ponto<?= $id ?>')">
             <div class="prc-foto-wrap">
-              <div class="prc-foto <?= $classeFoto ?>"><span><?= $p['icone'] ?></span></div>
+              <div class="prc-foto <?= $classeFoto ?>"><span><?= htmlspecialchars((string) $p['icone']) ?></span></div>
               <span class="prc-status-dot <?= $aberto ? 'aberto' : 'fechado' ?>"></span>
             </div>
             <div class="prc-info">
@@ -133,7 +133,7 @@
               <div class="prc-gallery">
                 <div class="gallery-main">
                   <div class="gallery-placeholder">
-                    <span><?= $p['icone'] ?></span>
+                    <span><?= htmlspecialchars((string) $p['icone']) ?></span>
                     <p><?= htmlspecialchars($p['nome']) ?></p>
                     <?php if (!empty($p['fotos'][0]['legenda'])): ?>
                       <small><?= htmlspecialchars($p['fotos'][0]['legenda']) ?></small>
@@ -199,7 +199,7 @@
                     <?php if (!empty($p['whatsapp'])): ?>
                       <a href="https://wa.me/<?= htmlspecialchars($p['whatsapp']) ?>" target="_blank" rel="noopener noreferrer" class="act-btn whatsapp">💬 WhatsApp</a>
                     <?php endif; ?>
-                    <button class="act-btn compartilhar" onclick="compartilhar('<?= htmlspecialchars($p['nome'], ENT_QUOTES) ?>', '<?= htmlspecialchars($p['endereco'], ENT_QUOTES) ?>')">🔗 Compartilhar</button>
+                    <button class="act-btn compartilhar" onclick="compartilhar(<?= jsAttr($p['nome']) ?>, <?= jsAttr($p['endereco']) ?>)">🔗 Compartilhar</button>
                   </div>
                 </div>
 
@@ -282,6 +282,8 @@
         <button type="button" onclick="document.getElementById('modalSugira').style.display='none'" style="background:none;border:none;font-size:1.3rem;cursor:pointer;">✕</button>
       </div>
       <form method="post" action="<?= baseUrl('ponto/sugerir') ?>">
+        <?= csrf_campo() ?>
+        <?= honeypot_campo() ?>
         <div class="form-group"><label>Nome do local *</label><input type="text" name="nome_local" placeholder="Ex: Ecoponto Vila Rica" required></div>
         <div class="form-group"><label>Endereço *</label><input type="text" name="endereco" placeholder="Rua, número – Bairro" required></div>
         <div class="form-group"><label>Materiais aceitos</label><input type="text" name="materiais" placeholder="Ex: Pilhas, eletrônicos, papel..."></div>

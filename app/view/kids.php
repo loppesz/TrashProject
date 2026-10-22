@@ -4,6 +4,7 @@
   <?= themeHeadScript() ?>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
   <title>Área Kids – ColetaFácil</title>
   <link rel="icon" type="image/svg+xml" href="<?= baseUrl('assets/img/favicon.svg') ?>">
   <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
@@ -105,7 +106,7 @@
   <!-- MODAL NOME -->
   <div id="modalNome" class="modal" style="display:none;">
     <div class="modal-content kids-modal">
-      <h3>✏️ Qual é o seu nome?</h3>
+      <h3>✏️ Qual é o seu apelido?</h3>
       <p>Escolha seu apelido de herói da reciclagem!</p>
       <div class="avatar-picker" id="avatarPicker">
         <span class="av-opt selected" onclick="selectAvatar(this,'🌱')">🌱</span>
@@ -117,7 +118,9 @@
         <span class="av-opt" onclick="selectAvatar(this,'🦊')">🦊</span>
         <span class="av-opt" onclick="selectAvatar(this,'🐢')">🐢</span>
       </div>
-      <input type="text" id="nomeInput" placeholder="Ex: SuperEco, Verde Kid..." maxlength="16">
+      <input type="text" id="nomeInput" placeholder="Ex: SuperEco, Verde Kid..." maxlength="16" aria-describedby="nomeDica">
+      <!-- LGPD art. 14: dados de criança mínimos — só um apelido, nunca o nome completo -->
+      <p id="nomeDica" class="kids-privacidade-dica">🔒 Use um <strong>apelido</strong>, não o seu nome completo. Não escreva endereço, escola nem telefone.</p>
       <button class="kids-btn" onclick="salvarNome()">Salvar! 🚀</button>
     </div>
   </div>

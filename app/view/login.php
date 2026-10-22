@@ -76,6 +76,7 @@ require_once 'app/view/comuns/cabecalho.php';
         <?php endif; ?>
 
         <form method="POST" action="<?= baseUrl('usuario/login') ?>" id="loginForm" novalidate>
+          <?= csrf_campo() ?>
           <input type="hidden" name="next" value="<?= htmlspecialchars($next, ENT_QUOTES, 'UTF-8') ?>">
 
           <div class="form-group">
@@ -117,13 +118,15 @@ require_once 'app/view/comuns/cabecalho.php';
             </div>
           </div>
 
-          <div class="login-row">
-            <label>
-              <input type="checkbox" name="lembrar" id="lembrar">
-              Lembrar de mim
-            </label>
-            <a href="#" onclick="return false;" title="Recuperação de senha em breve">Esqueci minha senha</a>
-          </div>
+          <!-- Sem "lembrar de mim": a sessão termina ao fechar o navegador ou após 2h sem uso. -->
+          <p class="login-ajuda">
+            Esqueceu a senha? Por enquanto a redefinição é feita pela equipe do projeto
+            <?php if (!empty($contato['email'])): ?>
+              pelo e-mail <a href="mailto:<?= htmlspecialchars($contato['email'], ENT_QUOTES) ?>"><?= htmlspecialchars($contato['email']) ?></a>.
+            <?php else: ?>
+              (contatos no rodapé da página).
+            <?php endif; ?>
+          </p>
 
           <button type="submit" class="btn-login" id="btnLogin">
             <span id="btnLoginText">🔑 Entrar</span>

@@ -22,6 +22,39 @@ function toggleTheme() {
 document.addEventListener('DOMContentLoaded', atualizarBotaoTema);
 
 // =============================================
+// SEGURANÇA: token CSRF para chamadas POST via fetch
+// =============================================
+// O servidor exige o token da sessão em todo POST. Formulários já levam o
+// campo _csrf; chamadas fetch usam este cabeçalho.
+function csrfToken() {
+  return document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+}
+
+// Escapa texto para inserir com segurança em innerHTML.
+function escapeHTML(valor) {
+  return String(valor == null ? '' : valor).replace(/[&<>"']/g, c => (
+    { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+  ));
+}
+
+// =============================================
+// AVISO DE PRIVACIDADE (uma vez por navegador)
+// =============================================
+function fecharAvisoPrivacidade() {
+  const el = document.getElementById('avisoPrivacidade');
+  if (el) el.hidden = true;
+  try { localStorage.setItem('avisoPrivacidadeVisto', '1'); } catch (e) {}
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const el = document.getElementById('avisoPrivacidade');
+  if (!el) return;
+  let visto = false;
+  try { visto = localStorage.getItem('avisoPrivacidadeVisto') === '1'; } catch (e) {}
+  if (!visto) el.hidden = false;
+});
+
+// =============================================
 // COPIAR PARA A ÁREA DE TRANSFERÊNCIA
 // =============================================
 // navigator.clipboard só funciona em HTTPS ou localhost. No endereço local

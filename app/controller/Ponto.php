@@ -33,16 +33,30 @@ class Ponto extends BaseController
             exit;
         }
 
-        $nome     = trim((string) $this->request->post('nome_local'));
-        $endereco = trim((string) $this->request->post('endereco'));
-        $materiais = trim((string) $this->request->post('materiais'));
-        $horario  = trim((string) $this->request->post('horario'));
-        $obs      = trim((string) $this->request->post('observacao'));
+        $nome      = mb_substr(trim(strip_tags((string) $this->request->post('nome_local'))), 0, 150);
+        $endereco  = mb_substr(trim(strip_tags((string) $this->request->post('endereco'))), 0, 200);
+        $materiais = mb_substr(trim(strip_tags((string) $this->request->post('materiais'))), 0, 500);
+        $horario   = mb_substr(trim(strip_tags((string) $this->request->post('horario'))), 0, 150);
+        $obs       = mb_substr(trim(strip_tags((string) $this->request->post('observacao'))), 0, 1000);
+
+        // Robo preencheu o campo isca: finge sucesso sem gravar nada.
+        if (honeypot_acionado()) {
+            header('Location: ' . baseUrl('ponto') . '?sugestao=ok#sugira');
+            exit;
+        }
 
         if ($nome === '' || $endereco === '') {
             header('Location: ' . baseUrl('ponto') . '?erro=' . rawurlencode('Informe ao menos o nome do local e o endereço.'));
             exit;
         }
+
+        // Anti-abuso: no maximo 5 sugestoes por hora a partir da mesma conexao.
+        $chaveIp = seguranca_chave();
+        if (!limite_permitido('sugestao', $chaveIp, 5, 60)) {
+            header('Location: ' . baseUrl('ponto') . '?erro=' . rawurlencode('Muitas sugestões enviadas desta conexão. Aguarde uma hora e tente novamente.'));
+            exit;
+        }
+        limite_registrar('sugestao', $chaveIp);
 
         try {
             $usuario = auth_user();

@@ -1,14 +1,51 @@
 <?php
 
 /**
- * Helpers de autenticacao e sessao (migrados de auth.php).
+ * Helpers de autenticacao e sessao.
  *
- * A autenticacao e feita via sessao PHP nativa ($_SESSION). A tabela
- * sessao_usuario existe no schema, mas o fluxo atual nao a utiliza.
+ * A autenticacao e feita via sessao PHP nativa ($_SESSION), com:
+ *  - cookie HttpOnly + SameSite=Lax (+ Secure quando em HTTPS);
+ *  - modo estrito (nao aceita ID de sessao inventado pelo cliente);
+ *  - expiracao por inatividade e tempo maximo de sessao;
+ *  - ID regenerado no login (contra fixacao de sessao).
  */
 
+/** Minutos sem uso ate a sessao expirar. */
+const SESSAO_INATIVIDADE_MIN = 120;
+/** Duracao maxima de uma sessao logada (horas). */
+const SESSAO_MAXIMA_HORAS = 12;
+
 if (session_status() !== PHP_SESSION_ACTIVE) {
+    $https = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (($_SERVER['HTTP_X_FORWARDED_PROTO'] ?? '') === 'https');
+    ini_set('session.use_strict_mode', '1');
+    ini_set('session.use_only_cookies', '1');
+    ini_set('session.cookie_httponly', '1');
+    session_name('CFSESSID');
+    session_set_cookie_params([
+        'lifetime' => 0,          // cookie de sessao (some ao fechar o navegador)
+        'path'     => '/',
+        'httponly' => true,
+        'secure'   => $https,
+        'samesite' => 'Lax',
+    ]);
     session_start();
+}
+
+// Expiracao: por inatividade ou por tempo maximo de sessao logada.
+if (!empty($_SESSION['id_usuario'])) {
+    $agora     = time();
+    $ultimo    = (int) ($_SESSION['_ultimo_uso'] ?? $agora);
+    $inicio    = (int) ($_SESSION['_login_em'] ?? $agora);
+    $expirou   = ($agora - $ultimo) > SESSAO_INATIVIDADE_MIN * 60
+              || ($agora - $inicio) > SESSAO_MAXIMA_HORAS * 3600;
+    if ($expirou) {
+        $_SESSION = [];
+        session_regenerate_id(true);
+        $_SESSION['_sessao_expirada'] = true;
+    } else {
+        $_SESSION['_ultimo_uso'] = $agora;
+    }
 }
 
 /**
@@ -34,6 +71,20 @@ function auth_login(array $usuario): void
     $_SESSION['id_usuario'] = (int) $usuario['id_usuario'];
     $_SESSION['nome']       = $usuario['nome'];
     $_SESSION['tipo']       = $usuario['tipo'];
+    $_SESSION['_login_em']  = time();
+    $_SESSION['_ultimo_uso'] = time();
+    unset($_SESSION['_sessao_expirada']);
+    if (function_exists('csrf_renovar')) {
+        csrf_renovar();
+    }
+}
+
+/** Atualiza o nome exibido na sessao (apos editar o perfil). */
+function auth_atualizar_nome(string $nome): void
+{
+    if (!empty($_SESSION['id_usuario'])) {
+        $_SESSION['nome'] = $nome;
+    }
 }
 
 /**
@@ -44,15 +95,14 @@ function auth_logout(): void
     $_SESSION = [];
     if (ini_get('session.use_cookies')) {
         $params = session_get_cookie_params();
-        setcookie(
-            session_name(),
-            '',
-            time() - 42000,
-            $params['path'],
-            $params['domain'],
-            $params['secure'],
-            $params['httponly']
-        );
+        setcookie(session_name(), '', [
+            'expires'  => time() - 42000,
+            'path'     => $params['path'],
+            'domain'   => $params['domain'],
+            'secure'   => $params['secure'],
+            'httponly' => $params['httponly'],
+            'samesite' => $params['samesite'] ?? 'Lax',
+        ]);
     }
     session_destroy();
 }
@@ -68,11 +118,12 @@ function auth_is_admin(): bool
 
 /**
  * Sanitiza o destino de redirect pos-login para evitar open redirect.
- * Aceita apenas rotas internas (comecando por "/", sem "//").
+ * Aceita apenas rotas internas (comecando por "/", sem "//" nem "\").
  */
 function auth_next_path(?string $next): string
 {
-    if (!$next || $next[0] !== '/' || str_contains($next, '//')) {
+    if (!$next || $next[0] !== '/' || str_contains($next, '//') || str_contains($next, '\\')
+        || preg_match('/[\r\n]/', $next)) {
         return BASEURL;
     }
     return $next;
@@ -87,7 +138,8 @@ function auth_require(bool $adminOnly = false): void
     $user = auth_user();
     if (!$user || ($adminOnly && $user['tipo'] !== 'ADMINISTRADOR')) {
         $next = $_SERVER['REQUEST_URI'] ?? BASEURL;
-        header('Location: ' . BASEURL . 'usuario/login?next=' . rawurlencode($next));
+        $extra = !empty($_SESSION['_sessao_expirada']) ? '&sessao=expirada' : '';
+        header('Location: ' . BASEURL . 'usuario/login?next=' . rawurlencode($next) . $extra);
         exit;
     }
 }

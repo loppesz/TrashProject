@@ -405,6 +405,48 @@ class Admin extends BaseController
         exit;
     }
 
+    // =================================================================
+    // PRIVACIDADE (LGPD): inventario, retencao e auditoria
+    // =================================================================
+
+    public function privacidade(): void
+    {
+        $model = $this->model('Privacidade');
+        $this->view('admin/privacidade', [
+            'tituloPagina' => 'Privacidade (LGPD)',
+            'adminMenu'    => 'privacidade',
+            'inventario'   => $model->inventario(),
+            'pendencias'   => $model->pendencias(),
+            'ultima'       => $model->ultimaRetencao(),
+            'auditoria'    => $model->auditoria(),
+            'retencao'     => RETENCAO_DIAS,
+            'msg'          => (string) ($_GET['msg'] ?? ''),
+            'erro'         => (string) ($_GET['erro'] ?? ''),
+        ]);
+    }
+
+    /** Aplica a politica de retencao agora (POST com token). */
+    public function aplicarRetencao(): void
+    {
+        $destino = baseUrl('admin/privacidade');
+        if ($this->request->isPost()) {
+            try {
+                $r = $this->model('Privacidade')->aplicarRetencao((int) auth_user()['id_usuario']);
+                $texto = sprintf(
+                    'Retenção aplicada: %d contatos apagados, %d localizações aproximadas, %d fotos apagadas, %d registros de tentativas e %d de auditoria removidos.',
+                    $r['contatos'], $r['gps'], $r['fotos'], $r['tentativas'], $r['auditoria']
+                );
+                header('Location: ' . $destino . '?msg=' . rawurlencode($texto));
+                exit;
+            } catch (Throwable $e) {
+                header('Location: ' . $destino . '?erro=' . rawurlencode('Não foi possível aplicar a retenção. Nada foi alterado.'));
+                exit;
+            }
+        }
+        header('Location: ' . $destino);
+        exit;
+    }
+
     public function indicadores(): void
     {
         $ocModel = $this->model('Ocorrencia');

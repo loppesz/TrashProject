@@ -71,11 +71,21 @@ class Ocorrencia extends BaseController
     {
         header('Content-Type: application/json; charset=utf-8');
 
-        $protocolo = trim((string) $this->request->get('protocolo'));
-        if ($protocolo === '') {
+        $protocolo = mb_strtoupper(trim((string) $this->request->get('protocolo')));
+        if ($protocolo === '' || mb_strlen($protocolo) > 25) {
             echo json_encode(['ok' => false, 'motivo' => 'vazio']);
             exit;
         }
+
+        // Anti-varredura: no maximo 30 consultas a cada 10 minutos por conexao
+        // (impede testar todos os protocolos em sequencia).
+        $chaveIp = seguranca_chave();
+        if (!limite_permitido('consulta_protocolo', $chaveIp, 30, 10)) {
+            http_response_code(429);
+            echo json_encode(['ok' => false, 'motivo' => 'limite']);
+            exit;
+        }
+        limite_registrar('consulta_protocolo', $chaveIp);
 
         $o = $this->model('Ocorrencia')->porProtocolo($protocolo);
         if (empty($o)) {
@@ -109,7 +119,8 @@ class Ocorrencia extends BaseController
             'minha'     => $minha,
             'descricao' => $minha ? (string) $o['descricao'] : null,
             'protocolo' => $o['protocolo'],
-            'local'     => $o['endereco_descricao'],
+            // Endereco completo so para o autor; os demais veem a rua sem numero.
+            'local'     => $minha ? $o['endereco_descricao'] : enderecoPublico($o['endereco_descricao']),
             'tipo'      => rotuloTipoOcorrencia($o['tipo']),
             'bairro'    => $o['bairro'],
             'data'      => date('d/m/Y', strtotime($o['criada_em'])),
@@ -145,22 +156,46 @@ class Ocorrencia extends BaseController
         $email    = trim((string) $this->request->post('email_contato'));
         $anonima  = $this->request->post('anonima', null) !== null;
 
+        // Exibir no historico publico? (o titular escolhe; padrao: sim)
+        $publico  = $this->request->post('publico', null) !== null;
+
         $tipo = OcorrenciaModel::TIPOS[$tipoSlug] ?? null;
         $urg  = OcorrenciaModel::URGENCIAS[$urgSlug] ?? 'MEDIA';
         $idBairro = $model->idBairroPorNome($bairro);
+
+        // Robo preencheu o campo isca: finge sucesso sem gravar nada.
+        if (honeypot_acionado()) {
+            header('Location: ' . baseUrl('ocorrencia'));
+            exit;
+        }
+
+        // Anti-abuso: no maximo 10 registros por hora a partir da mesma conexao.
+        $chaveIp = seguranca_chave();
+        if (!limite_permitido('ocorrencia', $chaveIp, 10, 60)) {
+            header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('Muitas ocorrências enviadas desta conexão. Aguarde uma hora e tente novamente.'));
+            exit;
+        }
 
         // --- Validacao ---
         $erro = '';
         if (!$tipo) {
             $erro = 'Selecione um tipo de ocorrência válido.';
-        } elseif ($endereco === '') {
-            $erro = 'Informe o endereço da ocorrência.';
+        } elseif ($endereco === '' || mb_strlen($endereco) > 200) {
+            $erro = 'Informe o endereço da ocorrência (até 200 caracteres).';
         } elseif (!$idBairro) {
             $erro = 'Selecione um bairro válido de Muriaé.';
         } elseif ($cidade === '' || !preg_match('/^muria[eé](?:\s*-?\s*mg)?$/iu', $cidade)) {
             $erro = 'As ocorrências desta plataforma devem estar localizadas em Muriaé-MG.';
-        } elseif ($descricao === '') {
-            $erro = 'Descreva a ocorrência.';
+        } elseif ($descricao === '' || mb_strlen($descricao) > 500) {
+            $erro = 'Descreva a ocorrência (até 500 caracteres).';
+        } elseif ($data !== '' && (!preg_match('/^\d{4}-\d{2}-\d{2}$/', $data) || strtotime($data) === false || $data > date('Y-m-d'))) {
+            $erro = 'Informe uma data válida (não pode ser no futuro).';
+        } elseif (!$anonima && $email !== '' && (mb_strlen($email) > 150 || !filter_var($email, FILTER_VALIDATE_EMAIL))) {
+            $erro = 'O e-mail de contato não é válido.';
+        } elseif (!$anonima && ($tel !== '' && !preg_match('/^[\d\s()+-]{8,20}$/', $tel))) {
+            $erro = 'O telefone de contato não é válido.';
+        } elseif (!$anonima && mb_strlen($nome) > 120) {
+            $erro = 'O nome de contato pode ter no máximo 120 caracteres.';
         }
 
         if ($erro !== '') {
@@ -191,7 +226,10 @@ class Ocorrencia extends BaseController
                 exit;
             }
 
+            limite_registrar('ocorrencia', $chaveIp);
+
             $res = $model->registrar([
+                'publico'          => $publico,
                 'id_usuario'       => $idUsuario,
                 'id_bairro'        => $idBairro,
                 'tipo'             => $tipo,
@@ -308,16 +346,20 @@ class Ocorrencia extends BaseController
             return false;
         }
 
+        // Dimensoes plausiveis (evita "bombas" de descompressao que esgotam a memoria).
+        $dim = @getimagesize($arquivo['tmp_name']);
+        if (!is_array($dim) || $dim[0] < 1 || $dim[1] < 1 || $dim[0] > 8000 || $dim[1] > 8000) {
+            return false;
+        }
+
         // Privacidade (LGPD): re-encoda a imagem para DESCARTAR metadados
         // (EXIF, incluindo coordenadas GPS do celular).
         $conteudo = $this->reencodarSemMetadados($arquivo['tmp_name'], $mime);
 
+        // Sem a extensao GD nao ha como remover os metadados com seguranca:
+        // a foto NAO e guardada (melhor perder a foto do que vazar o GPS).
         if ($conteudo === null) {
-            // Fallback: sem GD, grava o arquivo original.
-            $conteudo = @file_get_contents($arquivo['tmp_name']);
-            if ($conteudo === false || $conteudo === '') {
-                return false;
-            }
+            return false;
         }
 
         $this->model('Ocorrencia')->adicionarFoto($idOcorrencia, $conteudo, $mime);

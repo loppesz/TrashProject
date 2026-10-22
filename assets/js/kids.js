@@ -67,7 +67,12 @@ function sincronizarBanco() {
     dados.set('jogos', gamesPlayed.length);
     fetch((window.BASEURL || '/') + 'home/kidsSalvar', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Accept': 'application/json',
+        // Token CSRF da sessão (o servidor recusa POST sem ele).
+        'X-CSRF-Token': (typeof csrfToken === 'function' ? csrfToken() : ''),
+      },
       body: dados.toString(),
     })
       .then(function (r) { return r.json(); })
@@ -1007,13 +1012,14 @@ function renderRanking() {
   const podium = [{pos:1,medal:'🥇',bg:'#fbbf24'},{pos:0,medal:'🥈',bg:'#94a3b8'},{pos:2,medal:'🥉',bg:'#d97706'}];
   const ord = [rankData[1], rankData[0], rankData[2]]; // ordem visual do pódio
 
+  // O apelido é digitado pela criança: sempre escapado antes de ir para o HTML.
   top3.innerHTML = ord.map((r,i) => `
     <div class="rk-podium-card" style="--pk:${podium[i].bg}">
       <div class="rk-medal">${podium[i].medal}</div>
-      <div class="rk-avatar-big">${r.nome.split(' ')[0]}</div>
-      <h4>${r.nome}</h4>
-      <div class="rk-pts-big">${r.pts.toLocaleString('pt-BR')} pts</div>
-      <div class="rk-nivel-s">${r.nivel}</div>
+      <div class="rk-avatar-big">${escapeHtml(r.nome.split(' ')[0])}</div>
+      <h4>${escapeHtml(r.nome)}</h4>
+      <div class="rk-pts-big">${Number(r.pts).toLocaleString('pt-BR')} pts</div>
+      <div class="rk-nivel-s">${escapeHtml(r.nivel)}</div>
     </div>
   `).join('');
 
@@ -1022,10 +1028,10 @@ function renderRanking() {
   table.innerHTML = rankData.map((r, i) => `
     <div class="rk-row ${r.nome === meuNome ? 'rk-meu' : ''}">
       <span class="rk-pos">${i+1}º</span>
-      <span class="rk-nm">${r.nome}</span>
-      <span class="rk-nv">${r.nivel}</span>
-      <span class="rk-jg">${r.jogos} jogos</span>
-      <span class="rk-pt">${r.pts.toLocaleString('pt-BR')} ⭐</span>
+      <span class="rk-nm">${escapeHtml(r.nome)}</span>
+      <span class="rk-nv">${escapeHtml(r.nivel)}</span>
+      <span class="rk-jg">${Number(r.jogos)} jogos</span>
+      <span class="rk-pt">${Number(r.pts).toLocaleString('pt-BR')} ⭐</span>
     </div>
   `).join('');
 
@@ -1033,11 +1039,11 @@ function renderRanking() {
   const meuPos = rankData.findIndex(r => r.nome === meuNome) + 1;
   document.getElementById('seuCard').innerHTML = `
     <div class="seu-pos">${meuPos}º lugar</div>
-    <div class="seu-avatar">${playerAvatar}</div>
+    <div class="seu-avatar">${escapeHtml(playerAvatar)}</div>
     <div class="seu-info">
-      <strong>${playerName}</strong>
-      <span>${getNivel(meuPts).nome}</span>
-      <span>${meuPts} pontos</span>
+      <strong>${escapeHtml(playerName)}</strong>
+      <span>${escapeHtml(getNivel(meuPts).nome)}</span>
+      <span>${Number(meuPts)} pontos</span>
     </div>
   `;
 

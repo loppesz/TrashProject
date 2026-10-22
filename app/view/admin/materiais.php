@@ -47,7 +47,7 @@
               $dataTipo = $tipoMap[$m['status_coleta']] ?? 'aceito';
               ?>
               <tr data-tipo="<?= $dataTipo ?>" data-busca="<?= htmlspecialchars(strtolower($m['nome']), ENT_QUOTES) ?>">
-                <td><?= $m['icone'] ?> <?= htmlspecialchars($m['nome']) ?></td>
+                <td><?= htmlspecialchars((string) $m['icone']) ?> <?= htmlspecialchars($m['nome']) ?></td>
                 <td>
                   <?php if ($aceito): ?>
                     <span class="status-badge resolvida">✅ Sim</span>
@@ -68,9 +68,10 @@
                         "label"  => $m["preparo_label"],
                         "desc"   => $m["descricao"],
                         "alerta" => $m["alerta_seguranca"],
-                    ], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>✏️ Editar</button>
+                    ], JSON_SEGURO) ?>)'>✏️ Editar</button>
                   <form method="POST" action="<?= baseUrl('admin/excluirMaterial') ?>" style="display:inline"
-                        onsubmit="return confirm('Excluir o material &quot;<?= htmlspecialchars($m['nome'], ENT_QUOTES) ?>&quot;?');">
+                        onsubmit="return confirm(<?= jsAttr('Excluir o material "' . $m['nome'] . '"?') ?>);">
+                    <?= csrf_campo() ?>
                     <input type="hidden" name="id_material" value="<?= (int) $m['id_material'] ?>">
                     <button type="submit" class="btn-acao excluir">🗑️ Excluir</button>
                   </form>
@@ -92,6 +93,7 @@
         <button class="modal-close" onclick="fecharModalAdmin()">✕</button>
       </div>
       <form method="POST" action="<?= baseUrl('admin/salvarMaterial') ?>">
+        <?= csrf_campo() ?>
         <input type="hidden" name="id_material" id="matId" value="">
         <div class="form-group">
           <label>Nome do Material *</label>

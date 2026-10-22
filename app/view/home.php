@@ -224,7 +224,7 @@
             <?php foreach (($rankingHome ?? []) as $i => $pessoa): ?>
               <li>
                 <span class="kr2-pos pos-<?= $i + 1 ?>"><?= $i + 1 ?>º</span>
-                <span class="kr2-name"><?= htmlspecialchars($pessoa['nome']) ?></span>
+                <span class="kr2-name"><?= htmlspecialchars(nomePublico($pessoa['nome'])) ?></span>
                 <span class="kr2-pts"><?= number_format((int) $pessoa['pontos'], 0, ',', '.') ?> pts</span>
               </li>
             <?php endforeach; ?>

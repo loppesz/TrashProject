@@ -70,11 +70,13 @@
                   <?php if (in_array($s['status'], ['NOVA', 'EM_ANALISE'], true)): ?>
                     <div style="display:flex;gap:6px;flex-wrap:wrap;">
                       <form method="POST" action="<?= baseUrl('admin/atualizarSugestao') ?>" style="display:inline;">
+                        <?= csrf_campo() ?>
                         <input type="hidden" name="id_sugestao" value="<?= (int) $s['id_sugestao'] ?>">
                         <input type="hidden" name="status" value="APROVADA">
                         <button type="submit" class="btn-acao ver" style="background:#16a34a;">✓ Aprovar</button>
                       </form>
                       <form method="POST" action="<?= baseUrl('admin/atualizarSugestao') ?>" style="display:inline;">
+                        <?= csrf_campo() ?>
                         <input type="hidden" name="id_sugestao" value="<?= (int) $s['id_sugestao'] ?>">
                         <input type="hidden" name="status" value="RECUSADA">
                         <button type="submit" class="btn-acao" style="background:#dc2626;color:#fff;">✕ Recusar</button>

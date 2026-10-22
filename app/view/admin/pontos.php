@@ -50,9 +50,10 @@
                         "horario"  => $p["horario_funcionamento"],
                         "status"   => $p["status_funcionamento"],
                         "mats"     => array_map("intval", $p["materiais_ids"] ?? []),
-                    ], JSON_UNESCAPED_UNICODE | JSON_HEX_APOS | JSON_HEX_QUOT) ?>)'>✏️ Editar</button>
+                    ], JSON_SEGURO) ?>)'>✏️ Editar</button>
                   <form method="POST" action="<?= baseUrl('admin/excluirPonto') ?>" style="display:inline"
-                        onsubmit="return confirm('Excluir o ponto &quot;<?= htmlspecialchars($p['nome'], ENT_QUOTES) ?>&quot;?');">
+                        onsubmit="return confirm(<?= jsAttr('Excluir o ponto "' . $p['nome'] . '"?') ?>);">
+                    <?= csrf_campo() ?>
                     <input type="hidden" name="id_ponto" value="<?= (int) $p['id_ponto'] ?>">
                     <button type="submit" class="btn-acao excluir">🗑️ Excluir</button>
                   </form>
@@ -74,6 +75,7 @@
         <button class="modal-close" onclick="fecharModalAdmin()">✕</button>
       </div>
       <form method="POST" action="<?= baseUrl('admin/salvarPonto') ?>">
+        <?= csrf_campo() ?>
         <input type="hidden" name="id_ponto" id="pontoId" value="">
         <div class="form-group">
           <label>Nome do Local *</label>
@@ -111,7 +113,7 @@
             <?php foreach (($materiaisTodos ?? []) as $m): ?>
               <label style="display:flex;align-items:center;gap:6px;font-size:.85rem;">
                 <input type="checkbox" name="materiais[]" value="<?= (int) $m['id_material'] ?>" class="chk-ponto-mat">
-                <?= $m['icone'] ?? '' ?> <?= htmlspecialchars($m['nome']) ?>
+                <?= htmlspecialchars((string) ($m['icone'] ?? '')) ?> <?= htmlspecialchars($m['nome']) ?>
               </label>
             <?php endforeach; ?>
           </div>

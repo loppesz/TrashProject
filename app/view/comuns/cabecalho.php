@@ -32,6 +32,7 @@ $usuario = auth_user();
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="<?= htmlspecialchars($descricao, ENT_QUOTES, 'UTF-8') ?>">
+  <meta name="csrf-token" content="<?= htmlspecialchars(csrf_token(), ENT_QUOTES, 'UTF-8') ?>">
   <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8') ?></title>
   <?php $geo = MURIAE_GEO; ?>
   <script>
@@ -108,10 +109,15 @@ $usuario = auth_user();
             <?php if ($usuario): ?>
               <span class="nav-dd-user">Olá, <?= htmlspecialchars($usuario['nome'], ENT_QUOTES, 'UTF-8') ?></span>
               <div class="nav-dd-sep"></div>
+              <a href="<?= baseUrl('usuario/conta') ?>">Minha conta e privacidade</a>
               <?php if ($usuario['tipo'] === 'ADMINISTRADOR'): ?>
                 <a href="<?= baseUrl('admin') ?>">Painel administrativo</a>
               <?php endif; ?>
-              <a href="<?= baseUrl('usuario/logout') ?>">Sair</a>
+              <!-- Sair é POST com token: um link externo não consegue deslogar ninguém -->
+              <form method="POST" action="<?= baseUrl('usuario/logout') ?>" class="nav-dd-form">
+                <?= csrf_campo() ?>
+                <button type="submit" class="nav-dd-btn">Sair</button>
+              </form>
             <?php else: ?>
               <a href="<?= baseUrl('usuario/login') ?>">Entrar</a>
               <a href="<?= baseUrl('usuario/cadastro') ?>">Criar conta</a>

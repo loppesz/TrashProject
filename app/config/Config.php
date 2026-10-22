@@ -28,14 +28,50 @@ if (!defined('BASEURL')) {
 }
 
 // Dados de conexao do banco coletafacil (MySQL 8+, utf8mb4).
+// Em producao, use um usuario proprio com permissoes minimas
+// (ver modelo/usuario_banco_app.sql) em vez do root.
 define('DB_CONF_CONEXAO', [
     'driver'   => 'mysql',
-    'host'     => '127.0.0.1',
-    'porta'    => '3306',
-    'banco'    => 'coletafacil',
-    'usuario'  => 'root',
+    'host'     => $configLocal['db_host'] ?? '127.0.0.1',
+    'porta'    => $configLocal['db_porta'] ?? '3306',
+    'banco'    => $configLocal['db_banco'] ?? 'coletafacil',
+    'usuario'  => $configLocal['db_usuario'] ?? 'root',
     'senha'    => $configLocal['db_senha'] ?? '',
     'charset'  => 'utf8mb4',
+]);
+
+// Modo de depuracao: so mostra erros do PHP na tela quando ligado em
+// config.local.php ('debug' => true). Em producao fica desligado para nao
+// expor caminhos, consultas ou dados em mensagens de erro.
+define('APP_DEBUG', (bool) ($configLocal['debug'] ?? false));
+ini_set('display_errors', APP_DEBUG ? '1' : '0');
+ini_set('log_errors', '1');
+error_reporting(E_ALL);
+
+// Chave secreta da aplicacao (HMAC do IP no controle de tentativas).
+// Defina 'app_key' em config.local.php com um valor aleatorio longo.
+define('APP_KEY', (string) ($configLocal['app_key'] ?? hash('sha256', 'coletafacil|' . __DIR__ . '|' . php_uname('n'))));
+
+// LGPD: versao vigente dos Termos de Uso e da Politica de Privacidade.
+// Ao alterar o texto, incremente a versao (o aceite fica registrado por versao).
+define('TERMOS_VERSAO', '1.0');
+define('TERMOS_DATA', '21/10/2026');
+
+// LGPD: contato do encarregado/canal de privacidade. Se nao houver e-mail
+// configurado, as paginas indicam os contatos da equipe no rodape.
+define('LGPD_CONTATO', [
+    'responsavel' => $configLocal['lgpd_responsavel'] ?? 'Equipe do projeto ColetaFácil (ADS – Extensão Universitária III)',
+    'email'       => $configLocal['lgpd_email'] ?? '',
+]);
+
+// LGPD: prazos de retencao (em dias), aplicados pelo painel admin
+// (Admin > Privacidade). Ver Politica de Privacidade.
+define('RETENCAO_DIAS', [
+    'contato_ocorrencia' => 180,   // nome/telefone/e-mail de ocorrencias encerradas
+    'gps_ocorrencia'     => 180,   // coordenadas exatas de ocorrencias encerradas
+    'foto_ocorrencia'    => 365,   // fotos de ocorrencias encerradas
+    'registro_acao'      => 1,     // controle de tentativas (hash do IP)
+    'registro_privacidade' => 730, // trilha de auditoria (exportacoes, exclusoes)
 ]);
 
 // Area geografica do municipio de Muriae-MG (limites do OpenStreetMap,

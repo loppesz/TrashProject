@@ -17,6 +17,14 @@
         </ul>
       </div>
       <div class="footer-links">
+        <h4>Privacidade</h4>
+        <ul>
+          <li><a href="<?= baseUrl('home/privacidade') ?>">Política de Privacidade</a></li>
+          <li><a href="<?= baseUrl('home/termos') ?>">Termos de Uso</a></li>
+          <li><a href="<?= baseUrl('usuario/conta') ?>">Meus dados (LGPD)</a></li>
+        </ul>
+      </div>
+      <div class="footer-links">
         <h4>Projeto</h4>
         <ul>
           <li>Curso: ADS</li>
@@ -32,6 +40,16 @@
       <p>© 2026 ColetaFácil – Projeto de Extensão Universitária III – ADS</p>
     </div>
   </footer>
+
+  <!-- Aviso de privacidade (cookies essenciais + serviços de terceiros). Não bloqueia o uso. -->
+  <div class="aviso-privacidade" id="avisoPrivacidade" role="region" aria-label="Aviso de privacidade" hidden>
+    <p>
+      Usamos apenas um <strong>cookie essencial</strong> de sessão (para manter seu login) e o armazenamento do
+      navegador para o tema e o progresso da Área Kids. Mapas e fontes vêm de serviços de terceiros.
+      <a href="<?= baseUrl('home/privacidade') ?>">Saiba mais</a>
+    </p>
+    <button type="button" class="aviso-privacidade-btn" onclick="fecharAvisoPrivacidade()">Entendi</button>
+  </div>
 
   <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
   <?php if (!empty($usaLeaflet)): ?>

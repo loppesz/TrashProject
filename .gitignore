@@ -25,3 +25,10 @@ Thumbs.db
 # Uploads de usuarios (fotos de ocorrencias) - nao versionar os arquivos
 /assets/uploads/**
 !/assets/uploads/.gitkeep
+
+# Backups do banco gerados antes das migrations (podem conter dados pessoais)
+/modelo/_backup_*.json
+
+# Scripts temporarios de diagnostico
+/_*.php
+/_*.txt

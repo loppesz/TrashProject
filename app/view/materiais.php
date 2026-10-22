@@ -61,7 +61,7 @@
         ?>
         <div class="material-card" data-tipo="<?= $st['tipo'] ?>">
           <div class="material-header <?= htmlspecialchars($cor, ENT_QUOTES) ?>">
-            <span class="material-icon"><?= $m['icone'] ?></span>
+            <span class="material-icon"><?= htmlspecialchars((string) $m['icone']) ?></span>
             <span class="material-status <?= $st['classe'] ?>"><?= $st['rotulo'] ?></span>
           </div>
           <h3><?= htmlspecialchars($m['nome']) ?></h3>
@@ -81,7 +81,7 @@
           <?php elseif (!empty($m['exemplos'])): ?>
             <div class="exemplos">
               <?php foreach ($m['exemplos'] as $ex): ?>
-                <span class="tag<?= $ex['negativo'] ? ' negativo' : '' ?>"><?= $ex['icone'] . ' ' . htmlspecialchars($ex['rotulo']) ?></span>
+                <span class="tag<?= $ex['negativo'] ? ' negativo' : '' ?>"><?= htmlspecialchars((string) $ex['icone']) . ' ' . htmlspecialchars($ex['rotulo']) ?></span>
               <?php endforeach; ?>
             </div>
           <?php endif; ?>

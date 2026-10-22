@@ -141,7 +141,14 @@ function urgenciaBadgeOc(u) {
 
 function escHtml(s) {
   return String(s == null ? '' : s)
-    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+
+// Só aceita URLs de fotos do próprio site (rota protegida /ocorrencia/foto/ID).
+function urlFotoSegura(url) {
+  const u = String(url || '');
+  return /^\/?[a-z0-9_\-\/]*ocorrencia\/foto\/\d+$/i.test(u) ? u : '';
 }
 
 // Abre o modal com os dados REAIS da ocorrencia (lidos dos data-* do botao),
@@ -170,12 +177,22 @@ function verOcorrencia(btn) {
   // Descricao (largura total, com fundo).
   html += '<div class="oc-det-desc"><span>Descrição</span><p>' + escHtml(d.descricao) + '</p></div>';
 
+  // Contato informado por quem registrou (só a equipe vê; apagado pela retenção).
+  const contato = [d.contatoNome, d.contatoTel, d.contatoEmail].filter(Boolean);
+  html += '<div class="oc-det-desc"><span>Contato informado</span><p>' +
+    (d.anonima === '1'
+      ? 'Registro anônimo (sem dados de contato).'
+      : (contato.length ? contato.map(escHtml).join(' · ') : 'Nenhum contato informado.')) +
+    '</p></div>';
+
   // Fotos de evidencia (abrem em tamanho real em nova aba ao clicar).
+  fotos = fotos.map(urlFotoSegura).filter(Boolean);
   if (fotos.length) {
     html += '<div class="oc-fotos-admin"><strong>📷 Fotos da ocorrência (' + fotos.length + ')</strong><div class="oc-fotos-grid">';
     html += fotos.map(function (url) {
-      return '<a href="' + url + '" target="_blank" rel="noopener" title="Abrir em tamanho real">' +
-             '<img src="' + url + '" alt="Foto da ocorrência" loading="lazy"></a>';
+      const u = escHtml(url);
+      return '<a href="' + u + '" target="_blank" rel="noopener" title="Abrir em tamanho real">' +
+             '<img src="' + u + '" alt="Foto da ocorrência" loading="lazy"></a>';
     }).join('');
     html += '</div></div>';
   } else {

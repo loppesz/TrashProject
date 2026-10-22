@@ -33,12 +33,11 @@ class OcorrenciaModel extends BaseModel
      */
     public function historicoPublico(int $limite = 30): array
     {
-        // Minimizacao de dados (LGPD): o historico publico seleciona apenas
-        // colunas nao sensiveis. NUNCA traz latitude/longitude nem dados de
-        // contato (nome/telefone/email), ainda que existam na ocorrencia.
-        return $this->db->select(
-            'SELECT o.id_ocorrencia, o.protocolo, o.tipo, o.urgencia,
-                    o.endereco_descricao, o.descricao, o.status, o.criada_em,
+        // Minimizacao de dados (LGPD): o historico publico NAO traz descricao
+        // (texto livre, pode conter dados de terceiros), protocolo, coordenadas
+        // nem contatos. O endereco e reduzido a rua sem numero (enderecoPublico).
+        $linhas = $this->db->select(
+            'SELECT o.tipo, o.urgencia, o.endereco_descricao, o.status, o.criada_em,
                     b.nome AS bairro
              FROM ocorrencia o
              JOIN bairro b ON b.id_bairro = o.id_bairro
@@ -46,6 +45,11 @@ class OcorrenciaModel extends BaseModel
              ORDER BY o.criada_em DESC
              LIMIT ' . (int) $limite
         );
+        foreach ($linhas as &$l) {
+            $l['endereco_descricao'] = enderecoPublico($l['endereco_descricao']);
+        }
+        unset($l);
+        return $linhas;
     }
 
     /** Ocorrências recentes vinculadas a um usuário autenticado. */
@@ -89,7 +93,7 @@ class OcorrenciaModel extends BaseModel
                (protocolo, id_usuario, id_bairro, tipo, urgencia, endereco_descricao,
                 latitude, longitude, data_ocorrencia, descricao, anonima, nome_contato,
                 telefone_contato, email_contato, visivel_publicamente, status)
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, \'NOVA\')',
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \'NOVA\')',
             [
                 $protocolo,
                 $d['id_usuario'] ?? null,
@@ -105,6 +109,7 @@ class OcorrenciaModel extends BaseModel
                 $d['nome_contato'] ?: null,
                 $d['telefone_contato'] ?: null,
                 $d['email_contato'] ?: null,
+                array_key_exists('publico', $d) ? (!empty($d['publico']) ? 1 : 0) : 1,
             ]
         );
 
@@ -114,11 +119,20 @@ class OcorrenciaModel extends BaseModel
         return ['id' => $id, 'protocolo' => $protocolo];
     }
 
-    /** Gera um protocolo unico no formato CF-AAAA-NNNN. */
+    /**
+     * Gera um protocolo unico no formato CF-AAAA-XXXXXXXX (8 caracteres
+     * aleatorios, sem letras ambiguas). Com ~1 trilhao de combinacoes por ano,
+     * nao da para "adivinhar" protocolos de outras pessoas.
+     */
     private function gerarProtocolo(): string
     {
+        $alfabeto = '23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
         do {
-            $proto = 'CF-' . date('Y') . '-' . str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT);
+            $sufixo = '';
+            for ($i = 0; $i < 8; $i++) {
+                $sufixo .= $alfabeto[random_int(0, strlen($alfabeto) - 1)];
+            }
+            $proto = 'CF-' . date('Y') . '-' . $sufixo;
             $existe = $this->db->select(
                 'SELECT 1 FROM ocorrencia WHERE protocolo = ? LIMIT 1',
                 [$proto],
@@ -202,14 +216,15 @@ class OcorrenciaModel extends BaseModel
 
     /**
      * Ocorrências públicas com coordenadas para o mapa.
-     * A coordenada é arredondada para 4 casas para reduzir exposição do local exato.
+     * A coordenada é arredondada para 3 casas (~100 m) para não apontar a casa exata.
+     * Não traz protocolo nem id (evita cruzar o ponto com a consulta por protocolo).
      */
     public function paraMapaPublico(int $limite = 200): array
     {
         $g = MURIAE_GEO;
         return $this->db->select(
-            "SELECT o.id_ocorrencia, o.protocolo, o.tipo, o.urgencia, o.status,
-                    ROUND(o.latitude, 4) AS latitude, ROUND(o.longitude, 4) AS longitude,
+            "SELECT o.tipo, o.urgencia, o.status,
+                    ROUND(o.latitude, 3) AS latitude, ROUND(o.longitude, 3) AS longitude,
                     DATE(o.criada_em) AS data, b.nome AS bairro
              FROM ocorrencia o
              JOIN bairro b ON b.id_bairro = o.id_bairro
