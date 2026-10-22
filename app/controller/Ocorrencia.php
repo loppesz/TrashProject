@@ -244,33 +244,49 @@ class Ocorrencia extends BaseController
                 'telefone_contato' => $tel,
                 'email_contato'    => $email,
             ]);
+        } catch (Throwable $e) {
+            // Falha ao GRAVAR a ocorrencia em si: ai sim, "tente novamente".
+            header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('Não foi possível registrar. Tente novamente.'));
+            exit;
+        }
 
-            // --- Upload de foto (opcional) ---
-            // A foto NAO pontua agora: os pontos dela entram quando a equipe
-            // confirmar a ocorrencia (Admin::atualizarStatus -> RESOLVIDA).
+        // A ESTA ALTURA A OCORRENCIA JA FOI GRAVADA COM SUCESSO.
+        // A foto e os pontos sao "melhor esforco": se algo falhar aqui, o
+        // registro continua valido e o usuario deve ver sucesso (nunca mais
+        // "tente novamente" com a ocorrencia ja criada). Por isso cada etapa
+        // tem seu proprio try/catch e nao derruba o fluxo.
+
+        // --- Upload de foto (opcional) ---
+        // A foto NAO pontua agora: os pontos dela entram quando a equipe
+        // confirmar a ocorrencia (Admin::atualizarStatus -> RESOLVIDA).
+        $temFoto = false;
+        try {
             $temFoto = $this->salvarFoto((int) $res['id']);
+        } catch (Throwable $e) {
+            $temFoto = false; // foto perdida, mas a ocorrencia vale.
+        }
 
-            // --- Pontos (so para usuario logado e ocorrencia nao anonima) ---
-            // Registro vale pouco e tem limite diario, para evitar spam.
-            $ptsAgora = 0;
-            if ($idUsuario) {
+        // --- Pontos (so para usuario logado e ocorrencia nao anonima) ---
+        // Registro vale pouco e tem limite diario, para evitar spam.
+        $ptsAgora = 0;
+        if ($idUsuario) {
+            try {
                 $ptsAgora = $this->model('Pontos')->creditarRegistroOcorrencia(
                     (int) $idUsuario,
                     (int) $res['id'],
                     $res['protocolo']
                 );
+            } catch (Throwable $e) {
+                $ptsAgora = 0; // pontuacao falhou, mas a ocorrencia vale.
             }
-
-            $destino = baseUrl('ocorrencia') . '?protocolo=' . rawurlencode($res['protocolo'])
-                     . '&pts=' . $ptsAgora
-                     . '&foto=' . ($temFoto ? '1' : '0')
-                     . '&vinc=' . ($idUsuario ? '1' : '0');   // ocorrencia vinculada a uma conta?
-            header('Location: ' . $destino);
-            exit;
-        } catch (Throwable $e) {
-            header('Location: ' . baseUrl('ocorrencia') . '?erro=' . rawurlencode('Não foi possível registrar. Tente novamente.'));
-            exit;
         }
+
+        $destino = baseUrl('ocorrencia') . '?protocolo=' . rawurlencode($res['protocolo'])
+                 . '&pts=' . $ptsAgora
+                 . '&foto=' . ($temFoto ? '1' : '0')
+                 . '&vinc=' . ($idUsuario ? '1' : '0');   // ocorrencia vinculada a uma conta?
+        header('Location: ' . $destino);
+        exit;
     }
 
     /**
