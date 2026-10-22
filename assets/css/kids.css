@@ -440,6 +440,50 @@
 .dark .kids-modal p { color: var(--text-muted); }
 .dark .kids-modal input { background: var(--surface-2); color: var(--text); border-color: var(--border); }
 
+/* ---------------------------------------------------------------
+   Reforço do TEMA CLARO: elementos que tinham cor fixa escura e
+   ficavam difíceis de ler sobre o fundo branco da Área Kids.
+   --------------------------------------------------------------- */
+/* Selo "+X pts" dos cards de atividade (era fundo #1e293b fixo). */
+.ac-badge { background: var(--accent); color: #fff; }
+.dark .ac-badge { background: #1e293b; color: #4ade80; }
+
+/* Textos e metadados dos cards/jogos → tokens de tema. */
+.activity-card h3,
+.fato-card-big h3,
+.ranking-kids-container h2 { color: var(--text); }
+.activity-card p,
+.fato-card-big p,
+.lx-sub,
+.quiz-result p, .vm-result p, .sep-result p { color: var(--text-muted); }
+
+/* Metadados pequenos (nível, jogos, posição) legíveis em ambos os temas. */
+.lx-item small,
+.rk-nivel-s,
+.seu-info span,
+.planet-info p,
+.caca-lista ul li,
+.pts-label { color: var(--text-muted); }
+
+/* Células/opções de jogo: texto sempre contrastando com a superfície. */
+.caca-cell,
+.sep-lixeira,
+.quiz-option,
+.quiz-stat,
+.nivel-btn,
+.sep-lixeiras-preview span { color: var(--text); }
+.caca-cell:hover { background: var(--success-bg); }
+
+/* Caça-palavras: no tema claro, usar realces suaves em vez de amarelo forte. */
+.caca-cell.selecting { background: color-mix(in srgb, var(--yellow, #eab308) 25%, var(--surface)) !important; color: var(--text); }
+.caca-cell.found { background: var(--success-bg) !important; color: var(--accent-strong); border-color: var(--accent); }
+
+/* Lista do caça-palavras e itens achados. */
+.caca-lista ul li.caca-found { background: var(--success-bg); color: var(--accent-strong); }
+
+/* Nome do jogador e rótulos do placar pessoal (eram escuros fixos). */
+.seu-info strong { color: var(--text); }
+
 @media (max-width: 650px) {
   .kids-nav-right { gap: 6px; }
   .kids-nav-points { display: none; }
