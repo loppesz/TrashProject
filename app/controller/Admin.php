@@ -91,6 +91,13 @@ class Admin extends BaseController
         $observacao = array_key_exists('observacao', $_POST) ? trim((string) $_POST['observacao']) : null;
         $admin      = auth_user();
 
+        // O painel usa apenas 3 situações: Nova, Resolvida e Arquivada.
+        $statusPainel = ['NOVA', 'RESOLVIDA', 'ARQUIVADA'];
+        if (!in_array($status, $statusPainel, true)) {
+            header('Location: ' . baseUrl('admin/ocorrencias'));
+            exit;
+        }
+
         if ($id > 0 && $admin) {
             $ocModel = $this->model('Ocorrencia');
             $anterior = $ocModel->getById($id);
@@ -122,6 +129,30 @@ class Admin extends BaseController
             $destino .= '&oc=' . $id . '&para=' . abaAdminOcorrencia($status);
         }
         header('Location: ' . $destino);
+        exit;
+    }
+
+    /**
+     * Exclui definitivamente uma ocorrencia (POST). Remove tambem as fotos,
+     * o historico de status e desvincula os pontos (via FKs do banco).
+     */
+    public function excluirOcorrencia(): void
+    {
+        if (!$this->request->isPost()) {
+            header('Location: ' . baseUrl('admin/ocorrencias'));
+            exit;
+        }
+
+        $id = (int) $this->request->post('id_ocorrencia');
+
+        $abasValidas = ['abertas', 'resolvidas', 'arquivadas'];
+        $abaOrigem   = in_array($_POST['aba'] ?? '', $abasValidas, true) ? $_POST['aba'] : 'abertas';
+
+        if ($id > 0) {
+            $this->model('Ocorrencia')->excluir($id);
+        }
+
+        header('Location: ' . baseUrl('admin/ocorrencias') . '?ok=1&aba=' . $abaOrigem . '&excluida=1');
         exit;
     }
 

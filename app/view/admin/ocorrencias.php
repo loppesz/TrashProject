@@ -2,8 +2,9 @@
 <?php
   // Abas pelo status salvo no banco (persistem ao recarregar a página).
   $ocorrencias  = $ocorrencias ?? [];
-  $statusOpcoes = ['NOVA','EM_ANALISE','EM_ANDAMENTO','RESOLVIDA','ARQUIVADA'];
-  $abas = ['abertas' => 'Em aberto', 'resolvidas' => 'Resolvidas', 'arquivadas' => 'Arquivadas'];
+  // Apenas 3 situações no painel: Nova, Resolvida e Arquivada.
+  $statusOpcoes = ['NOVA','RESOLVIDA','ARQUIVADA'];
+  $abas = ['abertas' => 'Novas', 'resolvidas' => 'Resolvidas', 'arquivadas' => 'Arquivadas'];
   $abaAtual   = isset($abas[$abaAtual ?? '']) ? $abaAtual : 'abertas';
   $movidaPara = isset($abas[$movidaPara ?? '']) ? $movidaPara : '';
 
@@ -18,9 +19,10 @@
 ?>
 
       <?php if (!empty($sucesso)): ?>
+        <?php $foiExclusao = !empty($_GET['excluida']); ?>
         <div class="dashboard-card" style="border-left:4px solid #22c55e;" role="status">
-          <strong style="color:var(--success, #15803d);">✅ Status atualizado.</strong>
-          <?php if ($movidaPara !== '' && $movidaPara !== $abaAtual && $protAlterada !== ''): ?>
+          <strong style="color:var(--success, #15803d);">✅ <?= $foiExclusao ? 'Ocorrência excluída.' : 'Status atualizado.' ?></strong>
+          <?php if (!$foiExclusao && $movidaPara !== '' && $movidaPara !== $abaAtual && $protAlterada !== ''): ?>
             <span style="color:var(--text-soft);">
               A ocorrência #<?= htmlspecialchars($protAlterada) ?> foi para
               <button type="button" class="link-aba" onclick="trocarAbaOc('<?= $movidaPara ?>')"><?= $abas[$movidaPara] ?></button>.
@@ -42,13 +44,7 @@
         </div>
         <div class="filtros-admin">
           <input type="text" placeholder="Buscar por bairro ou protocolo..." id="buscaOc" oninput="filtrarOcAdmin()" aria-label="Buscar por bairro ou protocolo">
-          <!-- Status só faz sentido em "Em aberto" (as outras abas já são um status só) -->
-          <select id="filtroStatus" onchange="filtrarOcAdmin()" aria-label="Filtrar por status" <?= $abaAtual !== 'abertas' ? 'hidden' : '' ?>>
-            <option value="">Todos em aberto</option>
-            <option value="nova">Nova</option>
-            <option value="analise">Em análise</option>
-            <option value="andamento">Em atendimento</option>
-          </select>
+          <!-- Cada aba já corresponde a um status; o filtro por tipo continua útil. -->
           <select id="filtroTipo" onchange="filtrarOcAdmin()" aria-label="Filtrar por tipo">
             <option value="">Todos os tipos</option>
             <option value="descarte">Descarte irregular</option>
@@ -139,6 +135,13 @@
                     data-contato-tel="<?= htmlspecialchars((string) ($o['telefone_contato'] ?? ''), ENT_QUOTES) ?>"
                     data-contato-email="<?= htmlspecialchars((string) ($o['email_contato'] ?? ''), ENT_QUOTES) ?>"
                     data-fotos="<?= htmlspecialchars(json_encode(array_map(static fn($u) => baseUrl($u), $o['fotos'] ?? []), JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE), ENT_QUOTES) ?>">👁 Ver</button>
+                  <form method="POST" action="<?= baseUrl('admin/excluirOcorrencia') ?>" class="form-excluir-oc"
+                        onsubmit="return confirm('Excluir a ocorrência #<?= htmlspecialchars($o['protocolo'], ENT_QUOTES) ?>? Esta ação não pode ser desfeita.');">
+                    <?= csrf_campo() ?>
+                    <input type="hidden" name="id_ocorrencia" value="<?= (int) $o['id_ocorrencia'] ?>">
+                    <input type="hidden" name="aba" value="<?= $abaAtual ?>">
+                    <button type="submit" class="btn-acao excluir" title="Excluir ocorrência">🗑 Excluir</button>
+                  </form>
                 </td>
               </tr>
             <?php endforeach; ?>

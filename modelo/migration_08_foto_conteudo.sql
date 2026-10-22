@@ -25,3 +25,10 @@ SET @sql = IF((SELECT COUNT(*) FROM information_schema.COLUMNS
               'ALTER TABLE ocorrencia_foto ADD COLUMN tamanho_bytes INT UNSIGNED NULL AFTER tipo_mime',
               'SELECT 1');
 PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+-- ---------------------------------------------------------------------
+-- Painel admin simplificado: apenas Nova, Resolvida e Arquivada.
+-- Ocorrências antigas em EM_ANALISE / EM_ANDAMENTO passam a contar como NOVA
+-- (o histórico de status preserva os valores antigos para auditoria).
+-- ---------------------------------------------------------------------
+UPDATE ocorrencia SET status = 'NOVA' WHERE status IN ('EM_ANALISE', 'EM_ANDAMENTO');

@@ -389,4 +389,19 @@ class OcorrenciaModel extends BaseModel
             [$idOcorrencia]
         );
     }
+
+    /**
+     * Exclui definitivamente uma ocorrencia e tudo que depende dela.
+     *
+     * As fotos (ocorrencia_foto) e o historico de status caem por ON DELETE
+     * CASCADE. Os lancamentos de pontos usam ON DELETE SET NULL, entao sao
+     * removidos explicitamente aqui para nao deixar pontos "fantasmas".
+     *
+     * @return int linhas afetadas na tabela ocorrencia (1 se excluiu)
+     */
+    public function excluir(int $id): int
+    {
+        $this->db->delete('DELETE FROM lancamento_pontos WHERE id_ocorrencia = ?', [$id]);
+        return $this->db->delete('DELETE FROM ocorrencia WHERE id_ocorrencia = ?', [$id]);
+    }
 }

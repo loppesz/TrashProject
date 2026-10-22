@@ -1,4 +1,4 @@
-﻿const CACHE_NAME = 'coletafacil-v42';
+﻿const CACHE_NAME = 'coletafacil-v43';
 const PRECACHE = [
   '/',
   '/assets/css/style.css',
