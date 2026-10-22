@@ -30,21 +30,27 @@
       <div class="busca-wrap">
         <span class="busca-icone">🔍</span>
         <input type="text" id="buscaPonto" placeholder="Buscar por nome, bairro ou material aceito..." oninput="filtrarPontos()">
-        <button class="busca-clear" onclick="limparBusca()" id="buscaClear" style="display:none;">✕</button>
+        <button class="busca-clear" onclick="limparBusca()" id="buscaClear" style="display:none;" aria-label="Limpar busca">✕</button>
       </div>
-      <div class="filtros-chips">
-        <button class="chip active" onclick="filtrarMaterial('todos', this)">Todos</button>
-        <button class="chip" onclick="filtrarMaterial('pilhas', this)">🔋 Pilhas</button>
-        <button class="chip" onclick="filtrarMaterial('eletronicos', this)">📱 Eletrônicos</button>
-        <button class="chip" onclick="filtrarMaterial('oleo', this)">🫙 Óleo</button>
-        <button class="chip" onclick="filtrarMaterial('medicamentos', this)">💊 Medicamentos</button>
-        <button class="chip" onclick="filtrarMaterial('papel', this)">📄 Papel/Papelão</button>
-        <button class="chip" onclick="filtrarMaterial('plastico', this)">🧴 Plástico</button>
+      <!-- Cada chip liga/desliga o seu filtro; "Todos" desmarca o grupo inteiro. -->
+      <div class="filtros-chips" id="chipsMaterial">
+        <button type="button" class="chip active" data-filtro="todos" aria-pressed="true" onclick="filtrarMaterial('todos')">Todos</button>
+        <button type="button" class="chip" data-filtro="pilhas" aria-pressed="false" onclick="filtrarMaterial('pilhas')">🔋 Pilhas</button>
+        <button type="button" class="chip" data-filtro="eletronicos" aria-pressed="false" onclick="filtrarMaterial('eletronicos')">📱 Eletrônicos</button>
+        <button type="button" class="chip" data-filtro="oleo" aria-pressed="false" onclick="filtrarMaterial('oleo')">🫙 Óleo</button>
+        <button type="button" class="chip" data-filtro="medicamentos" aria-pressed="false" onclick="filtrarMaterial('medicamentos')">💊 Medicamentos</button>
+        <button type="button" class="chip" data-filtro="papel" aria-pressed="false" onclick="filtrarMaterial('papel')">📄 Papel/Papelão</button>
+        <button type="button" class="chip" data-filtro="plastico" aria-pressed="false" onclick="filtrarMaterial('plastico')">🧴 Plástico</button>
       </div>
-      <div class="filtros-chips" style="margin-top:6px">
-        <button class="chip chip-status active-green" onclick="filtrarStatus('todos', this)">Todos</button>
-        <button class="chip chip-status" onclick="filtrarStatus('aberto', this)">🟢 Abertos agora</button>
-        <button class="chip chip-status" onclick="filtrarStatus('fechado', this)">🔴 Fechados</button>
+      <div class="filtros-chips" id="chipsStatus" style="margin-top:6px">
+        <button type="button" class="chip chip-status active-green active" data-filtro="todos" aria-pressed="true" onclick="filtrarStatus('todos')">Todos</button>
+        <button type="button" class="chip chip-status" data-filtro="aberto" aria-pressed="false" onclick="filtrarStatus('aberto')">🟢 Abertos agora</button>
+        <button type="button" class="chip chip-status" data-filtro="fechado" aria-pressed="false" onclick="filtrarStatus('fechado')">🔴 Fechados</button>
+      </div>
+      <!-- Aparece enquanto houver pelo menos um filtro (busca, material ou status) aplicado. -->
+      <div class="filtros-ativos" id="filtrosAtivos" hidden>
+        <span id="filtrosResumo"></span>
+        <button type="button" class="btn-limpar-filtros" onclick="limparFiltros()">✕ Limpar filtros</button>
       </div>
     </div>
   </div>
@@ -225,7 +231,7 @@
     <div id="semResultados" style="display:none;" class="sem-resultados-rich">
       <span>😕</span>
       <p>Nenhum ponto encontrado para esta busca.</p>
-      <button onclick="limparBusca()" class="btn-outline-green">Limpar filtros</button>
+      <button type="button" onclick="limparFiltros()" class="btn-outline-green">Limpar filtros</button>
     </div>
 
   </div><!-- fim container -->

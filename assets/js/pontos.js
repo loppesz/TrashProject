@@ -26,45 +26,64 @@ function togglePonto(id) {
 }
 
 // =============================================
-// FILTRO POR MATERIAL
+// FILTROS (busca, materiais e status)
+// Cada chip liga/desliga o seu filtro. Dentro de um grupo vale "qualquer um"
+// dos marcados (ex.: Pilhas OU Medicamentos). Nenhum marcado = "Todos".
 // =============================================
-let filtroMaterialAtivo = 'todos';
-let filtroStatusAtivo   = 'todos';
+const filtrosMaterial = new Set();
+const filtrosStatus   = new Set();
 
-function filtrarMaterial(tipo, btn) {
-  filtroMaterialAtivo = tipo;
-  document.querySelectorAll('.filtros-chips:first-of-type .chip').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+// Minúsculas e sem acento, para "plastico" casar com "plástico".
+function normalizarTexto(s) {
+  return String(s || '').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+function alternarFiltro(conjunto, valor) {
+  if (valor === 'todos') conjunto.clear();
+  else if (conjunto.has(valor)) conjunto.delete(valor);
+  else conjunto.add(valor);
+}
+
+// Marca visualmente os chips do grupo conforme o conjunto de filtros.
+function sincronizarChips(idGrupo, conjunto) {
+  document.querySelectorAll('#' + idGrupo + ' .chip').forEach(btn => {
+    const v = btn.dataset.filtro;
+    const ativo = v === 'todos' ? conjunto.size === 0 : conjunto.has(v);
+    btn.classList.toggle('active', ativo);
+    btn.setAttribute('aria-pressed', ativo ? 'true' : 'false');
+  });
+}
+
+function filtrarMaterial(tipo) {
+  alternarFiltro(filtrosMaterial, tipo);
   aplicarFiltros();
 }
 
-function filtrarStatus(status, btn) {
-  filtroStatusAtivo = status;
-  document.querySelectorAll('.chip-status').forEach(b => b.classList.remove('active'));
-  if (btn) btn.classList.add('active');
+function filtrarStatus(status) {
+  alternarFiltro(filtrosStatus, status);
   aplicarFiltros();
 }
 
 function filtrarPontos() {
-  const busca = document.getElementById('buscaPonto')?.value || '';
-  const clearBtn = document.getElementById('buscaClear');
-  if (clearBtn) clearBtn.style.display = busca.length > 0 ? 'block' : 'none';
   aplicarFiltros();
 }
 
 function aplicarFiltros() {
-  const busca = (document.getElementById('buscaPonto')?.value || '').toLowerCase();
+  const busca = normalizarTexto(document.getElementById('buscaPonto')?.value.trim());
   const cards = document.querySelectorAll('.ponto-rich-card');
   let visiveis = 0;
 
+  sincronizarChips('chipsMaterial', filtrosMaterial);
+  sincronizarChips('chipsStatus', filtrosStatus);
+
   cards.forEach(card => {
-    const nome     = (card.dataset.nome || '').toLowerCase();
-    const material = (card.dataset.material || '').toLowerCase();
-    const status   = (card.dataset.status || '').toLowerCase();
+    const nome     = normalizarTexto(card.dataset.nome);
+    const material = normalizarTexto(card.dataset.material);
+    const status   = normalizarTexto(card.dataset.status);
 
     const matchBusca    = !busca || nome.includes(busca) || material.includes(busca);
-    const matchMaterial = filtroMaterialAtivo === 'todos' || material.includes(filtroMaterialAtivo);
-    const matchStatus   = filtroStatusAtivo === 'todos' || status === filtroStatusAtivo;
+    const matchMaterial = filtrosMaterial.size === 0 || [...filtrosMaterial].some(m => material.includes(m));
+    const matchStatus   = filtrosStatus.size === 0 || filtrosStatus.has(status);
 
     if (matchBusca && matchMaterial && matchStatus) {
       card.style.display = 'block';
@@ -80,6 +99,19 @@ function aplicarFiltros() {
 
   const semRes = document.getElementById('semResultados');
   if (semRes) semRes.style.display = visiveis === 0 ? 'block' : 'none';
+
+  // "X" da busca só aparece com texto digitado.
+  const clearBtn = document.getElementById('buscaClear');
+  if (clearBtn) clearBtn.style.display = busca ? 'block' : 'none';
+
+  // Barra "Limpar filtros": visível enquanto houver qualquer filtro aplicado.
+  const temFiltro = !!busca || filtrosMaterial.size > 0 || filtrosStatus.size > 0;
+  const barra = document.getElementById('filtrosAtivos');
+  if (barra) barra.hidden = !temFiltro;
+  const resumo = document.getElementById('filtrosResumo');
+  if (resumo) {
+    resumo.textContent = visiveis === 1 ? '1 ponto encontrado' : visiveis + ' pontos encontrados';
+  }
 
   // Atualiza bordas (primeiro/último visível)
   updateCardBorders();
@@ -100,15 +132,19 @@ function updateCardBorders() {
   cards[cards.length - 1].style.borderRadius = cards.length === 1 ? '14px' : '0 0 14px 14px';
 }
 
+// "X" dentro do campo: limpa só o texto da busca.
 function limparBusca() {
   const input = document.getElementById('buscaPonto');
+  if (input) { input.value = ''; input.focus(); }
+  aplicarFiltros();
+}
+
+// Botão "Limpar filtros": tira busca, materiais e status de uma vez.
+function limparFiltros() {
+  const input = document.getElementById('buscaPonto');
   if (input) input.value = '';
-  const clearBtn = document.getElementById('buscaClear');
-  if (clearBtn) clearBtn.style.display = 'none';
-  filtroMaterialAtivo = 'todos';
-  filtroStatusAtivo   = 'todos';
-  document.querySelectorAll('.chip').forEach((b, i) => { b.classList.remove('active'); if (i === 0 || b.classList.contains('chip-status')) {} });
-  document.querySelectorAll('.chip:first-of-type').forEach(b => b.classList.add('active'));
+  filtrosMaterial.clear();
+  filtrosStatus.clear();
   aplicarFiltros();
 }
 
