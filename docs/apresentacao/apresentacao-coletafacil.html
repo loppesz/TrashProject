@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ColetaFácil — Apresentação de 10 minutos</title>
+<style>
+  :root {
+    --green:#16a34a; --green-dark:#0b6b34; --lime:#84cc16; --blue:#2563eb;
+    --yellow:#facc15; --orange:#f97316; --red:#dc2626;
+    --ink:#102019; --muted:#51635a; --paper:#f6fbf7; --line:#d9e7dd;
+    --dark:#07130d; --dark-2:#0c2015;
+  }
+  * { box-sizing:border-box; }
+  html, body { margin:0; padding:0; background:#dfe9e2; color:var(--ink); font-family:Arial, Helvetica, sans-serif; }
+  @page { size: 13.333in 7.5in; margin:0; }
+  .slide {
+    width:13.333in; height:7.5in; position:relative; overflow:hidden;
+    page-break-after:always; break-after:page; padding:.55in .7in .48in;
+    background:linear-gradient(135deg,#f8fcf9 0%,#ffffff 58%,#edf9f0 100%);
+    display:flex; flex-direction:column;
+  }
+  .slide:last-child { page-break-after:auto; break-after:auto; }
+  .slide::before { content:""; position:absolute; width:4.5in; height:4.5in; border-radius:50%; right:-2.1in; top:-2.4in; background:rgba(22,163,74,.08); }
+  .slide::after { content:""; position:absolute; width:2.4in; height:2.4in; border-radius:50%; left:-1.5in; bottom:-1.5in; background:rgba(37,99,235,.05); }
+  .dark { background:linear-gradient(135deg,#06100a 0%,#0a2013 58%,#123321 100%); color:#f5fff8; }
+  .dark::before { background:rgba(132,204,22,.12); }
+  .photo { padding:0; color:#fff; background:#07130d; }
+  .photo .bg { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
+  .photo .shade { position:absolute; inset:0; background:linear-gradient(90deg,rgba(2,10,5,.92) 0%,rgba(4,18,10,.8) 48%,rgba(4,18,10,.2) 100%); }
+  .photo .content { position:relative; z-index:2; width:58%; height:100%; padding:.72in; display:flex; flex-direction:column; justify-content:center; }
+  .kicker { font-size:13px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; color:var(--green-dark); margin:0 0 9px; }
+  .dark .kicker, .photo .kicker { color:#86efac; }
+  h1 { font-size:42px; line-height:1.04; letter-spacing:-.035em; margin:0 0 15px; max-width:10.8in; }
+  h2 { font-size:30px; line-height:1.08; letter-spacing:-.025em; margin:0 0 12px; }
+  h3 { font-size:18px; line-height:1.18; margin:0 0 6px; }
+  p { margin:0; }
+  .lead { font-size:21px; line-height:1.4; color:var(--muted); max-width:10in; }
+  .dark .lead, .photo .lead { color:#d4e8da; }
+  .accent { color:var(--green); }
+  .yellow { color:#fde047; }
+  .rule { width:65px; height:5px; background:linear-gradient(90deg,var(--green),var(--lime)); border-radius:99px; margin:3px 0 17px; }
+  .body { position:relative; z-index:1; flex:1; display:flex; flex-direction:column; min-height:0; }
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:22px; flex:1; min-height:0; }
+  .grid3 { display:grid; grid-template-columns:repeat(3,1fr); gap:16px; }
+  .grid4 { display:grid; grid-template-columns:repeat(4,1fr); gap:13px; }
+  .card { background:#fff; border:1px solid var(--line); border-radius:18px; padding:18px; box-shadow:0 8px 22px rgba(15,60,29,.07); }
+  .dark .card { background:rgba(255,255,255,.07); border-color:rgba(255,255,255,.14); box-shadow:none; }
+  .card p, .small { font-size:14px; line-height:1.42; color:var(--muted); }
+  .dark .card p, .dark .small { color:#c8d8cd; }
+  .icon { width:42px; height:42px; display:flex; align-items:center; justify-content:center; border-radius:13px; margin-bottom:10px; font-size:21px; background:#eaf8ee; }
+  .icon.blue { background:#eaf1ff; } .icon.yellow { background:#fff7cf; } .icon.orange { background:#ffefe5; }
+  .number { font-size:38px; font-weight:900; line-height:1; color:var(--green); letter-spacing:-.03em; }
+  .metric-label { font-size:13px; line-height:1.28; color:var(--muted); margin-top:5px; }
+  .pill { display:inline-flex; align-items:center; padding:5px 10px; border-radius:999px; font-size:12px; font-weight:800; background:#e9f8ee; color:var(--green-dark); }
+  .pill.blue { background:#e7efff; color:#1d4ed8; } .pill.yellow { background:#fff5c2; color:#854d0e; }
+  .footer { position:absolute; z-index:3; left:.7in; right:.7in; bottom:.22in; display:flex; justify-content:space-between; align-items:center; color:#728077; font-size:10px; }
+  .dark .footer, .photo .footer { color:#b7c8bc; }
+  .page { font-weight:800; color:var(--green); }
+  .photo .page, .dark .page { color:#86efac; }
+  .quote { font-size:24px; line-height:1.35; font-weight:800; border-left:6px solid var(--green); padding-left:18px; max-width:9.8in; }
+  .center { text-align:center; align-items:center; justify-content:center; }
+  .center .lead { max-width:9.7in; }
+  .center .rule { margin-left:auto; margin-right:auto; }
+  .flow { display:flex; align-items:stretch; gap:9px; flex:1; }
+  .flow .step { flex:1; position:relative; padding:16px 12px; text-align:center; background:#fff; border:1px solid var(--line); border-radius:16px; }
+  .flow .step:not(:last-child)::after { content:"›"; position:absolute; right:-15px; top:42%; z-index:3; font-size:29px; font-weight:900; color:var(--green); }
+  .flow .n { width:30px; height:30px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:var(--green); color:#fff; font-size:14px; font-weight:900; }
+  .flow h3 { font-size:15px; }
+  .flow p { font-size:12px; line-height:1.35; color:var(--muted); }
+  .browser { background:#fff; border:1px solid #cddbd1; border-radius:17px; padding:30px 8px 8px; box-shadow:0 14px 32px rgba(10,40,20,.18); position:relative; overflow:hidden; }
+  .browser::before { content:"●  ●  ●"; position:absolute; top:8px; left:13px; font-size:10px; letter-spacing:3px; color:#94a3b8; }
+  .browser img { width:100%; height:100%; object-fit:cover; object-position:top; border-radius:9px; display:block; }
+  .list { display:grid; gap:10px; }
+  .list .item { display:flex; gap:11px; align-items:flex-start; }
+  .check { width:24px; height:24px; flex:0 0 24px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:13px; }
+  .item strong { display:block; font-size:15px; margin-bottom:2px; }
+  .item span { display:block; font-size:13px; color:var(--muted); line-height:1.35; }
+  .dark .item span { color:#c8d8cd; }
+  .timeline { display:grid; grid-template-columns:repeat(5,1fr); gap:10px; align-items:start; position:relative; margin-top:12px; }
+  .timeline::before { content:""; position:absolute; height:4px; left:8%; right:8%; top:21px; background:linear-gradient(90deg,var(--green),var(--blue)); border-radius:99px; }
+  .tstep { z-index:1; text-align:center; }
+  .tdot { width:44px; height:44px; margin:0 auto 8px; display:flex; align-items:center; justify-content:center; border-radius:50%; background:#fff; border:4px solid var(--green); font-size:18px; }
+  .tstep:nth-child(4) .tdot, .tstep:nth-child(5) .tdot { border-color:var(--blue); }
+  .tstep b { display:block; font-size:13px; }
+  .tstep small { display:block; margin-top:3px; color:var(--muted); line-height:1.3; }
+  .stack { display:grid; grid-template-columns:1.1fr .8fr 1.1fr; gap:12px; align-items:center; flex:1; }
+  .layer { background:#fff; border:1px solid var(--line); border-radius:18px; padding:18px; text-align:center; box-shadow:0 8px 22px rgba(15,60,29,.06); }
+  .arrowcol { display:grid; gap:8px; text-align:center; color:var(--green); font-weight:900; }
+  .tech-tags { display:flex; flex-wrap:wrap; gap:7px; justify-content:center; margin-top:9px; }
+  .tech-tags span { padding:5px 9px; border-radius:8px; background:#eef5f0; color:#2d4636; font-size:11px; font-weight:800; }
+  .legend { display:flex; gap:14px; align-items:center; font-size:12px; color:var(--muted); }
+  .legend i { width:10px; height:10px; display:inline-block; border-radius:50%; margin-right:5px; }
+  .split-photo { display:grid; grid-template-columns:.92fr 1.08fr; gap:22px; flex:1; min-height:0; }
+  .imgbox { border-radius:20px; overflow:hidden; position:relative; min-height:0; }
+  .imgbox img { width:100%; height:100%; object-fit:cover; }
+  .imgcap { position:absolute; left:10px; right:10px; bottom:10px; padding:8px 11px; border-radius:10px; background:rgba(2,10,5,.75); color:#fff; font-size:11px; }
+  .do-dont { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .do, .dont { border-radius:16px; padding:15px; }
+  .do { background:#eaf8ee; border:1px solid #b7e4c4; }
+  .dont { background:#fff1f1; border:1px solid #f6caca; }
+  .do h3 { color:var(--green-dark); } .dont h3 { color:#b91c1c; }
+  .do li, .dont li { font-size:12px; line-height:1.4; margin:5px 0; }
+  .note { margin-top:auto; padding:10px 14px; border-radius:12px; background:#eaf8ee; color:#234b31; font-size:12px; line-height:1.4; border-left:4px solid var(--green); }
+  .dark .note { background:rgba(134,239,172,.1); color:#d9f8e2; }
+  .time { position:absolute; right:.7in; top:.46in; padding:5px 10px; border-radius:999px; background:#edf7f0; color:var(--green-dark); font-size:11px; font-weight:900; }
+  .dark .time, .photo .time { background:rgba(255,255,255,.12); color:#d9f8e2; }
+  .appendix { background:#fbfcff; }
+  .appendix::before { background:rgba(37,99,235,.07); }
+  .script { display:grid; grid-template-columns:90px 1fr; gap:7px 14px; font-size:12px; line-height:1.38; }
+  .script .when { font-weight:900; color:var(--green-dark); }
+  .script .say { color:#31463a; }
+  .qa { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+  .qa .q { background:#fff; border:1px solid var(--line); border-radius:13px; padding:12px; }
+  .qa b { display:block; font-size:13px; margin-bottom:4px; color:var(--green-dark); }
+  .qa p { font-size:11px; line-height:1.38; color:var(--muted); }
+  .source { font-size:10px; line-height:1.35; color:#6c7d72; overflow-wrap:anywhere; }
+</style>
+</head>
+<body>
+
+<!-- 1 -->
+<section class="slide photo">
+  <img class="bg" src="../../assets/img/hero-separacao.jpg" alt="Pessoa separando resíduos recicláveis">
+  <div class="shade"></div>
+  <div class="content">
+    <p class="kicker">Apresentação acadêmica • 10 minutos</p>
+    <h1>ColetaFácil</h1>
+    <p class="lead">Informação, educação ambiental e participação cidadã para a coleta de resíduos em <strong>Muriaé–MG</strong>.</p>
+    <div class="rule"></div>
+    <p style="font-size:15px;color:#d7eadd;">Problema → solução → funcionamento → tecnologia → limites</p>
+  </div>
+  <span class="time">0:40</span>
+  <div class="footer"><span>ColetaFácil • Projeto acadêmico de ADS</span><span class="page">1 / 10</span></div>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">O problema</p>
+    <h2>Descartar corretamente exige informação que nem sempre está no mesmo lugar</h2>
+    <div class="rule"></div>
+    <div class="split-photo">
+      <div class="imgbox">
+        <img src="../../assets/img/lixo-urbano.jpg" alt="Resíduos descartados em via urbana">
+        <div class="imgcap">O projeto trata o descarte como um problema ambiental, urbano e de comunicação.</div>
+      </div>
+      <div class="list" style="align-content:center;">
+        <div class="item"><span class="check">1</span><div><strong>Quando passa o caminhão?</strong><span>O morador precisa encontrar o dia e o horário do próprio bairro.</span></div></div>
+        <div class="item"><span class="check">2</span><div><strong>O que pode ser separado?</strong><span>Materiais comuns e especiais exigem orientações diferentes.</span></div></div>
+        <div class="item"><span class="check">3</span><div><strong>Onde levar resíduos especiais?</strong><span>Pilhas, medicamentos e perfurocortantes não devem ir junto dos recicláveis.</span></div></div>
+        <div class="item"><span class="check">4</span><div><strong>Como comunicar um problema?</strong><span>O cidadão precisa registrar, receber um protocolo e acompanhar a resposta.</span></div></div>
+        <div class="item"><span class="check">5</span><div><strong>Como a gestão acompanha?</strong><span>Ocorrências, fotos, status e indicadores precisam estar organizados.</span></div></div>
+      </div>
+    </div>
+    <div class="note"><strong>Frase para falar:</strong> “O problema não é apenas recolher o lixo; é fazer a informação certa chegar à pessoa certa e criar um caminho de participação.”</div>
+  </div>
+  <span class="time">1:00</span>
+  <div class="footer"><span>Problema formulado pelo projeto; sem pesquisa de campo quantitativa</span><span class="page">2 / 10</span></div>
+</section>
+
+<!-- 3 -->
+<section class="slide dark">
+  <div class="body">
+    <p class="kicker">A proposta</p>
+    <h2>Um serviço digital único para orientar, localizar, comunicar e gerir</h2>
+    <div class="rule"></div>
+    <div class="grid4" style="margin-top:8px;">
+      <div class="card"><div class="icon">🗓️</div><h3>Informar</h3><p>Coleta comum e seletiva por bairro, dia, horário e trecho.</p></div>
+      <div class="card"><div class="icon blue">📍</div><h3>Localizar</h3><p>Mapa de pontos de descarte e filtros por material aceito.</p></div>
+      <div class="card"><div class="icon orange">📋</div><h3>Participar</h3><p>Ocorrências com endereço, GPS, foto, protocolo e acompanhamento.</p></div>
+      <div class="card"><div class="icon yellow">📊</div><h3>Gerir</h3><p>Painel administrativo para triagem, conteúdo e indicadores.</p></div>
+    </div>
+    <div class="quote" style="margin:auto 0 5px;">A ideia central: transformar dados de coleta em uma experiência simples para o cidadão e organizada para a gestão.</div>
+  </div>
+  <span class="time">0:55</span>
+  <div class="footer"><span>Solução web responsiva • acesso público + conta de morador + painel admin</span><span class="page">3 / 10</span></div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">Jornada do morador</p>
+    <h2>Da dúvida à ação em poucos passos</h2>
+    <div class="rule"></div>
+    <div class="flow">
+      <div class="step"><span class="n">1</span><h3>Consultar</h3><p>Seleciona o bairro e vê coleta comum, seletiva e calendário.</p></div>
+      <div class="step"><span class="n">2</span><h3>Aprender</h3><p>Confere materiais aceitos, preparo seguro e descarte alternativo.</p></div>
+      <div class="step"><span class="n">3</span><h3>Localizar</h3><p>Encontra no mapa um ponto que aceite o material especial.</p></div>
+      <div class="step"><span class="n">4</span><h3>Comunicar</h3><p>Registra descarte irregular ou falha na coleta, com foto opcional.</p></div>
+      <div class="step"><span class="n">5</span><h3>Acompanhar</h3><p>Usa o protocolo para ver status, histórico e resposta da equipe.</p></div>
+    </div>
+    <div class="grid2" style="flex:0 0 auto;margin-top:16px;">
+      <div class="card"><span class="pill">Sem conta</span><p style="margin-top:8px;">Consulta informações, sugere ponto e pode registrar ocorrência anônima.</p></div>
+      <div class="card"><span class="pill blue">Com conta</span><p style="margin-top:8px;">Vê suas ocorrências, participa dos pontos/recompensas e salva perfis Kids.</p></div>
+    </div>
+  </div>
+  <span class="time">1:10</span>
+  <div class="footer"><span>A conta amplia recursos, mas não bloqueia os serviços públicos essenciais</span><span class="page">4 / 10</span></div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">Fluxo de ocorrências</p>
+    <h2>O cidadão registra; o sistema cria rastreabilidade</h2>
+    <div class="rule"></div>
+    <div class="timeline">
+      <div class="tstep"><div class="tdot">📍</div><b>Localização</b><small>Endereço editável, bairro e GPS limitados a Muriaé.</small></div>
+      <div class="tstep"><div class="tdot">📷</div><b>Evidência</b><small>Descrição, urgência e foto opcional.</small></div>
+      <div class="tstep"><div class="tdot">#</div><b>Protocolo</b><small>Código copiável para acompanhar o caso.</small></div>
+      <div class="tstep"><div class="tdot">👁️</div><b>Triagem</b><small>Admin vê detalhes e fotos e altera o status.</small></div>
+      <div class="tstep"><div class="tdot">✓</div><b>Retorno</b><small>Linha do tempo: nova, análise, atendimento, resolvida ou arquivada.</small></div>
+    </div>
+    <div class="grid2" style="margin-top:20px;">
+      <div class="card"><h3>Privacidade aplicada</h3><p>Registro anônimo descarta vínculo e contatos; coordenadas não aparecem como texto público; descrição completa volta apenas ao autor autenticado.</p></div>
+      <div class="card"><h3>Incentivo com controle</h3><p>10 pts ao registrar (até 3/dia), +40 após confirmação/resolução e +15 pela foto aprovada. Máximo: 65 pts.</p></div>
+    </div>
+  </div>
+  <span class="time">1:10</span>
+  <div class="footer"><span>A maior parte dos pontos só entra após confirmação administrativa</span><span class="page">5 / 10</span></div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">Contexto local</p>
+    <h2>Dados de coleta organizados para Muriaé</h2>
+    <div class="rule"></div>
+    <div class="grid2">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:center;">
+        <div class="card center"><div class="number">54</div><div class="metric-label">bairros ativos exibidos</div></div>
+        <div class="card center"><div class="number">49</div><div class="metric-label">com horário de coleta comum</div></div>
+        <div class="card center"><div class="number">15</div><div class="metric-label">com coleta seletiva porta a porta</div></div>
+        <div class="card center"><div class="number">5</div><div class="metric-label">sem horário divulgado na fonte</div></div>
+      </div>
+      <div class="browser"><img src="site-coleta.png" alt="Captura da página de consulta de coleta"></div>
+    </div>
+    <div class="note"><strong>Como apresentar com honestidade:</strong> é uma carga estática baseada no cronograma publicado pelo DEMSUR e consultada em outubro de 2026 — não é integração automática em tempo real.</div>
+  </div>
+  <span class="time">1:00</span>
+  <div class="footer"><span>Fonte referenciada: DEMSUR • cronograma separado entre coleta comum e seletiva</span><span class="page">6 / 10</span></div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">Educação e engajamento</p>
+    <h2>Além de informar, o projeto tenta mudar comportamento</h2>
+    <div class="rule"></div>
+    <div class="grid3" style="flex:1;align-items:stretch;">
+      <div class="card"><div class="icon">♻️</div><h3>Guia de materiais</h3><p>Explica o que é aceito, como limpar e preparar, riscos e alternativas para resíduos especiais.</p><p style="margin-top:10px;"><span class="pill">Prevenção</span></p></div>
+      <div class="card"><div class="icon blue">🧒</div><h3>Área Kids</h3><p>Jogos, quizzes e perfis infantis aproximam a educação ambiental das famílias.</p><p style="margin-top:10px;"><span class="pill blue">Aprendizado</span></p></div>
+      <div class="card"><div class="icon yellow">⭐</div><h3>Pontos e recompensas</h3><p>Reconhece ocorrências confirmadas; resgates verificam saldo e estoque antes de gerar o código.</p><p style="margin-top:10px;"><span class="pill yellow">Participação</span></p></div>
+    </div>
+    <div class="split-photo" style="flex:0 0 1.4in;margin-top:14px;grid-template-columns:1fr 1fr;">
+      <div class="imgbox"><img src="../../assets/img/coleta-material-reciclavel-03.jpg" alt="Materiais recicláveis"><div class="imgcap">Separar corretamente reduz risco e melhora o reaproveitamento.</div></div>
+      <div class="imgbox"><img src="../../assets/img/hero-coletor.jpg" alt="Profissional da limpeza urbana"><div class="imgcap">Orientação de descarte também protege quem trabalha na coleta.</div></div>
+    </div>
+  </div>
+  <span class="time">0:45</span>
+  <div class="footer"><span>Recompensas são catálogo de demonstração; parceiros ainda precisam ser formalizados</span><span class="page">7 / 10</span></div>
+</section>
+
+<!-- 8 -->
+<section class="slide dark">
+  <div class="body">
+    <p class="kicker">Painel administrativo</p>
+    <h2>Da informação recebida à gestão do atendimento</h2>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="card"><h3>Ocorrências</h3><p>Abas Em aberto, Resolvidas e Arquivadas; fotos, descrição, status e observação.</p></div>
+      <div class="card"><h3>Conteúdo</h3><p>Cadastro e edição de materiais, pontos de descarte e coleta seletiva.</p></div>
+      <div class="card"><h3>Indicadores</h3><p>Totais por status, tipo e bairro, calculados com os dados do banco.</p></div>
+      <div class="card"><h3>Sugestões</h3><p>Locais sugeridos pela comunidade entram como novos e podem ser aprovados ou recusados.</p></div>
+      <div class="card"><h3>Rastreabilidade</h3><p>Cada mudança de ocorrência entra no histórico com data e responsável.</p></div>
+      <div class="card"><h3>Acesso restrito</h3><p>As rotas do painel exigem usuário autenticado do tipo Administrador.</p></div>
+    </div>
+    <div class="note"><strong>Visão de gestão:</strong> o painel não é apenas “uma tela bonita”; ele organiza o ciclo de receber, analisar, responder e medir.</div>
+  </div>
+  <span class="time">1:00</span>
+  <div class="footer"><span>Protótipo funcional local; não há validação institucional ou implantação municipal comprovada</span><span class="page">8 / 10</span></div>
+</section>
+
+<!-- 9 -->
+<section class="slide">
+  <div class="body">
+    <p class="kicker">Como funciona tecnicamente</p>
+    <h2>Arquitetura MVC: interface, regras e dados separados</h2>
+    <div class="rule"></div>
+    <div class="stack">
+      <div class="layer">
+        <div class="icon blue" style="margin:0 auto 9px;">🖥️</div>
+        <h3>Navegador</h3>
+        <p class="small">HTML, CSS e JavaScript</p>
+        <div class="tech-tags"><span>Responsivo</span><span>Leaflet</span><span>PWA</span><span>Tema claro/escuro</span></div>
+      </div>
+      <div class="arrowcol"><span>requisição</span><span style="font-size:28px;">⇄</span><span>HTML / JSON</span></div>
+      <div class="layer">
+        <div class="icon" style="margin:0 auto 9px;">⚙️</div>
+        <h3>PHP 8.3 • MVC</h3>
+        <p class="small">Front Controller → Controller → Model → View</p>
+        <div class="tech-tags"><span>Rotas</span><span>Validação</span><span>Sessão</span><span>PDO</span></div>
+      </div>
+    </div>
+    <div style="text-align:center;font-size:28px;color:var(--green);font-weight:900;line-height:1;">⇅</div>
+    <div class="layer" style="width:66%;margin:0 auto;display:grid;grid-template-columns:auto 1fr;align-items:center;text-align:left;gap:14px;">
+      <div class="icon yellow" style="margin:0;">🗄️</div>
+      <div><h3>MySQL • banco relacional</h3><p class="small">Tabelas normalizadas, chaves estrangeiras, índices, histórico de status e livro-razão de pontos.</p></div>
+    </div>
+    <div class="note"><strong>Explicação simples:</strong> MVC evita misturar tela, regra de negócio e banco. Isso facilita manutenção, testes e evolução do sistema.</div>
+  </div>
+  <span class="time">1:20</span>
+  <div class="footer"><span>PHP puro, JavaScript vanilla e MySQL • sem framework PHP</span><span class="page">9 / 10</span></div>
+</section>
+
+<!-- 10 -->
+<section class="slide dark">
+  <div class="body">
+    <p class="kicker">Conclusão</p>
+    <h2>O que foi entregue — e o que ainda precisa amadurecer</h2>
+    <div class="rule"></div>
+    <div class="do-dont">
+      <div class="do">
+        <h3>✓ Entrega atual</h3>
+        <ul>
+          <li>Protótipo web funcional com acesso público, morador e administrador.</li>
+          <li>Coleta, materiais, pontos, ocorrências, educação e gestão integrados.</li>
+          <li>Dados de cronograma com fonte municipal declarada.</li>
+          <li>Validações, controle de acesso e práticas de privacidade aplicadas.</li>
+        </ul>
+      </div>
+      <div class="dont">
+        <h3>→ Próximos passos reais</h3>
+        <ul>
+          <li>Validar oficialmente bairros, horários, pontos e parceiros.</li>
+          <li>Automatizar a atualização do cronograma do DEMSUR.</li>
+          <li>Adicionar testes automatizados, proteção CSRF e auditorias formais.</li>
+          <li>Homologar, publicar e medir o uso com moradores reais.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="quote" style="margin:auto 0 8px;">ColetaFácil mostra como tecnologia pode aproximar informação pública, educação ambiental e participação cidadã em uma única experiência.</div>
+    <p class="lead" style="font-size:18px;"><strong>Obrigado.</strong> Perguntas?</p>
+  </div>
+  <span class="time">1:00</span>
+  <div class="footer"><span>Fim da apresentação de 10 minutos</span><span class="page">10 / 10</span></div>
+</section>
+
+<!-- APÊNDICE 1 -->
+<section class="slide appendix">
+  <div class="body">
+    <p class="kicker">Apêndice de preparação • não precisa projetar</p>
+    <h2>Roteiro minuto a minuto</h2>
+    <div class="rule"></div>
+    <div class="script">
+      <div class="when">0:00–0:40</div><div class="say"><strong>Slide 1:</strong> “O ColetaFácil é um protótipo de serviço digital para Muriaé. Ele reúne informação de coleta, descarte correto, comunicação de problemas e gestão.”</div>
+      <div class="when">0:40–1:40</div><div class="say"><strong>Slide 2:</strong> explique as cinco dúvidas: quando, o quê, onde, como comunicar e como acompanhar. Não invente estatísticas.</div>
+      <div class="when">1:40–2:35</div><div class="say"><strong>Slide 3:</strong> “A solução centraliza quatro ações: informar, localizar, participar e gerir.”</div>
+      <div class="when">2:35–3:45</div><div class="say"><strong>Slide 4:</strong> percorra a jornada do morador. Destaque que os serviços essenciais não exigem conta.</div>
+      <div class="when">3:45–4:55</div><div class="say"><strong>Slide 5:</strong> conte o fluxo da ocorrência do endereço ao retorno. Explique protocolo, histórico e confirmação antes dos principais pontos.</div>
+      <div class="when">4:55–5:55</div><div class="say"><strong>Slide 6:</strong> apresente os quatro números da carga atual e diga que é uma fotografia estática da fonte DEMSUR, não sincronização ao vivo.</div>
+      <div class="when">5:55–6:40</div><div class="say"><strong>Slide 7:</strong> mostre que o sistema também educa e incentiva. Recompensas ainda dependem de parceiros reais.</div>
+      <div class="when">6:40–7:40</div><div class="say"><strong>Slide 8:</strong> explique como a equipe recebe, classifica e mede. Não diga que o painel está em uso pela Prefeitura.</div>
+      <div class="when">7:40–9:00</div><div class="say"><strong>Slide 9:</strong> explique MVC sem jargão: tela, regras e dados separados. Cite PHP, JavaScript, MySQL, mapa e PWA.</div>
+      <div class="when">9:00–10:00</div><div class="say"><strong>Slide 10:</strong> diferencie entrega e próximos passos. Feche com o valor social e convide perguntas.</div>
+    </div>
+    <div class="note"><strong>Regra de ouro:</strong> fale devagar, uma ideia por frase. Se o tempo apertar, reduza os slides 7 e 9; nunca corte a explicação do problema nem as limitações.</div>
+  </div>
+  <div class="footer"><span>Material de apoio ao apresentador</span><span class="page">A1</span></div>
+</section>
+
+<!-- APÊNDICE 2 -->
+<section class="slide appendix">
+  <div class="body">
+    <p class="kicker">Apêndice de preparação</p>
+    <h2>Colinha técnica em linguagem simples</h2>
+    <div class="rule"></div>
+    <div class="grid3">
+      <div class="card"><h3>MVC</h3><p>Organiza o sistema em <strong>tela</strong> (View), <strong>regras</strong> (Controller) e <strong>dados</strong> (Model).</p></div>
+      <div class="card"><h3>Front Controller</h3><p>O arquivo <strong>index.php</strong> recebe as rotas e direciona cada pedido à função certa.</p></div>
+      <div class="card"><h3>JSON / endpoint</h3><p>Formato usado pelo navegador para pedir dados sem recarregar toda a página.</p></div>
+      <div class="card"><h3>Banco relacional</h3><p>MySQL separa usuários, bairros, coletas, ocorrências e relações, preservando consistência.</p></div>
+      <div class="card"><h3>PDO / consulta preparada</h3><p>Camada do PHP para acessar o banco com parâmetros, reduzindo injeção de SQL.</p></div>
+      <div class="card"><h3>PWA</h3><p>Recursos de aplicativo web: instalação, manifesto e cache de arquivos para contingência.</p></div>
+      <div class="card"><h3>Leaflet / OSM</h3><p>Biblioteca e mapa aberto usados para visualizar pontos e ocorrências em Muriaé.</p></div>
+      <div class="card"><h3>Autenticação e autorização</h3><p>Autenticação confirma quem é o usuário; autorização decide se ele pode acessar o admin.</p></div>
+      <div class="card"><h3>Livro-razão de pontos</h3><p>O saldo não é digitado diretamente: resulta da soma de créditos e débitos registrados.</p></div>
+    </div>
+  </div>
+  <div class="footer"><span>Use estes conceitos apenas se um professor pedir detalhes</span><span class="page">A2</span></div>
+</section>
+
+<!-- APÊNDICE 3 -->
+<section class="slide appendix">
+  <div class="body">
+    <p class="kicker">Apêndice de preparação</p>
+    <h2>Perguntas prováveis — respostas curtas</h2>
+    <div class="rule"></div>
+    <div class="qa">
+      <div class="q"><b>Por que PHP puro?</b><p>Para dominar o fluxo completo sem esconder conceitos em um framework. Ainda assim, o código foi organizado em MVC para manter separação de responsabilidades.</p></div>
+      <div class="q"><b>Os dados são oficiais?</b><p>O cronograma tem a página do DEMSUR como fonte declarada e foi carregado por migração. É uma fotografia estática; precisa de validação e atualização oficial.</p></div>
+      <div class="q"><b>O projeto já está em produção?</b><p>Não. É um protótipo funcional executado localmente em WAMP, sem homologação ou uso institucional comprovado.</p></div>
+      <div class="q"><b>Como a denúncia é acompanhada?</b><p>Cada ocorrência recebe protocolo. Mudanças de status e observações geram uma linha do tempo consultável.</p></div>
+      <div class="q"><b>Como evita denúncias falsas por pontos?</b><p>O registro vale pouco e tem limite diário; a maior parte entra apenas quando um administrador confirma e resolve.</p></div>
+      <div class="q"><b>Como protege dados pessoais?</b><p>Há opção anônima, acesso restrito às fotos, minimização de dados públicos e tentativa de remover metadados. Isso não equivale a uma auditoria LGPD completa.</p></div>
+      <div class="q"><b>Qual é o maior diferencial?</b><p>Unir agenda de coleta, educação, mapa, ocorrência com protocolo e painel administrativo num sistema contextualizado para Muriaé.</p></div>
+      <div class="q"><b>O que faria a seguir?</b><p>Validação com DEMSUR e moradores, dados realmente institucionais, testes automatizados, reforço de segurança, implantação e medição de uso.</p></div>
+    </div>
+    <div class="note"><strong>Se não souber:</strong> diga “isso não foi validado nesta versão; seria um próximo passo”. Uma resposta honesta vale mais que improvisar.</div>
+  </div>
+  <div class="footer"><span>Material de apoio ao apresentador</span><span class="page">A3</span></div>
+</section>
+
+<!-- APÊNDICE 4 -->
+<section class="slide appendix">
+  <div class="body">
+    <p class="kicker">Apêndice de preparação</p>
+    <h2>Demonstração opcional de 2 minutos</h2>
+    <div class="rule"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Sequência segura</h3>
+        <ol class="small" style="padding-left:20px;line-height:1.65;">
+          <li>Abra a Home e apresente a proposta em 10 segundos.</li>
+          <li>Vá a <strong>Coleta</strong>, pesquise “Centro” e abra os detalhes.</li>
+          <li>Vá a <strong>Ocorrências</strong> e mostre registro, protocolo e consulta.</li>
+          <li>Abra o <strong>Admin</strong> e mostre as abas Em aberto / Resolvidas / Arquivadas.</li>
+          <li>Encerre no painel de indicadores.</li>
+        </ol>
+      </div>
+      <div class="card">
+        <h3>Plano B se a internet falhar</h3>
+        <ul class="small" style="padding-left:20px;line-height:1.65;">
+          <li>Use apenas o PDF: ele já mostra o fluxo completo.</li>
+          <li>Não dependa do GPS ou mapa na apresentação.</li>
+          <li>Deixe o WAMP e o banco abertos antes de começar.</li>
+          <li>Faça Ctrl+Shift+R e teste login/admin previamente.</li>
+          <li>Tenha o PDF salvo localmente e em outro dispositivo.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="do-dont" style="margin-top:14px;">
+      <div class="do"><h3>Diga</h3><ul><li>“Protótipo funcional.”</li><li>“Cronograma com fonte declarada.”</li><li>“Métricas calculadas do banco carregado.”</li></ul></div>
+      <div class="dont"><h3>Evite dizer</h3><ul><li>“Sistema oficial da Prefeitura.”</li><li>“Dados em tempo real.”</li><li>“Impacto comprovado na cidade.”</li><li>“Totalmente conforme a LGPD.”</li></ul></div>
+    </div>
+  </div>
+  <div class="footer"><span>Apêndice • preparação da apresentação</span><span class="page">A4</span></div>
+</section>
+
+<!-- APÊNDICE 5 -->
+<section class="slide appendix">
+  <div class="body">
+    <p class="kicker">Apêndice de preparação</p>
+    <h2>Fontes e base factual</h2>
+    <div class="rule"></div>
+    <div class="grid2">
+      <div class="card">
+        <h3>Dados e território</h3>
+        <p class="source"><strong>DEMSUR — Cronograma de Coleta:</strong><br>https://www.demsur.com.br/pagina/107/cronograma-coleta</p>
+        <p class="source" style="margin-top:13px;"><strong>OpenStreetMap — limites de Muriaé:</strong><br>Relação 315428, referenciada em app/config/Config.php.</p>
+        <p class="source" style="margin-top:13px;"><strong>Observação:</strong> a lista de bairros foi fornecida pela equipe do projeto e deve ser validada institucionalmente antes de uso público.</p>
+      </div>
+      <div class="card">
+        <h3>Arquivos do projeto usados</h3>
+        <p class="source">HANDOFF.md — visão geral e arquitetura.<br><br>modelo/modeloColetaFacil.sql — esquema físico.<br><br>modelo/migration_06_cronograma_demsur.sql — carga do cronograma.<br><br>app/controller/Ocorrencia.php — fluxo de registro, consulta e privacidade.<br><br>app/model/PontosModel.php — regras de pontuação.<br><br>app/controller/Admin.php — gestão administrativa.</p>
+      </div>
+    </div>
+    <div class="note"><strong>Transparência:</strong> usuários, ocorrências, pontos de descarte, ranking e recompensas do seed são dados de demonstração. Não os apresente como resultados reais de Muriaé.</div>
+  </div>
+  <div class="footer"><span>Documento gerado a partir do estado atual do repositório</span><span class="page">A5</span></div>
+</section>
+
+</body>
+</html>
