@@ -42,6 +42,7 @@ $usuario = auth_user();
       bounds: [[<?= $geo['lat_min'] ?>, <?= $geo['lng_min'] ?>], [<?= $geo['lat_max'] ?>, <?= $geo['lng_max'] ?>]]
     };
   </script>
+  <link rel="icon" type="image/svg+xml" href="<?= baseUrl('assets/img/favicon.svg') ?>">
   <link rel="manifest" href="<?= baseUrl('manifest.json') ?>">
   <meta name="theme-color" content="#16a34a">
   <meta name="apple-mobile-web-app-capable" content="yes">

@@ -5,6 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Área Kids – ColetaFácil</title>
+  <link rel="icon" type="image/svg+xml" href="<?= baseUrl('assets/img/favicon.svg') ?>">
   <?php $assetV = defined('ASSET_VER') ? ASSET_VER : '1'; ?>
   <link rel="stylesheet" href="<?= baseUrl('assets/css/style.css') ?>?v=<?= $assetV ?>">
   <link rel="stylesheet" href="<?= baseUrl('assets/css/kids.css') ?>?v=<?= $assetV ?>">
