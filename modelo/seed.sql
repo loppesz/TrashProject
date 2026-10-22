@@ -165,7 +165,7 @@ INSERT INTO material_exemplo (id_material, ordem, icone, rotulo, negativo) VALUE
 -- ---------------------------------------------------------------------
 -- COLETA — cronograma oficial do DEMSUR (coleta comum e seletiva).
 -- Fonte: https://www.demsur.com.br/pagina/107/cronograma-coleta
--- (consultado em outubro/2026). Mesmos dados da migration_06.
+-- (consultado em outubro/2026).
 --   tipo:   SELETIVA (recicláveis) ou COMUM (lixo doméstico)
 --   trecho: parte do bairro com horário próprio ('' = bairro todo)
 --   dia:    2=segunda ... 6=sexta, 7=sábado

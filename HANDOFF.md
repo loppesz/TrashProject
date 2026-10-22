@@ -51,7 +51,7 @@ app/
   model/     BaseModel + {Entidade}Model
   view/      {pagina}.php ; view/comuns/ (cabecalho/rodape/admin_*) ; view/admin/ (telas do painel)
 assets/      css/ js/ (uploads/ocorrencias/ p/ fotos)
-modelo/      modeloColetaFacil.sql (schema), seed.sql, migrations, .mwb (MySQL Workbench)
+modelo/      modeloColetaFacil.sql (schema completo), seed.sql (dados), .mwb (MySQL Workbench)
 ```
 
 ### Convenções obrigatórias

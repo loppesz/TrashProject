@@ -9,7 +9,7 @@
  *  - horario_fim NULL = so o horario aproximado de passagem ("a partir de").
  *
  * Os horarios publicos vem do cronograma oficial do DEMSUR
- * (migration_06). O CRUD do painel administra a coleta SELETIVA.
+ * (carregado pelo modelo/seed.sql). O CRUD do painel administra a coleta SELETIVA.
  */
 class ColetaModel extends BaseModel
 {

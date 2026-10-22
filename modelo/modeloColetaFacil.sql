@@ -1,4 +1,8 @@
 -- Modelo físico do ColetaFácil | MySQL 8.0+ | UTF-8
+-- Script único de criação.
+-- Uso, em um banco vazio:
+--   mysql -u root -P 3306 --default-character-set=utf8mb4 < modelo/modeloColetaFacil.sql
+--   mysql -u root -P 3306 --default-character-set=utf8mb4 coletafacil < modelo/seed.sql
 CREATE DATABASE IF NOT EXISTS coletafacil CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE coletafacil;
 
