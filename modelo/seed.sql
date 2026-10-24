@@ -15,6 +15,9 @@ USE coletafacil;
 
 -- Limpa dados anteriores (ordem respeita as FKs). Idempotente para re-seed.
 SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE registro_privacidade;
+TRUNCATE TABLE registro_acao;
+TRUNCATE TABLE config_sistema;
 TRUNCATE TABLE lancamento_pontos;
 TRUNCATE TABLE resgate_recompensa;
 TRUNCATE TABLE perfil_kids;

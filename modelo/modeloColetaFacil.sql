@@ -303,7 +303,7 @@ CREATE TABLE lancamento_pontos (
 ) ENGINE=InnoDB;
 
 
--- LGPD e segurança (ver migration_07_lgpd_seguranca.sql).
+-- LGPD e segurança.
 -- Controle de tentativas: guarda só o HMAC do IP; apagado após 24 horas.
 CREATE TABLE registro_acao (
   id_registro BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
